@@ -1,0 +1,142 @@
+@(title: String)(content: Html)
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>@title</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href="/assets/stylesheets/normalize.css">
+        <link rel="stylesheet" href="/assets/stylesheets/main.css">
+        <script src="/assets/javascripts/thirdparty/modernizr-2.6.2.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+        <menu id="navigation">
+            <a class="timerlink">timer</a>
+            <a class="listlink">list</a>
+            <a class="statslink">stats</a>
+            <a class="optionslink">options</a>
+        </menu>
+        <section id="cards">
+                <section id="timer" class="card redGradient">
+                    <audio id="alarm" src="/assets/sound/11710__connum__ringing.mp3" >  
+                        our browser does not support the <code>audio</code> element.  
+                    </audio>
+                    <div class="top">
+                        <h1 id="currentTaskTitle"> </h1>
+                        <div class="timegradeholder">
+                            <div class="numbers"><span>0</span><span>5</span><span>10</span><span>15</span><span>20</span><span>25</span><span>30</span><span>35</span><span>40</span><span>45</span><span>50</span><span>55</span><span>60</span></div>
+                            <img src="/assets/images/timegrades.svg">
+                        </div>
+                    </div>
+                    <div class="bottom">
+                        <div class="arrowholder">
+                            <img src="/assets/images/arrow.svg">
+                        </div>
+                        <div class="tasktracker">
+                            <span class="done"></span><span class="done"></span><span class="done"></span><span></span><span></span><span></span><span></span><span></span>
+                        </div>
+                    </div>
+                </section>
+                <section id="list" class="card">
+                    <ul class="tasks">
+                        <li class="task"><input type="checkbox" class="list-checkbox" />
+                            <label><span class="title">app timer page</span><span class="time">25</span></label>
+                        </li>
+                        <li class="task"><input type="checkbox" class="list-checkbox" />
+                            <label><span class="title">other apps</span><span class="time">25</span></label>
+                        </li>
+                        <li class="task"><input type="checkbox" class="list-checkbox" />
+                            <label><span class="title">presentation</span><span class="time">25</span></label>
+                        </li>
+                        <li class="task"><input type="checkbox" class="list-checkbox" />
+                            <label><span class="title">planning page</span><span class="time">25</span></label>
+                        </li>
+                        <li class="task"><input type="checkbox" class="list-checkbox" />
+                            <label><span class="title">stats page</span><span class="time">25</span></label>
+                        <li class="task"><input type="checkbox" class="list-checkbox" />
+                            <label><span class="title red">long break</span><span class="time">30</span></label>
+                        </li>
+                        </li>
+                        <li class="task"><input type="checkbox" class="list-checkbox" />
+                            <label><span class="title">options page</span><span class="time">25</span></label>
+                        </li>
+                    </ul>
+                </section>
+                <section id="stats" class="card">
+                    <table class="weekstats">
+                        <th colspan="7"><h2>Pomodoros this week</h2></th>
+                        <tr class="counters">
+                            <td class="counter count5"><img src="/assets/images/button16.svg"></td>
+                            <td class="counter count6"><img src="/assets/images/button16.svg"></td>
+                            <td class="counter count3"><img src="/assets/images/button16.svg"></td>
+                            <td class="counter count7"><img src="/assets/images/button16.svg"></td>
+                            <td class="counter count8"><img src="/assets/images/button16.svg"></td>
+                            <td class="counter count5"><img src="/assets/images/button16.svg"></td>
+                            <td class="counter count1"><img src="/assets/images/button16.svg"></td>
+                        </tr>
+                        <tr class="days">
+                            <td class="day">M</td>
+                            <td class="day">T</td>
+                            <td class="day">W</td>
+                            <td class="day">T</td>
+                            <td class="day">F</td>
+                            <td class="day">S</td>
+                            <td class="day red">S</td>
+                        </tr>
+                    </table>
+                    <h2>Lifetime pomodoros</h2>
+                    <h2 class="center red">103</h2>
+                </section>
+                <section id="options" class="card">
+                    <ul class="times">
+                        <li>One pomdoro<span class="ticker taskticker"><button class="sub redGradient">-</button><span class="tickertime">25</span><button class="add redGradient">+</button></span></li>
+                        <li>A short break<span class="ticker shortticker"><button class="sub redGradient">-</button><span class="tickertime">5</span><button class="add redGradient">+</button></span></li>
+                        <li>A long break<span class="ticker longticker"><button class="sub redGradient">-</button><span class="tickertime">15</span><button class="add redGradient">+</button></span></li>
+                    </ul>
+                </section>
+        </section>
+        <section id="popups">
+            <div id="dayInHistory" class="popup">
+
+            </div>
+            <div id="taskNote" class="popup">
+                <button class="closePopup redGradient">X</button>
+                <h2>Take a note on this task</h2>
+                <ul class="notes">
+                </ul>
+                <div class="newNoteArea">
+                    <h3>New note</h3>
+                    <textarea placeholder="Write a note"></textarea>
+                    <button class="save">save</button>
+                </div>
+            </div>
+            <div id="addTask" class="popup">
+
+            </div>
+        </section>
+
+        <script src="/assets/javascripts/thirdparty/jquery-1.8.2.min.js"></script>
+        <script src="/assets/javascripts/plugins.js"></script>
+        <script src="/assets/javascripts/main.js"></script>
+        <script src="/assets/javascripts/deck.js"></script>
+        <script src="/assets/javascripts/timer.js"></script>
+        <script src="/assets/javascripts/popups.js"></script>
+        <script src="/assets/javascripts/options.js"></script>
+        <script src="/assets/javascripts/task.js"></script>
+
+    </body>
+</html>
