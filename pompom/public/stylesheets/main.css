@@ -150,7 +150,7 @@ menu {
     right: .5em;
     overflow: hidden;
     border: 1px solid #4F170A; 
-    box-shadow: 0 1px 0 0 #D87264;
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.25);
 }
     #cards .card.transitioning {
         -webkit-transition:  -webkit-transform 0.2s ease-in;
@@ -159,11 +159,11 @@ menu {
         transition:  transform 0.2s ease-in;
     }
         #cards .posLeft{
-            -webkit-transform: translate3d(-100%,0,0);
-            -moz-transform: translate3d(-100%,0,0);
-            -ms-transform: translate3d(-100%,0,0);
-            -o-transform: translate3d(-100%,0,0);
-            transform: translate3d(-100%,0,0);
+            -webkit-transform: translate3d(-105%,0,0);
+            -moz-transform: translate3d(-105%,0,0);
+            -ms-transform: translate3d(-105%,0,0);
+            -o-transform: translate3d(-105%,0,0);
+            transform: translate3d(-105%,0,0);
         }
         #cards .posCenter{
             -webkit-transform: translate3d(0,0,0);
@@ -173,11 +173,11 @@ menu {
             transform: translate3d(0,0,0);
         }
         #cards .posRight{
-            -webkit-transform: translate3d(100%,0,0);
-            -moz-transform: translate3d(100%,0,0);
-            -ms-transform: translate3d(100%,0,0);
-            -o-transform: translate3d(100%,0,0);
-            transform: translate3d(100%,0,0);
+            -webkit-transform: translate3d(105%,0,0);
+            -moz-transform: translate3d(105%,0,0);
+            -ms-transform: translate3d(105%,0,0);
+            -o-transform: translate3d(105%,0,0);
+            transform: translate3d(105%,0,0);
         }
 .card {
     position: absolute;
@@ -185,13 +185,12 @@ menu {
     width: 100%;
     height: 100%;
     background-color: #E3E5CF;
-    border-top: 1px solid #B6B7A7;
+    border-top: 1px solid rgba(0,0,0,0.25);
     padding: 2em;
     box-shadow: 0 0 .5rem 0 rgba(0,0,0,0.5);
 }
 #timer {
-    z-index: 100;
-    border-top: 1px solid #D87264;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
     background-color: transparent;
     padding: 0;
     
@@ -199,7 +198,7 @@ menu {
     #timer .top {
         position: relative;
         height: 50%;
-        border-bottom: 2px solid #4F170A;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.5);
     }
         #timer .top #currentTaskTitle{
             margin: 0;
@@ -234,7 +233,7 @@ menu {
     #timer .bottom {
         position: relative;
         height: 50%;
-        border-top: 1px solid #D87264;
+        border-top: 1px solid rgba(255, 255, 255, 0.25);
     }
         #timer .bottom .arrowholder{
             padding: .1em 0 0;
@@ -255,12 +254,12 @@ menu {
                 border: 1px solid #4F170A;
                 background-color: #7F1C17;
                 border-radius: 50%;
-                box-shadow: 0 .1em 0 0 #D87264, inset 0 .2em 0 0 #661D0E;
+                box-shadow: 0 .1em 0 0 rgba(255, 255, 255, 0.25), inset 0 .2em 0 0 rgba(0, 0, 0, 0.5);
             }
             #timer .bottom .tasktracker span.done{
                 background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
                 background: linear-gradient(to bottom, #C65944, #BC4C2E);
-                box-shadow: 0 .1em 0 0 #D87264, inset 0 .2em 0 0 #D87264;
+                box-shadow: 0 .1em 0 0 rgba(0, 0, 0, 0.5), inset 0 .2em 0 0 rgba(255, 255, 255, 0.25);
             }
 #list {
     
@@ -270,29 +269,43 @@ menu {
         padding: 0;
         margin: 0;
     }
-        #list .list-checkbox {
-            vertical-align: baseline;
-            -webkit-appearance: none;
-            background-color: #E3E5CF;
-            border: .1em solid #4F170A;
-            box-shadow: inset .1em .1em 0 0 #B6B7A7;
-            padding: .7em;
-            display: inline-block;
-            position: relative;
+        #list ul li{
+            margin: .25rem 0;
         }
-        #list .list-checkbox:checked {
-            background-color: #000;
-        }
-        #list ul label{
-            font-size: 2em;
-        }
-        #list ul .title{
-            margin-left: .85em;
-        }
-        #list ul .time{
-            margin-left: .85em;
-            color: #8E8E85;
-        }
+            #list .list-checkbox {
+                vertical-align: baseline;
+                -webkit-appearance: none;
+                background-color: #E3E5CF;
+                border: 1px solid #4F170A;
+                box-shadow: inset .1rem .1rem 0 0 rgba(0, 0, 0, 0.25), 0 .1rem 0 0 rgba(255, 255, 255, 0.75);
+                padding: .7rem;
+                display: inline-block;
+                position: relative;
+            }
+            #list .list-checkbox:checked {
+                background-color: #000;
+            }
+            #list ul label{
+                font-size: 2em;
+            }
+            #list ul .title{
+                margin-left: .85em;
+            }
+            #list ul .time{
+                margin-left: .85em;
+                color: #8E8E85;
+            }
+            #list ul .sortable-dragging{
+
+            }
+            #list ul .sortable-placeholder{
+                height: 2.8rem;
+                border: 1px solid #B6B7A7;
+                width: 50rem;
+                box-shadow: inset 0 .1rem 0 0 rgba(0, 0, 0, 0.15), 0 .1rem 0 0 rgba(255, 255, 255, 0.75);
+                max-width: 100%;
+            }
+
 #stats {
     
 }
@@ -437,10 +450,35 @@ menu {
             border: 1px solid #4F170A;
             box-shadow: inset 0 0.1rem 0 0 #b6b7a7, 0 0.1rem 0 0 #F2F2E9;
         }
-
-
-
-
+/* ==========================================================================
+   Login Page
+   ========================================================================== */
+.login h1{
+    font-size: 3em;
+    text-align: center;
+    margin: 2.5em 0 1.5em;
+    text-shadow: 0 .1rem .1rem rgba(0,0,0,0.25);
+}
+form#loginform {
+    width: 30em;
+    max-width: 100%;
+    margin: 0 auto;
+}
+    form#loginform input{
+        font-size: 1.6em;
+        width: 100%;
+        margin-bottom: 1em;
+        -webkit-appearance: none;
+        background-color: #E3E5CF;
+        border: .1em solid #4F170A;
+        box-shadow: inset .1rem .1rem 0 0 #B6B7A7,  0 .1rem 0 0 #D87264;
+        padding: .7rem;
+        border-radius: .1rem;
+    }
+        form#loginform input#submit{
+            box-shadow: inset 0 .1rem 0 0 #d87264,  0 .1rem .1rem 0 rgba(0,0,0,0.25);
+            color: #E3E5CF;
+        }
 
 
 
