@@ -9,6 +9,6 @@ object Application extends Controller {
     Ok(views.html.index("Your new application is ready."))
   }
   def login = Action {
-    Ok("login")
+    Ok(views.html.login("abc123"))
   }
 }
