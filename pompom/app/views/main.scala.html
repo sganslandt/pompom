@@ -26,8 +26,8 @@
         <!-- Add your site or application content here -->
         <menu id="navigation">
             <a class="timerlink">timer</a>
-            <a class="listlink">list</a>
-            <a class="statslink">stats</a>
+            <a class="todolink">todo</a>
+            <a class="historylink">history</a>
             <a class="optionslink">options</a>
         </menu>
         <section id="cards">
@@ -47,46 +47,60 @@
                             <img src="/assets/images/arrow.svg">
                         </div>
                         <div class="tasktracker">
-                            <span class="done"></span><span class="done"></span><span class="done"></span><span></span><span></span><span></span><span></span><span></span>
+                            <span class="pomMarker done"></span><span class="pomMarker done"></span><span class="done"></span><span class="pomMarker"></span><span class="pomMarker"></span><span class="pomMarker"></span><span class="pomMarker"></span><span class="pomMarker"></span>
                         </div>
                     </div>
                 </section>
                 <section id="list" class="card">
                     <ul class="tasks sortable">
-                        <li class="task"><input type="checkbox" class="list-checkbox" />
-                            <label><span class="title">app timer page</span><span class="time">25</span></label>
+                        <li class="task">
+                            <label class="done"><span class="title">app timer page</span><span class="pomMarker done">4</span></label>
+                            <div class="description">A Short description</div>
                         </li>
-                        <li class="task"><input type="checkbox" class="list-checkbox" />
-                            <label><span class="title">other apps</span><span class="time">25</span></label>
+                        <li class="task">
+                            <label><span class="title">other apps</span><span class="pomMarker done">2</span><span class="pomMarker">3</span></label>
+                            <div class="description">A Short description</div>
                         </li>
-                        <li class="task"><input type="checkbox" class="list-checkbox" />
-                            <label><span class="title">presentation</span><span class="time">25</span></label>
+                        <li class="task">
+                            <label><span class="title">presentation</span><span class="pomMarker">7</span></label>
+                            <div class="description">A Short description</div>
                         </li>
-                        <li class="task"><input type="checkbox" class="list-checkbox" />
-                            <label><span class="title">planning page</span><span class="time">25</span></label>
+                        <li class="task">
+                            <label><span class="title">planning page</span><span class="pomMarker">8</span></label>
+                            <div class="description">A Short description</div>
                         </li>
-                        <li class="task"><input type="checkbox" class="list-checkbox" />
-                            <label><span class="title">stats page</span><span class="time">25</span></label>
-                        <li class="task"><input type="checkbox" class="list-checkbox" />
-                            <label><span class="title red">long break</span><span class="time">30</span></label>
+                        <li class="task">
+                            <label><span class="title">stats page</span><span class="pomMarker">1</span></label>
+                            <div class="description">A Short description</div>
                         </li>
+                        <li class="task">
+                            <label><span class="title">long break optimization</span><span class="pomMarker">5</span></label>
+                            <div class="description">A Short description</div>
                         </li>
-                        <li class="task"><input type="checkbox" class="list-checkbox" />
-                            <label><span class="title">options page</span><span class="time">25</span></label>
+                        <li class="task">
+                            <label><span class="title">options page</span><span class="pomMarker">6</span></label>
+                            <div class="description">A Short description</div>
                         </li>
                     </ul>
+                    <section class="addTaskSection">
+                        <h2>Create a new task</h2>
+                        <input type="text" class="title" placeholder="title">
+                        <input type="range" name="points" min="1" max="8" class="pomodoros">
+                        <textarea class="shortDescription" placeholder="description"></textarea>
+                        <button class="greenButton">Go</button>
+                    </section>
                 </section>
                 <section id="stats" class="card">
                     <table class="weekstats">
                         <th colspan="7"><h2>Pomodoros this week</h2></th>
                         <tr class="counters">
-                            <td class="counter count5"><img src="/assets/images/button16.svg"></td>
-                            <td class="counter count6"><img src="/assets/images/button16.svg"></td>
-                            <td class="counter count3"><img src="/assets/images/button16.svg"></td>
-                            <td class="counter count7"><img src="/assets/images/button16.svg"></td>
-                            <td class="counter count8"><img src="/assets/images/button16.svg"></td>
-                            <td class="counter count5"><img src="/assets/images/button16.svg"></td>
-                            <td class="counter count1"><img src="/assets/images/button16.svg"></td>
+                            <td class="counter count6"><span class="pomMarker"></span></td>
+                            <td class="counter count5"><span class="pomMarker"></span></td>
+                            <td class="counter count3"><span class="pomMarker"></span></td>
+                            <td class="counter count7"><span class="pomMarker"></span></td>
+                            <td class="counter count8"><span class="pomMarker"></span></td>
+                            <td class="counter count5"><span class="pomMarker"></span></td>
+                            <td class="counter count1"><span class="pomMarker"></span></td>
                         </tr>
                         <tr class="days">
                             <td class="day">M</td>

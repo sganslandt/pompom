@@ -13,8 +13,7 @@ $(document).ready(function() {
 });
 
 function stackTheDeck () {
-	totalNumber = ('#cards .card').length;
-	console.log(totalNumber);
+	totalNumber = $('#cards .card').length;
 	$('#cards .card').each(function(index) {
 	    $(this).css('z-index', (totalNumber - index));
 	});

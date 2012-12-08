@@ -126,6 +126,31 @@ h2{
     background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
     background: linear-gradient(to bottom, #C65944, #BC4C2E);
 }
+.redButton{
+    font-size: 1.6rem;
+    padding: .7rem;
+    background-color: #C65944;
+    background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
+    background: linear-gradient(to bottom, #C65944, #BC4C2E);
+    box-shadow: inset 0 .1rem 0 0 rgba(255, 255, 255, 0.25),  0 .1rem .1rem 0 rgba(0,0,0,0.25);
+    border: .1em solid #4F170A;
+    border-radius: .2rem;
+    color: #E3E5CF;
+}
+.greenButton{
+    font-size: 1.6rem;
+    padding: .7rem;
+    background-color: #5B7C3C;
+    background: -webkit-linear-gradient(top, #73A04B, #5B7C3C);
+    background: linear-gradient(to bottom, #73A04B, #5B7C3C);
+    box-shadow: inset 0 .1rem 0 0 rgba(255, 255, 255, 0.25),  0 .1rem .1rem 0 rgba(0,0,0,0.25);
+    border: .1em solid #2A381B;
+    border-radius: .2rem;
+    color: #E3E5CF;
+}
+.greenButton:active{
+    box-shadow: inset 0 .1rem 0 0 rgba(0, 0, 0, 0.25),  0 .1rem .1rem 0 rgba(255, 255, 255, 0.25);
+}
 menu {
     position: absolute;
     margin: 0;
@@ -138,6 +163,7 @@ menu {
         display: inline-block;
         width: 24%;
         text-align: center;
+        cursor: pointer;
     }
         menu a.active{
             color: #E3E5CF;
@@ -193,7 +219,7 @@ menu {
     border-top: 1px solid rgba(255, 255, 255, 0.25);
     background-color: transparent;
     padding: 0;
-    
+    z-index: 10;
 }
     #timer .top {
         position: relative;
@@ -246,30 +272,16 @@ menu {
             bottom: 1em;
             text-align: center;
         }
-            #timer .bottom .tasktracker span{
-                display: inline-block;
-                width: 2em;
-                height: 2em;
-                margin: 0 .75em;
-                border: 1px solid #4F170A;
-                background-color: #7F1C17;
-                border-radius: 50%;
-                box-shadow: 0 .1em 0 0 rgba(255, 255, 255, 0.25), inset 0 .2em 0 0 rgba(0, 0, 0, 0.5);
-            }
-            #timer .bottom .tasktracker span.done{
-                background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
-                background: linear-gradient(to bottom, #C65944, #BC4C2E);
-                box-shadow: 0 .1em 0 0 rgba(0, 0, 0, 0.5), inset 0 .2em 0 0 rgba(255, 255, 255, 0.25);
-            }
 #list {
-    
 }
-    #list ul{
+    #list ul.tasks{
         list-style: none;
         padding: 0;
-        margin: 0;
+        margin: 0 auto;
+        width: 50rem;
+        max-width: 100%;
     }
-        #list ul li{
+        #list ul.tasks li{
             margin: .25rem 0;
         }
             #list .list-checkbox {
@@ -285,27 +297,75 @@ menu {
             #list .list-checkbox:checked {
                 background-color: #000;
             }
-            #list ul label{
+            #list ul.tasks label{
                 font-size: 2em;
             }
-            #list ul .title{
-                margin-left: .85em;
+            #list ul.tasks .title{
+                margin: 0 .5em 0 0;
             }
-            #list ul .time{
-                margin-left: .85em;
-                color: #8E8E85;
+            #list ul.tasks .pomMarker{
+                float: right;
+                font-size: .5em;
+                margin: .4em .2em 0 0;
             }
-            #list ul .sortable-dragging{
+            #list ul.tasks li .description{
+                height: 0;
+                overflow: hidden;
+            }
+                #list ul.tasks li.active .description{
+                    height: auto;
+                    overflow: visible;
+                }
+            #list ul.tasks .sortable-dragging{
 
             }
-            #list ul .sortable-placeholder{
+            #list ul.tasks .sortable-placeholder{
                 height: 2.8rem;
                 border: 1px solid #B6B7A7;
-                width: 50rem;
                 box-shadow: inset 0 .1rem 0 0 rgba(0, 0, 0, 0.15), 0 .1rem 0 0 rgba(255, 255, 255, 0.75);
+                border-radius: .2em;
+                width: 100%;
+            }
+            #list .addTaskSection{
+                margin: 2em auto 0;
+                width: 50rem;
                 max-width: 100%;
             }
-
+            #list .addTaskSection input[type='text'],
+            #list .addTaskSection textarea{
+                width: 100%;
+                padding: .7rem;
+                margin-bottom: .5rem;
+                font-size: 1.6em;
+                background: transparent;
+                border-radius: .2rem;
+                border: 1px solid #8E8E85;
+                box-shadow: inset 0 .1rem 0 0 rgba(0, 0, 0, 0.15), 0 .1rem 0 0 rgba(255, 255, 255, 0.75);
+            }
+            #list .addTaskSection input[type='range'] { 
+                -webkit-appearance: none;
+                width: 100%;
+                background-color: transparent;
+                height: .4rem;
+                border-radius: .2rem;
+                border: 1px solid #8E8E85;
+                margin: 1em 0 1.5em;
+            }
+            #list .addTaskSection input[type='range']::-webkit-slider-thumb { 
+                -webkit-appearance: none;
+                width: 2em;
+                height: 2em; 
+                background-color: #C65944;
+                background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
+                background: linear-gradient(to bottom, #C65944, #BC4C2E);
+                box-shadow: inset 0 .1rem 0 0 rgba(255, 255, 255, 0.25),  0 .1rem .1rem 0 rgba(0,0,0,0.25);
+                border: .1em solid #4F170A;
+                border-radius: 50%;
+                color: #E3E5CF;
+            } 
+            #list .addTaskSection button{
+                width: 100%;
+            }
 #stats {
     
 }
@@ -322,7 +382,7 @@ menu {
         #stats table.weekstats tr.counters{
             vertical-align: bottom;
             height: 17em;
-            background: transparent url("../img/diagramBg.png") bottom left repeat;
+            background: transparent url("../images/diagramBg.png") bottom left repeat;
             border-bottom: 1px solid #BC4C2E;
         }
             #stats table.weekstats td.counter.count1{
@@ -349,6 +409,11 @@ menu {
             #stats table.weekstats td.counter.count8{
                 padding-bottom: 15em;
             }
+                #stats table.weekstats td.counter span.pomMarker{
+                    background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
+                    background: linear-gradient(to bottom, #C65944, #BC4C2E);
+                    box-shadow: 0 .1em 0 0 rgba(0, 0, 0, 0.5), inset 0 .2em 0 0 rgba(255, 255, 255, 0.25);
+                }
         #stats table.weekstats tr.days{
             font-size: 2em;
             color: #8E8E85;
@@ -465,23 +530,49 @@ form#loginform {
     margin: 0 auto;
 }
     form#loginform input{
-        font-size: 1.6em;
+        font-size: 1.6rem;
         width: 100%;
         margin-bottom: 1em;
         -webkit-appearance: none;
+        padding: .7rem;
+        border-radius: .2rem;
+    }
+    form#loginform input[type="text"],
+    form#loginform input[type="email"],
+    form#loginform input[type="password"]{
         background-color: #E3E5CF;
         border: .1em solid #4F170A;
         box-shadow: inset .1rem .1rem 0 0 #B6B7A7,  0 .1rem 0 0 #D87264;
-        padding: .7rem;
-        border-radius: .1rem;
     }
         form#loginform input#submit{
-            box-shadow: inset 0 .1rem 0 0 #d87264,  0 .1rem .1rem 0 rgba(0,0,0,0.25);
-            color: #E3E5CF;
+
         }
 
 
 
+/* ==========================================================================
+   Pom markers
+   ========================================================================== */
+.pomMarker{
+    vertical-align: middle;
+    color: #E3E5CF;
+    text-align: center;
+    display: inline-block;
+    width: 2em;
+    height: 2em;
+    margin: 0 .75em;
+    padding: .2em 0;
+    border-radius: 50%;
+    border: 1px solid #4F170A;
+    background-color: #7F1C17;
+    box-shadow: 0 .1em 0 0 rgba(255, 255, 255, 0.25), inset 0 .2em 0 0 rgba(0, 0, 0, 0.5);
+}
+.pomMarker.done{
+    background-color: #BC4C2E;
+    background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
+    background: linear-gradient(to bottom, #C65944, #BC4C2E);
+    box-shadow: 0 .1em 0 0 rgba(0, 0, 0, 0.5), inset 0 .2em 0 0 rgba(255, 255, 255, 0.25);
+}
 /* ==========================================================================
    Helper classes
    ========================================================================== */
