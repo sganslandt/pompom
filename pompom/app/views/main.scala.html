@@ -53,8 +53,9 @@
                 </section>
                 <section id="list" class="card">
                     <ul class="tasks sortable">
-                        <li class="task">
-                            <label class="done"><span class="title">app timer page</span><span class="pomMarker done">4</span></label>
+                        <li class="task done">
+                            <label><span class="title">app timer page</span><span class="pomMarker done">4</span></label>
+                            <div class="description">A Short description</div>
                             <div class="description">A Short description</div>
                         </li>
                         <li class="task">
@@ -82,13 +83,24 @@
                             <div class="description">A Short description</div>
                         </li>
                     </ul>
-                    <section class="addTaskSection">
+                    <form class="addTaskSection">
                         <h2>Create a new task</h2>
-                        <input type="text" class="title" placeholder="title">
-                        <input type="range" name="points" min="1" max="8" class="pomodoros">
-                        <textarea class="shortDescription" placeholder="description"></textarea>
+                        <p class="textfields">
+                            <input type="text" class="title" placeholder="title">
+                            <textarea class="shortDescription" placeholder="description"></textarea>
+                        </p>
+                        <p class="pomodoros">
+                            <input type="radio" class="radio" name="pomodoros" value="1">
+                            <input type="radio" class="radio" name="pomodoros" value="2">
+                            <input type="radio" class="radio" name="pomodoros" value="3">
+                            <input type="radio" class="radio" name="pomodoros" value="4">
+                            <input type="radio" class="radio" name="pomodoros" value="5">
+                            <input type="radio" class="radio" name="pomodoros" value="6">
+                            <input type="radio" class="radio" name="pomodoros" value="7">
+                            <input type="radio" class="radio" name="pomodoros" value="8">
+                        </p>
                         <button class="greenButton">Go</button>
-                    </section>
+                    </form>
                 </section>
                 <section id="stats" class="card">
                     <table class="weekstats">

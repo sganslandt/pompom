@@ -28,9 +28,13 @@ function createNewTaskInList () {
 	
 }
 function activateTask (task) {
-	console.log(task)
-	$('.tasks li').removeClass('active');
-	$(task).addClass('active');
+	if (task.hasClass('active')) {
+		$(task).removeClass('active');
+	}
+	else{
+		$('.tasks li').removeClass('active');
+		$(task).addClass('active');
+	};
 }
 
 function createNewTask (id, title, taskLength) {

@@ -303,6 +303,9 @@ menu {
             #list ul.tasks .title{
                 margin: 0 .5em 0 0;
             }
+                #list ul.tasks li.done .title{
+                    text-decoration: line-through;
+                }
             #list ul.tasks .pomMarker{
                 float: right;
                 font-size: .5em;
@@ -330,6 +333,7 @@ menu {
                 margin: 2em auto 0;
                 width: 50rem;
                 max-width: 100%;
+                text-align: justify;
             }
             #list .addTaskSection input[type='text'],
             #list .addTaskSection textarea{
@@ -342,27 +346,36 @@ menu {
                 border: 1px solid #8E8E85;
                 box-shadow: inset 0 .1rem 0 0 rgba(0, 0, 0, 0.15), 0 .1rem 0 0 rgba(255, 255, 255, 0.75);
             }
-            #list .addTaskSection input[type='range'] { 
-                -webkit-appearance: none;
-                width: 100%;
-                background-color: transparent;
-                height: .4rem;
-                border-radius: .2rem;
-                border: 1px solid #8E8E85;
-                margin: 1em 0 1.5em;
+            #list .addTaskSection  p.pomodoros {
+                text-align: justify;
+                height: 2em;
             }
-            #list .addTaskSection input[type='range']::-webkit-slider-thumb { 
+                #list .addTaskSection p.pomodoros:after {
+                    content: "";
+                    display: inline-block;
+                    width: 100%;
+                    height: 0px;
+                    line-height: 0px;
+                    margin: 0;
+                }
+            #list .addTaskSection  input.radio {
+                appearance: none;
                 -webkit-appearance: none;
                 width: 2em;
-                height: 2em; 
-                background-color: #C65944;
-                background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
-                background: linear-gradient(to bottom, #C65944, #BC4C2E);
-                box-shadow: inset 0 .1rem 0 0 rgba(255, 255, 255, 0.25),  0 .1rem .1rem 0 rgba(0,0,0,0.25);
-                border: .1em solid #4F170A;
+                height: 2em;
+                background-color: transparent;
                 border-radius: 50%;
-                color: #E3E5CF;
-            } 
+                box-shadow: inset 0 .1rem 0 0 rgba(0, 0, 0, 0.25),  0 .1rem .1rem 0 rgba(255,255,255,0.75);
+                border: 1px solid #8E8E85;
+            }
+                #list .addTaskSection  input.radio:checked {
+                    background-color: #C65944;
+                    background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
+                    background: linear-gradient(to bottom, #C65944, #BC4C2E);
+                    box-shadow: inset 0 .1rem 0 0 rgba(255, 255, 255, 0.25),  0 .1rem .1rem 0 rgba(0,0,0,0.25);
+                    border: .1em solid #4F170A;
+                    color: #E3E5CF;
+                } 
             #list .addTaskSection button{
                 width: 100%;
             }
