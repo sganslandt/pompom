@@ -19,13 +19,12 @@ object Authentication extends Controller {
       loginForm.bindFromRequest.fold(
         errors => BadRequest(views.html.login()),
         email => Redirect(routes.Application.index()).withSession(session + ("email" -> email)
-        // TODO Direct user to where he was going when he came from
         )
       )
   }
 
   def doLogout() = Action {
-    Ok(views.html.login()).withNewSession
+    Results.Redirect(routes.Authentication.login()).withNewSession
   }
 
   /**
@@ -41,14 +40,14 @@ object Authentication extends Controller {
     /**
      * Redirect to login if the user in not authorized.
      */
-    private def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Authentication.login)
+    private def onUnauthorized(request: RequestHeader) = Results.Redirect(routes.Authentication.login())
 
     // --
 
     /**
      * Action for authenticated users.
      */
-    def AsCurrentUser(f: => String => Request[AnyContent] => Result) = Security.Authenticated(username, onUnauthorized) {
+    def AsAuthenticatedUser(f: => String => Request[AnyContent] => Result) = Security.Authenticated(username, onUnauthorized) {
       user =>
         Action(request => f(user)(request))
     }
