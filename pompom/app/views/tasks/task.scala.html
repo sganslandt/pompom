@@ -2,30 +2,30 @@
 
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<title>Task</title>
-</head>
-<body>
-<div id="@task.id" class="task @(if (task.current) "current") @(if (task.done) "done") ">
-    <h1 class="title">@task.title</h1>
-    <p class="pomsUsed">
-        Poms used: <span class="pomsUsed">@task.initialEstimate</span> of <span class="estimatedPoms">@task.initialEstimate</span>
-    </p>
-    <p class="estimatedPoms"></p>
-    <form class="description">
-        <label>description</label>
-        <textarea value="@task.description"></textarea>
-        <input type="submit" class="button" id="saveDescription @task.id" value="Save">
-    </form>
-    <div class="interruptions">
-        <p class="interruption">
-            <span class="affectedPom">3</span>, <span class="timeStamp">2012-02-11T11:11:12</span>, Interruption Note
-        </p>
-    </div>
-    <form method="post" action="/tasks/byId/@task.id/interrupt"><input type="submit" value="interrupt"></form>
-    <form method="post" action="/tasks/byId/@task.id/done"><input type="submit" value="done"></form>
-    <form method="post" action="/tasks/byId/@task.id/extendEstimate"><input type="submit" value="extendEstimate"></form>
-</div>
-</body>
+    <head>
+        <meta charset="utf-8">
+        <title>Task</title>
+    </head>
+    <body>
+        <div id="@task.id" class="task @(if (task.current) "current") @(if (task.done) "done") ">
+            <h1 class="title">@task.title</h1>
+            <p class="pomsUsed">
+                Poms used: <span class="pomsUsed">@task.initialEstimate</span> of <span class="estimatedPoms">@task.initialEstimate</span>
+            </p>
+            <p class="estimatedPoms"></p>
+            <form class="description">
+                <label>description</label>
+                <textarea value="@task.description"></textarea>
+                <input type="submit" class="button" id="saveDescription @task.id" value="Save">
+            </form>
+            <div class="interruptions">
+                <p class="interruption">
+                    <span class="affectedPom">3</span>, <span class="timeStamp">2012-02-11T11:11:12</span>, Interruption Note
+                </p>
+            </div>
+            <form method="post" action="/tasks/byId/@task.id/interrupt"><input type="submit" value="interrupt"></form>
+            <form method="post" action="/tasks/byId/@task.id/done"><input type="submit" value="done"></form>
+            <form method="post" action="/tasks/byId/@task.id/extendEstimate"><input type="submit" value="extendEstimate"></form>
+        </div>
+    </body>
 </html>
