@@ -2,15 +2,20 @@ package model
 
 import java.util.UUID
 
-case class Task(id: String, title: String, description: String, initialEstimate: Int)
+case class Task(id: String, title: String, description: String, initialEstimate: Int) {
+  var done: Boolean = false
+  var current: Boolean = false
+}
 
 object Task {
 
   type User = String
 
+  val EMPTY: List[Task] = List(Task("id", "title", "desc", 3))
+
   var tasks: Map[User, List[Task]] = Map()
 
-  def createTask(userId: User, title: String, initialEstimate: Int, description: String): String =  {
+  def createTask(userId: User, title: String, initialEstimate: Int, description: String): String = {
     val id = UUID.randomUUID().toString
     val userTasks = tasks(userId)
     val newTask: Task = new Task(id, title, description, initialEstimate)
@@ -21,12 +26,15 @@ object Task {
   }
 
   def getTask(userId: User, taskId: String): Option[Task] = {
-    val tasksForUser = tasks(userId)
-    tasksForUser.find({task => task.id == taskId})
+    val tasksForUser = tasks.get(userId).getOrElse(EMPTY)
+    tasksForUser.find({
+      task => task.id == taskId
+    })
   }
 
-  def listForUser(userId: String): List[Task] =  {
-    tasks(userId)
+  def listForUser(userId: String): Seq[Task] = {
+    tasks.get(userId).getOrElse(EMPTY)
   }
+
 
 }

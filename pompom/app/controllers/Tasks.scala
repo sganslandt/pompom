@@ -8,18 +8,51 @@ object Tasks extends Controller with Secured {
 
   // Application
 
-  def index = AsCurrentUser({ userId => Action { Ok("Application index") }})
+  def index = AsAuthenticatedUser({
+    userId => Action {
+      Ok("Application index")
+    }
+  })
 
   // API
 
-  def createTask = AsCurrentUser({ userId =>
-    Action {
-      Task.createTask("abc", "abc", 3, "abc")
-      Ok("Task created.")
-    }})
+  def createTask = AsAuthenticatedUser {
+    _ =>
+      Action {
+        Ok("Create new taks!")
+      }
+  }
 
-  def listTasks = AsCurrentUser({ userId => Action { Ok("Tasks for user: " + userId) }})
+  def doCreateTask() = AsAuthenticatedUser({
+    userId =>
+      Action {
+        Task.createTask("abc", "abc", 3, "abc")
+        Ok("Task created.")
+      }
+  })
 
-  def getTask(taskId: String) = AsCurrentUser({ userId => Action { Ok("Task {"+taskId+"} for user {"+userId+"}")}})
+  def listTasks = AsAuthenticatedUser({
+    userId =>
+      Action {
+        Ok(views.html.tasks.tasklist(Task.listForUser(userId)))
+      }
+  })
+
+  def getTask(taskId: String) = AsAuthenticatedUser({
+    userId => Action {
+      val task: Option[Task] = Task.getTask(userId, taskId)
+      task match {
+        case Some(t) => Ok(views.html.tasks.task(t))
+        case None => NotFound("No task with id {"+taskId+"} found.")
+      }
+
+    }
+  })
+
+  def done(taskId: String) = TODO
+
+  def interrupt(taskId: String) = TODO
+
+  def extendEstimate(taskId: String) = TODO
 
 }

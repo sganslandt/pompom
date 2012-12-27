@@ -1,6 +1,7 @@
-@(tasks: List[String])
+@(tasks: Seq[model.Task])
 
 <!DOCTYPE html>
+<html>
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -11,6 +12,10 @@
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     </head>
     <body>
-
+        <ul>
+        @for(t <- tasks) {
+            <li><a href="/tasks/byId/@t.id">@t.id</a></li>
+        }
+        </ul>
     </body>
 </html>
