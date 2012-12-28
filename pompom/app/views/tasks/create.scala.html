@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Task</title>
+</head>
+<body>
+    <form name="createTask" method="post" action="/tasks/create">
+        <label>
+            Title
+        <input name="title" type="text"/>
+        </label>
+        <label>
+            Estimate
+        <input name="initialEstimate" type="number"/>
+        </label>
+        <label>
+            Description
+        <input name="description" type="text"/>
+        </label>
+        <input name="createTask" type="submit" value="Create"/>
+    </form>
+</body>
+</html>

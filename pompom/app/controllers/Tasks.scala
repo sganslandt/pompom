@@ -3,38 +3,46 @@ package controllers
 import play.api.mvc.{Action, Controller}
 import controllers.Authentication.Secured
 import model.Task
+import play.api.data._
+import play.api.data.Forms._
 
 object Tasks extends Controller with Secured {
 
-  // Application
-
-  def index = AsAuthenticatedUser({
-    userId => Action {
-      Ok("Application index")
-    }
-  })
-
   // API
+
+  val createTaskForm = Form(
+    tuple(
+      "title" -> text,
+      "initialEstimate" -> number(1, 12),
+      "description" -> text
+    )
+  )
 
   def createTask = AsAuthenticatedUser {
     _ =>
       Action {
-        Ok("Create new taks!")
+        Ok(views.html.tasks.create())
       }
   }
 
-  def doCreateTask() = AsAuthenticatedUser({
+  def doCreateTask() = AsAuthenticatedUser(
     userId =>
       Action {
-        Task.createTask("abc", "abc", 3, "abc")
-        Ok("Task created.")
+        implicit request =>
+          createTaskForm.bindFromRequest.fold(
+          errors => BadRequest("There where errors"), {
+            case (title, initialEstimate, description) =>
+              val taskId = Task.createTask(userId, title, initialEstimate, description)
+              Created(taskId)
+          }
+          )
       }
-  })
+  )
 
   def listTasks = AsAuthenticatedUser({
     userId =>
       Action {
-        Ok(views.html.tasks.tasklist(Task.listForUser(userId)))
+        Ok(views.html.tasks.list(Task.listForUser(userId)))
       }
   })
 
@@ -43,7 +51,7 @@ object Tasks extends Controller with Secured {
       val task: Option[Task] = Task.getTask(userId, taskId)
       task match {
         case Some(t) => Ok(views.html.tasks.task(t))
-        case None => NotFound("No task with id {"+taskId+"} found.")
+        case None => NotFound("No task with id {" + taskId + "} found.")
       }
 
     }

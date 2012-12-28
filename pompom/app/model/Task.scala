@@ -17,7 +17,7 @@ object Task {
 
   def createTask(userId: User, title: String, initialEstimate: Int, description: String): String = {
     val id = UUID.randomUUID().toString
-    val userTasks = tasks(userId)
+    val userTasks = tasks.get(userId).getOrElse(EMPTY)
     val newTask: Task = new Task(id, title, description, initialEstimate)
     val newEntry: (User, List[Task]) = (userId, newTask :: userTasks)
     tasks = tasks + newEntry
