@@ -7,7 +7,7 @@ import play.api.data.Forms.nonEmptyText
 object Authentication extends Controller {
 
   def login = Action {
-    Ok(views.html.login())
+    Ok(views.html.auth.login())
   }
 
   val loginForm = Form(
@@ -17,7 +17,7 @@ object Authentication extends Controller {
   def doLogin() = Action {
     implicit request =>
       loginForm.bindFromRequest.fold(
-        errors => BadRequest(views.html.login()),
+        errors => BadRequest(views.html.auth.login()),
         email => Redirect(routes.Application.index()).withSession(session + ("email" -> email)
         )
       )

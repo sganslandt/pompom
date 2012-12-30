@@ -16,9 +16,12 @@ GET     /tasks/                        controllers.Tasks.listTasks
 GET     /tasks/create                  controllers.Tasks.createTask
 POST    /tasks/create                  controllers.Tasks.doCreateTask
 GET     /tasks/:id                     controllers.Tasks.getTask(id)
-POST    /tasks/:id/done                controllers.Tasks.done(id)
+POST    /tasks/:id/startPomodoro       controllers.Tasks.startPomodoro(id)
+POST    /tasks/:id/endPomodoro         controllers.Tasks.endPomodoro(id)
 POST    /tasks/:id/interrupt           controllers.Tasks.interrupt(id)
+POST    /tasks/:id/break               controllers.Tasks.break(id)
 POST    /tasks/:id/extendEstimate      controllers.Tasks.extendEstimate(id)
+POST    /tasks/:id/done                controllers.Tasks.done(id)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                controllers.Assets.at(path="/public", file)
