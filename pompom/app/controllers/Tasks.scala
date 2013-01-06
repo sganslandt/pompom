@@ -8,32 +8,23 @@ import play.api.data.Forms._
 
 object Tasks extends Controller with Secured {
 
-  // API
-
   val createTaskForm = Form(
     tuple(
-      "title" -> text,
+      "title" -> text(3),
       "initialEstimate" -> number(1, 12),
-      "description" -> text
+      "description" -> text(3)
     )
   )
 
-  def createTask = AsAuthenticatedUser {
-    _ =>
-      Action {
-        Ok(views.html.tasks.create())
-      }
-  }
-
-  def doCreateTask() = AsAuthenticatedUser(
+  def createTask() = AsAuthenticatedUser(
     userId =>
       Action {
         implicit request =>
           createTaskForm.bindFromRequest.fold(
-          errors => BadRequest("There where errors"), {
+          errors => Forbidden("Validation errors."), {
             case (title, initialEstimate, description) =>
               val taskId = Task.createTask(userId, title, initialEstimate, description)
-              Created(taskId)
+              Created(views.html.tasks.link("Created", taskId))
           }
           )
       }
@@ -48,7 +39,7 @@ object Tasks extends Controller with Secured {
 
   def getTask(taskId: String) = AsAuthenticatedUser {
     userId => Action {
-      withOptionalTask(userId, taskId, {
+      withTask(userId, taskId, {
         t => Ok(views.html.tasks.task(t))
       })
     }
@@ -56,40 +47,40 @@ object Tasks extends Controller with Secured {
 
   def startPomodoro(taskId: String) = AsAuthenticatedUser {
     userId => Action {
-      withOptionalTask(userId, taskId, {
+      withTask(userId, taskId, {
         task =>
-          task.startPomodoro()
-          Accepted("") // TODO Possibly link to task?
+            task.startPomodoro()
+            Accepted(views.html.tasks.link("Pomodoro started", task.id))
       })
     }
   }
 
   def endPomodoro(taskId: String) = AsAuthenticatedUser {
     userId => Action {
-      withOptionalTask(userId, taskId, {
+      withTask(userId, taskId, {
         task =>
-          task.endPomodoro()
-          Accepted("") // TODO Possibly link to task?
+            task.endPomodoro()
+            Accepted(views.html.tasks.link("Pomodoro ended", task.id))
       })
     }
   }
 
   val interruptForm = Form(
     single(
-      "what" -> text
+      "note" -> text(3)
     )
   )
 
   def interrupt(taskId: String) = AsAuthenticatedUser {
     userId => Action {
       implicit request =>
-        withOptionalTask(userId, taskId, {
+        withTask(userId, taskId, {
           task =>
             interruptForm.bindFromRequest.fold(
-              errors => BadRequest("Validation Error"),
+              errors => Forbidden("Validation errors."),
               value => {
-                task.interrupt(value)
-                Accepted("")
+                  task.interrupt(value)
+                  Accepted(views.html.tasks.link("Interruption recorded", task.id))
               }
             )
         })
@@ -98,10 +89,10 @@ object Tasks extends Controller with Secured {
 
   def break(taskId: String) = AsAuthenticatedUser {
     userId => Action {
-      withOptionalTask(userId, taskId, {
+      withTask(userId, taskId, {
         task =>
-          task.break()
-          Accepted("")
+            task.break()
+            Accepted(views.html.tasks.link("Pomodoro broken", task.id))
       })
     }
   }
@@ -113,34 +104,41 @@ object Tasks extends Controller with Secured {
   )
 
   def extendEstimate(taskId: String) = AsAuthenticatedUser {
-    userId => Action { implicit request =>
-      withOptionalTask(userId, taskId, {
-        task =>
-          extendEstimateForm.bindFromRequest.fold(
-            errors => BadRequest("Validation"),
-            value => {
-              task.extendEstimate(value)
-              Accepted("")
-            }
-          )
-      })
+    userId => Action {
+      implicit request =>
+        withTask(userId, taskId, {
+          task =>
+            extendEstimateForm.bindFromRequest.fold(
+              errors => Forbidden("Validation"),
+              value => {
+                task.extendEstimate(value)
+                Accepted(views.html.tasks.link("Estimate extended", task.id))
+              }
+            )
+        })
     }
   }
 
-  def done(taskId: String) = AsAuthenticatedUser {
+  def complete(taskId: String) = AsAuthenticatedUser {
     userId => Action {
-      withOptionalTask(userId, taskId, {
+      withTask(userId, taskId, {
         task =>
           task.done()
-          Accepted("")
+          Accepted(views.html.tasks.link("Task completed", task.id))
       })
     }
   }
 
-  def withOptionalTask(userId: String, taskId: String, f: Task => Result): Result = {
+  def withTask(userId: String, taskId: String, f: Task => Result): Result = {
     val task = Task.getTask(userId, taskId)
     task match {
-      case Some(t) => f(t)
+      case Some(t) => {
+        try {
+          f(t)
+        } catch {
+          case e: IllegalStateException => Forbidden(views.html.tasks.link("Illegal state", t.id))
+        }
+      }
       case None => NotFound("404 - Task not found")
     }
   }

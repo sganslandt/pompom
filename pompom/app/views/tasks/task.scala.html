@@ -7,61 +7,65 @@
         <title>Task</title>
     </head>
     <body>
-        <div id="@task.id" class="task @(if(task.isDone) "done") ">
-            <h1 class="title">@task.title</h1>
-            <p class="description">
-                @task.description
-            </p>
-            <p class="pomodoros">
-                Poms used: <span class="used">@task.usedPomodoros</span>
-                of <span class="estimate">@task.estimate</span>
-            </p>
-
-            <div class="interruptions">
-            @for(i <- task.interruptions) {
-                <p class="interruption">
-                    <span class="timeStamp">@i.when</span>, <span class="note">@i.what</span>
+        <main role="main">
+            <div id="@task.id" class="task @(if(task.isDone) "complete") ">
+                <h1 class="title">@task.title</h1>
+                <p class="description">
+                    @task.description
                 </p>
-            }
+                <p class="pomodoros">
+                    Poms used: <span class="used">@task.usedPomodoros</span>
+                    of <span class="estimate">@task.estimate</span>
+                </p>
+
+                <div class="interruptions">
+                @for(i <- task.interruptions) {
+                    <p class="interruption">
+                        <span class="timeStamp">@i.when</span>, <span class="note">@i.what</span>
+                    </p>
+                }
+                </div>
+
+                <a href="/tasks/@task.id" class="this">Get state</a>
+
+                @if(!task.inPomodoro && !task.isDone) {
+                    <h2>Start pomodoro</h2>
+                    <form class="startPomodoro" method="post" action="/tasks/@task.id/startPomodoro">
+                        <input type="submit" value="Start pomodoro"/>
+                    </form>
+
+                    <h2>Extend estimate</h2>
+                    <form class="extendEstimate" method="post" action="/tasks/@task.id/extendEstimate">
+                        <label>
+                            Additional pomodoros <input type="number"/>
+                        </label> <input type="submit" value="Extend estimate">
+                    </form>
+
+                    <h2>Done</h2>
+                    <form class="complete" method="post" action="/tasks/@task.id/complete">
+                        <input type="submit" value="Done">
+                    </form>
+                }
+                @if(task.inPomodoro) {
+                    <h2>End pomodoro</h2>
+                    <form class="endPomodoro" method="post" action="/tasks/@task.id/endPomodoro">
+                        <input type="submit" value="End pomodoro"/>
+                    </form>
+
+                    <h2>Interruption</h2>
+                    <form class="interrupt" method="post" action="/tasks/@task.id/interrupt">
+                        <label>
+                            Reason <input class="note required" type="text" name="note">
+                        </label>
+                        <input type="submit" value="Interrupt"/>
+                    </form>
+
+                    <h2>Break pomodoro</h2>
+                    <form class="break" method="post" action="/tasks/@task.id/break">
+                        <input type="submit" value="Break">
+                    </form>
+                }
             </div>
-
-            @if(!task.inPomodoro && !task.isDone) {
-                <h2>Start pomodoro</h2>
-                <form method="post" action="/tasks/@task.id/startPomodoro">
-                    <input type="submit" value="Start pomodoro"/>
-                </form>
-
-                <h2>Extend estimate</h2>
-                <form method="post" action="/tasks/@task.id/extendEstimate">
-                    <label>
-                        Additional pomodoros <input type="number"/>
-                    </label> <input type="submit" value="Extend estimate">
-                </form>
-
-                <h2>Done</h2>
-                <form method="post" action="/tasks/@task.id/done">
-                    <input type="submit" value="Done">
-                </form>
-            }
-            @if(task.inPomodoro) {
-                <h2>End pomodoro</h2>
-                <form method="post" action="/tasks/@task.id/endPomodoro">
-                    <input type="submit" value="End pomodoro"/>
-                </form>
-
-                <h2>Interruption</h2>
-                <form method="post" action="/tasks/@task.id/interrupt">
-                    <label>
-                        Reason <input type="text" name="what">
-                    </label>
-                    <input type="submit" value="Interrupt"/>
-                </form>
-
-                <h2>Break pomodoro</h2>
-                <form method="post" action="/tasks/@task.id/break">
-                    <input type="submit" value="Break">
-                </form>
-            }
-        </div>
+        </main>
     </body>
 </html>

@@ -38,8 +38,8 @@ class Task(val id: String, val title: String, val description: String, val initi
     pomodoros.head.end()
   }
 
-  def interrupt(what: String) {
-    pomodoros.head.interrupt(what)
+  def interrupt(note: String) {
+    pomodoros.head.interrupt(note)
   }
 
   def break() {
@@ -74,10 +74,10 @@ class Task(val id: String, val title: String, val description: String, val initi
       isActive = false
     }
 
-    def interrupt(what: String) {
+    def interrupt(note: String) {
       if (!isActive)
         throw new IllegalStateException()
-      interruptions ::= Interruption(what, DateTime.now)
+      interruptions ::= Interruption(note, DateTime.now)
     }
 
     def break() {

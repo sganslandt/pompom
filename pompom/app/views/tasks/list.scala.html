@@ -7,10 +7,32 @@
         <title>Tasklist</title>
     </head>
     <body>
-        <ul>
-        @for(t <- tasks) {
-            <li><a href="/tasks/@t.id">@t.id</a></li>
-        }
-        </ul>
+        <h1>Tasks</h1>
+
+        <main role="main">
+            <h2>Task list</h2>
+            <ul class="tasks">
+            @for(t <- tasks) {
+                <li><a id="@t.id" href="/tasks/@t.id">@t.title</a></li>
+            }
+            </ul>
+
+            <h2>New task</h2>
+            <form class="createTask" name="createTask" method="post" action="/tasks/">
+                <label>
+                    Title
+                <input clas="title required" name="title" type="text"/>
+                </label>
+                <label>
+                    Estimate
+                <input class="initialEstimate required" name="initialEstimate" type="number"/>
+                </label>
+                <label>
+                    Description
+                <input class="description" name="description" type="text"/>
+                </label>
+            <input name="createTask" type="submit" value="Create"/>
+            </form>
+        </main>
     </body>
 </html>
