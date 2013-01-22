@@ -19,19 +19,16 @@
 
             <h2>New task</h2>
             <form class="createTask" name="createTask" method="post" action="/tasks/">
-                <label>
-                    Title
+                <label>Title</label>
                 <input clas="title required" name="title" type="text"/>
-                </label>
-                <label>
-                    Estimate
+                
+                <label>Estimate</label>
                 <input class="initialEstimate required" name="initialEstimate" type="number"/>
-                </label>
-                <label>
-                    Description
+                
+                <label>Description</label>
                 <input class="description" name="description" type="text"/>
-                </label>
-            <input name="createTask" type="submit" value="Create"/>
+                
+                <input name="createTask" type="submit" value="Create"/>
             </form>
         </main>
     </body>

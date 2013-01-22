@@ -1,0 +1,829 @@
+/*
+ * HTML5 Boilerplate
+ *
+ * What follows is the result of much research on cross-browser styling.
+ * Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal,
+ * Kroc Camen, and the H5BP dev community and team.
+ */
+
+/* ==========================================================================
+   Base styles: opinionated defaults
+   ========================================================================== */
+
+html,
+button,
+input,
+select,
+textarea {
+    color: #222;
+}
+
+body {
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+/*
+ * Remove text-shadow in selection highlight: h5bp.com/i
+ * These selection declarations have to be separate.
+ * Customize the background color to match your design.
+ */
+
+::-moz-selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+/*
+ * A better looking default horizontal rule
+ */
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+/*
+ * Remove the gap between images and the bottom of their containers: h5bp.com/i/440
+ */
+
+img {
+    vertical-align: middle;
+}
+
+/*
+ * Remove default fieldset styles.
+ */
+
+fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/*
+ * Allow only vertical resizing of textareas.
+ */
+
+textarea {
+    resize: vertical;
+}
+
+/* ==========================================================================
+   Chrome Frame prompt
+   ========================================================================== */
+
+.chromeframe {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+* {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+html {
+    font-size: .625em
+}
+html, body {
+    height: 100%;
+}
+body {
+    overflow: hidden;
+    background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
+    background: linear-gradient(to bottom, #C65944, #BC4C2E);
+    color: #4F170A;
+    border: 1px solid #4F170A;
+}
+h1{
+    font-size: 2.4rem;
+    margin: 0 0 .5em;
+}
+h2{
+    font-size: 2.4rem;
+    margin: 0 0 .5em;
+}
+.center{
+    text-align: center;
+}
+.red{
+    color: #BC4C2E;
+}
+.redGradient{
+    background-color: #C65944;
+    background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
+    background: linear-gradient(to bottom, #C65944, #BC4C2E);
+}
+.redButton{
+    font-size: 1.6rem;
+    padding: .7rem;
+    background-color: #C65944;
+    background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
+    background: linear-gradient(to bottom, #C65944, #BC4C2E);
+    box-shadow: inset 0 .1rem 0 0 rgba(255, 255, 255, 0.25),  0 .1rem .1rem 0 rgba(0,0,0,0.25);
+    border: .1em solid #4F170A;
+    border-radius: .2rem;
+    color: #E3E5CF;
+}
+.greenButton{
+    font-size: 1.6rem;
+    padding: .7rem;
+    background-color: #5B7C3C;
+    background: -webkit-linear-gradient(top, #73A04B, #5B7C3C);
+    background: linear-gradient(to bottom, #73A04B, #5B7C3C);
+    box-shadow: inset 0 .1rem 0 0 rgba(255, 255, 255, 0.25),  0 .1rem .1rem 0 rgba(0,0,0,0.25);
+    border: .1em solid #2A381B;
+    border-radius: .2rem;
+    color: #E3E5CF;
+}
+.greenButton:active{
+    box-shadow: inset 0 .1rem 0 0 rgba(0, 0, 0, 0.25),  0 .1rem .1rem 0 rgba(255, 255, 255, 0.25);
+}
+menu#MainMenu {
+    position: absolute;
+    margin: 0;
+    padding: .5em 0;
+    width: 100%;
+    z-index: 9999;
+}
+    menu#MainMenu a{
+        color: #4F170A;
+        text-decoration: none;
+        font-size: 2em;
+        display: inline-block;
+        width: 24%;
+        text-align: center;
+        cursor: pointer;
+    }
+        menu#MainMenu a.active{
+            color: #E3E5CF;
+        }
+#Deck {
+    position: absolute;
+    top: 3.5em;
+    bottom: .5em;
+    left: .5em;
+    right: .5em;
+    overflow: hidden;
+    border: 1px solid #4F170A; 
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.25);
+}
+    #Deck .card.transitioning {
+        -webkit-transition:  -webkit-transform 0.2s ease-in;
+        -moz-transition:  -moz-transform 0.2s ease-in;
+        -o-transition:  -o-transform 0.2s ease-in;
+        transition:  transform 0.2s ease-in;
+    }
+        #Deck .posLeft{
+            -webkit-transform: translate3d(-105%,0,0);
+            -moz-transform: translate3d(-105%,0,0);
+            -ms-transform: translate3d(-105%,0,0);
+            -o-transform: translate3d(-105%,0,0);
+            transform: translate3d(-105%,0,0);
+        }
+        #Deck .posCenter{
+            -webkit-transform: translate3d(0,0,0);
+            -moz-transform: translate3d(0,0,0);
+            -ms-transform: translate3d(0,0,0);
+            -o-transform: translate3d(0,0,0);
+            transform: translate3d(0,0,0);
+        }
+        #Deck .posRight{
+            -webkit-transform: translate3d(105%,0,0);
+            -moz-transform: translate3d(105%,0,0);
+            -ms-transform: translate3d(105%,0,0);
+            -o-transform: translate3d(105%,0,0);
+            transform: translate3d(105%,0,0);
+        }
+.card {
+    position: absolute;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    background-color: #E3E5CF;
+    border-top: 1px solid rgba(0,0,0,0.25);
+    padding: 2em;
+    box-shadow: 0 0 .5rem 0 rgba(0,0,0,0.5);
+    font-size: 2rem;
+}
+    .card label{
+        float: left;
+        clear: both;
+        margin-top: 1.5rem;
+    }
+    .card input,
+    .card textarea{
+        width: 75%;
+        float: right;
+        margin-top: 1rem;
+    }
+        .card input[type="submit"]{
+            float: none;
+            clear: both;
+            width: 60%;
+            margin: 1rem 20% 0;
+        }
+    .card h2{
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.25);
+    }
+        .card h2:first-child{
+            border-top: 0;
+        }
+#timer {
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    background-color: transparent;
+    padding: 0;
+    z-index: 10;
+}
+    #timer .top {
+        position: relative;
+        height: 50%;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.5);
+    }
+        #timer .top #currentTaskTitle{
+            margin: 0;
+            padding-top: 3rem;
+            text-align: center;
+            color: #E3E5CF;
+            font-weight: normal;
+        }
+        #timer .top .timegradeholder{
+            position: absolute;
+            bottom: .2rem;
+            left: 50%;
+            margin-left: -0.1rem;
+        }
+            #timer .top .timegradeholder .numbers{
+                margin-left: -1.4rem;
+            }
+                #timer .top .timegradeholder .numbers span{
+                    color: #E3E5CF;
+                    display: inline-block;
+                    width: 3rem;
+                    text-align: center;
+                    margin-right: 2rem;
+                }
+            #timer .top .timegradeholder img{
+                width: 65rem;
+                height: auto;
+                margin-right: 3rem;
+            }
+    #timer .bottom {
+        position: relative;
+        height: 50%;
+        border-top: 1px solid rgba(255, 255, 255, 0.25);
+    }
+        #timer .bottom .arrowholder{
+            padding: .1rem 0 0;
+            width: 100%;
+            text-align: center;
+        }
+        #timer .bottom .tasktracker{
+            position: absolute;
+            width: 100%;
+            bottom: 1rem;
+            text-align: center;
+        }
+#tasksCard {
+}
+    #tasksCard ul.tasks{
+        list-style: none;
+        padding: 0;
+        margin: 0 0 0 2rem;
+        max-width: 100%;
+    }
+        #tasksCard ul.tasks li{
+            margin: .25rem 0;
+        }
+            #tasksCard ul.tasks li a{
+                color: #4F170A;
+                text-decoration: none;
+                cursor: pointer;
+            }
+            #tasksCard .list-checkbox {
+                vertical-align: baseline;
+                -webkit-appearance: none;
+                background-color: #E3E5CF;
+                border: 1px solid #4F170A;
+                box-shadow: inset .1rem .1rem 0 0 rgba(0, 0, 0, 0.25), 0 .1rem 0 0 rgba(255, 255, 255, 0.75);
+                padding: .7rem;
+                display: inline-block;
+                position: relative;
+            }
+            #tasksCard .list-checkbox:checked {
+                background-color: #000;
+            }
+            #tasksCard ul.tasks label{
+                font-size: 2rem;
+            }
+            #tasksCard ul.tasks .title{
+                margin: 0 .5rem 0 0;
+            }
+                #tasksCard ul.tasks li.done .title{
+                    text-decoration: line-through;
+                }
+            #tasksCard ul.tasks .pomMarker{
+                float: right;
+                font-size: .5rem;
+                margin: .4rem .2rem 0 0;
+            }
+            #tasksCard ul.tasks li .description{
+                height: 0;
+                overflow: hidden;
+            }
+                #tasksCard ul.tasks li.active .description{
+                    height: auto;
+                    overflow: visible;
+                }
+            #tasksCard ul.tasks .sortable-dragging{
+
+            }
+            #tasksCard ul.tasks .sortable-placeholder{
+                height: 2.8rem;
+                border: 1px solid #B6B7A7;
+                box-shadow: inset 0 .1rem 0 0 rgba(0, 0, 0, 0.15), 0 .1rem 0 0 rgba(255, 255, 255, 0.75);
+                border-radius: .2em;
+                width: 100%;
+            }
+
+            #tasksCard input,
+            #tasksCard textarea{
+                width: 75%;
+                padding: .7rem;
+                margin-bottom: .5rem;
+                background: rgba(255, 255, 255, 0.5);
+                border-radius: .2rem;
+                border: 1px solid #8E8E85;
+                box-shadow: inset 0 .1rem 0 0 rgba(0, 0, 0, 0.15), 0 .1rem 0 0 rgba(255, 255, 255, 0.75);
+            }
+            #tasksCard input[type="submit"]{
+                width: 100%;
+                padding: .7rem;
+                margin: 1rem 0;
+                background-color: #5B7C3C;
+                background: -webkit-linear-gradient(top, #73A04B, #5B7C3C);
+                background: linear-gradient(to bottom, #73A04B, #5B7C3C);
+                box-shadow: inset 0 .1rem 0 0 rgba(255, 255, 255, 0.25),  0 .1rem .1rem 0 rgba(0,0,0,0.25);
+                border: .1rem solid #2A381B;
+                border-radius: .2rem;
+                color: #E3E5CF;
+            }
+            .greenButton{
+                font-size: 1.6rem;
+                padding: .7rem;
+                background-color: #5B7C3C;
+                background: -webkit-linear-gradient(top, #73A04B, #5B7C3C);
+                background: linear-gradient(to bottom, #73A04B, #5B7C3C);
+                box-shadow: inset 0 .1rem 0 0 rgba(255, 255, 255, 0.25),  0 .1rem .1rem 0 rgba(0,0,0,0.25);
+                border: .1em solid #2A381B;
+                border-radius: .2rem;
+                color: #E3E5CF;
+            }
+            .greenButton:active{
+                box-shadow: inset 0 .1rem 0 0 rgba(0, 0, 0, 0.25),  0 .1rem .1rem 0 rgba(255, 255, 255, 0.25);
+            }
+            #tasksCard .addTaskSection  p.pomodoros {
+                text-align: justify;
+                height: 2em;
+            }
+                #tasksCard .addTaskSection p.pomodoros:after {
+                    content: "";
+                    display: inline-block;
+                    width: 100%;
+                    height: 0px;
+                    line-height: 0px;
+                    margin: 0;
+                }
+            #tasksCard .addTaskSection  input.radio {
+                appearance: none;
+                -webkit-appearance: none;
+                width: 2em;
+                height: 2em;
+                background-color: transparent;
+                border-radius: 50%;
+                box-shadow: inset 0 .1rem 0 0 rgba(0, 0, 0, 0.25),  0 .1rem .1rem 0 rgba(255,255,255,0.75);
+                border: 1px solid #8E8E85;
+            }
+                #tasksCard .addTaskSection  input.radio:checked {
+                    background-color: #C65944;
+                    background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
+                    background: linear-gradient(to bottom, #C65944, #BC4C2E);
+                    box-shadow: inset 0 .1rem 0 0 rgba(255, 255, 255, 0.25),  0 .1rem .1rem 0 rgba(0,0,0,0.25);
+                    border: .1em solid #4F170A;
+                    color: #E3E5CF;
+                } 
+            #tasksCard .addTaskSection button{
+                width: 100%;
+            }
+#stats {
+    
+}
+    #stats table.weekstats{
+        text-align: center;
+        position: relative;
+        width: 100%;
+        margin-bottom: 2em;
+    }
+        #stats table.weekstats th{
+            vertical-align: bottom;
+            text-align: left;
+        }
+        #stats table.weekstats tr.counters{
+            vertical-align: bottom;
+            height: 17em;
+            background: transparent url("../images/diagramBg.png") bottom left repeat;
+            border-bottom: 1px solid #BC4C2E;
+        }
+            #stats table.weekstats td.counter.count1{
+                padding-bottom: 1em;
+            }
+            #stats table.weekstats td.counter.count2{
+                padding-bottom: 3em;
+            }
+            #stats table.weekstats td.counter.count3{
+                padding-bottom: 5em;
+            }
+            #stats table.weekstats td.counter.count4{
+                padding-bottom: 7em;
+            }
+            #stats table.weekstats td.counter.count5{
+                padding-bottom: 9em;
+            }
+            #stats table.weekstats td.counter.count6{
+                padding-bottom: 11em;
+            }
+            #stats table.weekstats td.counter.count7{
+                padding-bottom: 13em;
+            }
+            #stats table.weekstats td.counter.count8{
+                padding-bottom: 15em;
+            }
+                #stats table.weekstats td.counter span.pomMarker{
+                    background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
+                    background: linear-gradient(to bottom, #C65944, #BC4C2E);
+                    box-shadow: 0 .1em 0 0 rgba(0, 0, 0, 0.5), inset 0 .2em 0 0 rgba(255, 255, 255, 0.25);
+                }
+        #stats table.weekstats tr.days{
+            font-size: 2em;
+            color: #8E8E85;
+        }
+#options {
+    
+}
+    #options ul{
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 2em;
+    }
+        #options ul.times li{
+            clear: right;
+            margin-bottom: 1em;
+        }
+            #options ul.times span.ticker{
+                float: right;
+            }
+            #options ul.times span.ticker .tickertime{
+                display: inline-block;
+                width: 3.2em;
+                text-align: center;
+            }
+            #options ul.times span.ticker button{
+                line-height: 1em;
+                width: 2.4rem;
+                padding: .1rem 0;
+                border: 1px solid #4F170A;
+                box-shadow: inset 0 .1rem 0 0 #d87264;
+                color: #E3E5CF;
+            }
+            #options ul.times span.ticker button.sub{
+                padding: 0 0 .2rem 0;
+            }
+
+#popups{
+    position: absolute;
+    padding: 4em;
+    width: 100%;
+    height: 80%;
+    z-index: 999999;
+    -webkit-transition:  -webkit-transform 0.2s ease-in;
+    -moz-transition:  -moz-transform 0.2s ease-in;
+    -o-transition:  -o-transform 0.2s ease-in;
+    transition:  transform 0.2s ease-in;
+
+    -webkit-transform: translate3d(0,-100%,0);
+    -moz-transform: translate3d(0,-100%,0);
+    -ms-transform: translate3d(0,-100%,0);
+    -o-transform: translate3d(0,-100%,0);
+    transform: translate3d(0,-100%,0);
+}
+#popups.active{
+    display: inherit;
+    -webkit-transform: translate3d(0,0,0);
+    -moz-transform: translate3d(0,0,0);
+    -ms-transform: translate3d(0,0,0);
+    -o-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+}
+#popups .popup{
+    display: none;
+    box-shadow: 0 .2em 0.4em 0 rgba(0,0,0,0.5);
+    background-color: #E3E5CF;
+    border-radius: .5em;
+    padding: 1em;
+    width: 100%;
+    height: 100%;
+    max-width: 40em;
+    margin: 0 auto;
+}
+#popups .popup.active{
+    display: inherit;
+}
+#popups .popup button.closePopup {
+    float: right;
+    width: 1.6em;
+    padding: .1rem 0 0;
+    border: 1px solid #4F170A;
+    box-shadow: inset 0 .1rem 0 0 #d87264;
+    color: #E3E5CF;
+}
+#popups .popup ul{
+    padding: 0;
+    margin: 0;
+}
+    #popups .popup li{
+        list-style: none;
+    }
+        #popups .popup h3{
+            margin: 0;
+        }
+        #popups .popup textarea{
+            width: 100%;
+            font-size: 1.6rem;
+            background: none;
+            border: 1px solid #4F170A;
+            box-shadow: inset 0 0.1rem 0 0 #b6b7a7, 0 0.1rem 0 0 #F2F2E9;
+        }
+/* ==========================================================================
+   Login Page
+   ========================================================================== */
+.login h1{
+    font-size: 3em;
+    text-align: center;
+    margin: 2.5em 0 1.5em;
+    text-shadow: 0 .1rem .1rem rgba(0,0,0,0.25);
+}
+form#loginform {
+    width: 30em;
+    max-width: 100%;
+    margin: 0 auto;
+}
+    form#loginform input{
+        font-size: 1.6rem;
+        width: 100%;
+        margin-bottom: 1em;
+        -webkit-appearance: none;
+        padding: .7rem;
+        border-radius: .2rem;
+    }
+    form#loginform input[type="text"],
+    form#loginform input[type="email"],
+    form#loginform input[type="password"]{
+        background-color: #E3E5CF;
+        border: .1em solid #4F170A;
+        box-shadow: inset .1rem .1rem 0 0 #B6B7A7,  0 .1rem 0 0 #D87264;
+    }
+        form#loginform input#submit{
+
+        }
+
+
+
+/* ==========================================================================
+   Pom markers
+   ========================================================================== */
+.pomMarker{
+    vertical-align: middle;
+    color: #E3E5CF;
+    text-align: center;
+    display: inline-block;
+    width: 2em;
+    height: 2em;
+    margin: 0 .75em;
+    padding: .2em 0;
+    border-radius: 50%;
+    border: 1px solid #4F170A;
+    background-color: #7F1C17;
+    box-shadow: 0 .1em 0 0 rgba(255, 255, 255, 0.25), inset 0 .2em 0 0 rgba(0, 0, 0, 0.5);
+}
+.pomMarker.done{
+    background-color: #BC4C2E;
+    background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
+    background: linear-gradient(to bottom, #C65944, #BC4C2E);
+    box-shadow: 0 .1em 0 0 rgba(0, 0, 0, 0.5), inset 0 .2em 0 0 rgba(255, 255, 255, 0.25);
+}
+/* ==========================================================================
+   Helper classes
+   ========================================================================== */
+
+/*
+ * Image replacement
+ */
+
+.ir {
+    background-color: transparent;
+    border: 0;
+    overflow: hidden;
+    /* IE 6/7 fallback */
+    *text-indent: -9999px;
+}
+
+.ir:before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 100%;
+}
+
+/*
+ * Hide from both screenreaders and browsers: h5bp.com/u
+ */
+
+.hidden {
+    display: none !important;
+    visibility: hidden;
+}
+
+/*
+ * Hide only visually, but have it available for screenreaders: h5bp.com/v
+ */
+
+.visuallyhidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+/*
+ * Extends the .visuallyhidden class to allow the element to be focusable
+ * when navigated to via the keyboard: h5bp.com/p
+ */
+
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    width: auto;
+}
+
+/*
+ * Hide visually and from screenreaders, but maintain layout
+ */
+
+.invisible {
+    visibility: hidden;
+}
+
+/*
+ * Clearfix: contain floats
+ *
+ * For modern browsers
+ * 1. The space content is one way to avoid an Opera bug when the
+ *    `contenteditable` attribute is included anywhere else in the document.
+ *    Otherwise it causes space to appear at the top and bottom of elements
+ *    that receive the `clearfix` class.
+ * 2. The use of `table` rather than `block` is only necessary if using
+ *    `:before` to contain the top-margins of child elements.
+ */
+
+.clearfix:before,
+.clearfix:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+/*
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+
+.clearfix {
+    *zoom: 1;
+}
+
+/* ==========================================================================
+   EXAMPLE Media Queries for Responsive Design.
+   Theses examples override the primary ('mobile first') styles.
+   Modify as content requires.
+   ========================================================================== */
+
+@media only screen and (min-width: 35em) {
+    /* Style adjustments for viewports that meet the condition */
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5),
+       only screen and (min-resolution: 144dpi) {
+    /* Style adjustments for high resolution devices */
+}
+
+/* ==========================================================================
+   Print styles.
+   Inlined to avoid required HTTP connection: h5bp.com/r
+   ========================================================================== */
+
+@media print {
+    * {
+        background: transparent !important;
+        color: #000 !important; /* Black prints faster: h5bp.com/s */
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    /*
+     * Don't show links for images, or javascript/internal links
+     */
+
+    .ir a:after,
+    a[href^="javascript:"]:after,
+    a[href^="#"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group; /* h5bp.com/t */
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    @page {
+        margin: 0.5cm;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}

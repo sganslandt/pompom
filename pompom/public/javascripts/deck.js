@@ -1,20 +1,20 @@
 var currentIndex = 0;
 var transitions = 0;
 
-$(document).ready(function() {
+function buildDeck () {
 	stackTheDeck();
 	flipToIndex(currentIndex);
 	$("body").keydown(function(e) {
 		keyListener(e);
 	});
-	$("#navigation a").click(function(e) {
+	$("#MainMenu a").click(function(e) {
 		flipToIndex($(this).index());
 	});
-});
+}
 
 function stackTheDeck () {
-	totalNumber = $('#cards .card').length;
-	$('#cards .card').each(function(index) {
+	totalNumber = $('#Deck .card').length;
+	$('#Deck .card').each(function(index) {
 	    $(this).css('z-index', (totalNumber - index));
 	});
 }
@@ -38,12 +38,12 @@ function flipRight() {
 	}
 }
 function flipToIndex(targetIndex){
-	$currentCard = $('#cards .card').eq(currentIndex);
-	$targetCard = $('#cards .card').eq(targetIndex);
+	$currentCard = $('#Deck .card').eq(currentIndex);
+	$targetCard = $('#Deck .card').eq(targetIndex);
 
-	$('#cards .card').removeClass('posLeft posRight');
-	$('#cards .card:gt('+targetIndex+')').removeClass('posLeft posCenter posRight').addClass('posRight');
-	$('#cards .card:lt('+targetIndex+')').removeClass('posLeft posCenter posRight').addClass('posLeft');
+	$('#Deck .card').removeClass('posLeft posRight');
+	$('#Deck .card:gt('+targetIndex+')').removeClass('posLeft posCenter posRight').addClass('posRight');
+	$('#Deck .card:lt('+targetIndex+')').removeClass('posLeft posCenter posRight').addClass('posLeft');
 	$currentCard.removeClass('posLeft posRight').addClass('posCenter');
 
 	if (targetIndex > currentIndex) {

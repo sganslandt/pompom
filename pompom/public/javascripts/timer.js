@@ -36,7 +36,7 @@ function checkAndRestartPomodoroTimer () {
 }
 function updateTimeGrade (elapsedTime) {
 	var margin = ((duration-elapsedTime)*0.01666666666666667)+0.1;
-	$('.timegradeholder').css('margin-left', '-'+margin+'em');
+	$('.timegradeholder').css('margin-left', '-'+margin+'rem');
 }
 function stopTimer () {
 	clearTimeout(pomodoroTimer);

@@ -19,7 +19,7 @@ textarea {
 }
 
 body {
-    font-size: 1em;
+    font-size: 2rem;
     line-height: 1.4;
 }
 
@@ -109,10 +109,15 @@ body {
     background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
     background: linear-gradient(to bottom, #C65944, #BC4C2E);
     color: #4F170A;
+    padding: 1rem;
     border: 1px solid #4F170A;
 }
+h1{
+    font-size: 2rem;
+    margin: 0 0 .5em;
+}
 h2{
-    font-size: 2em;
+    font-size: 2.4rem;
     margin: 0 0 .5em;
 }
 .center{
@@ -151,441 +156,33 @@ h2{
 .greenButton:active{
     box-shadow: inset 0 .1rem 0 0 rgba(0, 0, 0, 0.25),  0 .1rem .1rem 0 rgba(255, 255, 255, 0.25);
 }
-menu {
-    position: absolute;
-    margin: 0;
+nav#MainMenu {
+    margin: 0 auto;
     padding: .5em 0;
-    width: 100%;
-    z-index: 9999;
+    width: 50rem;
 }
-    menu a{
-        font-size: 2em;
+    nav#MainMenu a{
+        color: #4F170A;
+        text-decoration: none;
+        font-size: 2rem;
         display: inline-block;
         width: 24%;
         text-align: center;
         cursor: pointer;
     }
-        menu a.active{
+        nav#MainMenu a.active{
             color: #E3E5CF;
         }
-#cards {
-    position: absolute;
-    top: 3.5em;
-    bottom: .5em;
-    left: .5em;
-    right: .5em;
-    overflow: hidden;
-    border: 1px solid #4F170A; 
-    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.25);
-}
-    #cards .card.transitioning {
-        -webkit-transition:  -webkit-transform 0.2s ease-in;
-        -moz-transition:  -moz-transform 0.2s ease-in;
-        -o-transition:  -o-transform 0.2s ease-in;
-        transition:  transform 0.2s ease-in;
-    }
-        #cards .posLeft{
-            -webkit-transform: translate3d(-105%,0,0);
-            -moz-transform: translate3d(-105%,0,0);
-            -ms-transform: translate3d(-105%,0,0);
-            -o-transform: translate3d(-105%,0,0);
-            transform: translate3d(-105%,0,0);
-        }
-        #cards .posCenter{
-            -webkit-transform: translate3d(0,0,0);
-            -moz-transform: translate3d(0,0,0);
-            -ms-transform: translate3d(0,0,0);
-            -o-transform: translate3d(0,0,0);
-            transform: translate3d(0,0,0);
-        }
-        #cards .posRight{
-            -webkit-transform: translate3d(105%,0,0);
-            -moz-transform: translate3d(105%,0,0);
-            -ms-transform: translate3d(105%,0,0);
-            -o-transform: translate3d(105%,0,0);
-            transform: translate3d(105%,0,0);
-        }
-.card {
-    position: absolute;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-    background-color: #E3E5CF;
-    border-top: 1px solid rgba(0,0,0,0.25);
-    padding: 2em;
-    box-shadow: 0 0 .5rem 0 rgba(0,0,0,0.5);
-}
-#timer {
-    border-top: 1px solid rgba(255, 255, 255, 0.25);
-    background-color: transparent;
-    padding: 0;
-    z-index: 10;
-}
-    #timer .top {
-        position: relative;
-        height: 50%;
-        border-bottom: 2px solid rgba(0, 0, 0, 0.5);
-    }
-        #timer .top #currentTaskTitle{
-            margin: 0;
-            padding-top: 1em;
-            text-align: center;
-            color: #E3E5CF;
-            font-weight: normal;
-            font-size: 2em;
-        }
-        #timer .top .timegradeholder{
-            position: absolute;
-            bottom: .2em;
-            left: 50%;
-            margin-left: -0.1em;
-        }
-            #timer .top .timegradeholder .numbers{
-                margin-left: -1.4em;
-            }
-                #timer .top .timegradeholder .numbers span{
-                    font-size: 2em;
-                    color: #E3E5CF;
-                    display: inline-block;
-                    width: 1.5em;
-                    text-align: center;
-                    margin-right: 1em;
-                }
-            #timer .top .timegradeholder img{
-                width: 65em;
-                height: auto;
-                margin-right: 3em;
-            }
-    #timer .bottom {
-        position: relative;
-        height: 50%;
-        border-top: 1px solid rgba(255, 255, 255, 0.25);
-    }
-        #timer .bottom .arrowholder{
-            padding: .1em 0 0;
-            width: 100%;
-            text-align: center;
-        }
-        #timer .bottom .tasktracker{
-            position: absolute;
-            width: 100%;
-            bottom: 1em;
-            text-align: center;
-        }
-#list {
-}
-    #list ul.tasks{
-        list-style: none;
-        padding: 0;
-        margin: 0 auto;
-        width: 50rem;
-        max-width: 100%;
-    }
-        #list ul.tasks li{
-            margin: .25rem 0;
-        }
-            #list .list-checkbox {
-                vertical-align: baseline;
-                -webkit-appearance: none;
-                background-color: #E3E5CF;
-                border: 1px solid #4F170A;
-                box-shadow: inset .1rem .1rem 0 0 rgba(0, 0, 0, 0.25), 0 .1rem 0 0 rgba(255, 255, 255, 0.75);
-                padding: .7rem;
-                display: inline-block;
-                position: relative;
-            }
-            #list .list-checkbox:checked {
-                background-color: #000;
-            }
-            #list ul.tasks label{
-                font-size: 2em;
-            }
-            #list ul.tasks .title{
-                margin: 0 .5em 0 0;
-            }
-                #list ul.tasks li.done .title{
-                    text-decoration: line-through;
-                }
-            #list ul.tasks .pomMarker{
-                float: right;
-                font-size: .5em;
-                margin: .4em .2em 0 0;
-            }
-            #list ul.tasks li .description{
-                height: 0;
-                overflow: hidden;
-            }
-                #list ul.tasks li.active .description{
-                    height: auto;
-                    overflow: visible;
-                }
-            #list ul.tasks .sortable-dragging{
-
-            }
-            #list ul.tasks .sortable-placeholder{
-                height: 2.8rem;
-                border: 1px solid #B6B7A7;
-                box-shadow: inset 0 .1rem 0 0 rgba(0, 0, 0, 0.15), 0 .1rem 0 0 rgba(255, 255, 255, 0.75);
-                border-radius: .2em;
-                width: 100%;
-            }
-            #list .addTaskSection{
-                margin: 2em auto 0;
-                width: 50rem;
-                max-width: 100%;
-                text-align: justify;
-            }
-            #list .addTaskSection input[type='text'],
-            #list .addTaskSection textarea{
-                width: 100%;
-                padding: .7rem;
-                margin-bottom: .5rem;
-                font-size: 1.6em;
-                background: transparent;
-                border-radius: .2rem;
-                border: 1px solid #8E8E85;
-                box-shadow: inset 0 .1rem 0 0 rgba(0, 0, 0, 0.15), 0 .1rem 0 0 rgba(255, 255, 255, 0.75);
-            }
-            #list .addTaskSection  p.pomodoros {
-                text-align: justify;
-                height: 2em;
-            }
-                #list .addTaskSection p.pomodoros:after {
-                    content: "";
-                    display: inline-block;
-                    width: 100%;
-                    height: 0px;
-                    line-height: 0px;
-                    margin: 0;
-                }
-            #list .addTaskSection  input.radio {
-                appearance: none;
-                -webkit-appearance: none;
-                width: 2em;
-                height: 2em;
-                background-color: transparent;
-                border-radius: 50%;
-                box-shadow: inset 0 .1rem 0 0 rgba(0, 0, 0, 0.25),  0 .1rem .1rem 0 rgba(255,255,255,0.75);
-                border: 1px solid #8E8E85;
-            }
-                #list .addTaskSection  input.radio:checked {
-                    background-color: #C65944;
-                    background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
-                    background: linear-gradient(to bottom, #C65944, #BC4C2E);
-                    box-shadow: inset 0 .1rem 0 0 rgba(255, 255, 255, 0.25),  0 .1rem .1rem 0 rgba(0,0,0,0.25);
-                    border: .1em solid #4F170A;
-                    color: #E3E5CF;
-                } 
-            #list .addTaskSection button{
-                width: 100%;
-            }
-#stats {
-    
-}
-    #stats table.weekstats{
-        text-align: center;
-        position: relative;
-        width: 100%;
-        margin-bottom: 2em;
-    }
-        #stats table.weekstats th{
-            vertical-align: bottom;
-            text-align: left;
-        }
-        #stats table.weekstats tr.counters{
-            vertical-align: bottom;
-            height: 17em;
-            background: transparent url("../images/diagramBg.png") bottom left repeat;
-            border-bottom: 1px solid #BC4C2E;
-        }
-            #stats table.weekstats td.counter.count1{
-                padding-bottom: 1em;
-            }
-            #stats table.weekstats td.counter.count2{
-                padding-bottom: 3em;
-            }
-            #stats table.weekstats td.counter.count3{
-                padding-bottom: 5em;
-            }
-            #stats table.weekstats td.counter.count4{
-                padding-bottom: 7em;
-            }
-            #stats table.weekstats td.counter.count5{
-                padding-bottom: 9em;
-            }
-            #stats table.weekstats td.counter.count6{
-                padding-bottom: 11em;
-            }
-            #stats table.weekstats td.counter.count7{
-                padding-bottom: 13em;
-            }
-            #stats table.weekstats td.counter.count8{
-                padding-bottom: 15em;
-            }
-                #stats table.weekstats td.counter span.pomMarker{
-                    background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
-                    background: linear-gradient(to bottom, #C65944, #BC4C2E);
-                    box-shadow: 0 .1em 0 0 rgba(0, 0, 0, 0.5), inset 0 .2em 0 0 rgba(255, 255, 255, 0.25);
-                }
-        #stats table.weekstats tr.days{
-            font-size: 2em;
-            color: #8E8E85;
-        }
-#options {
-    
-}
-    #options ul{
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        font-size: 2em;
-    }
-        #options ul.times li{
-            clear: right;
-            margin-bottom: 1em;
-        }
-            #options ul.times span.ticker{
-                float: right;
-            }
-            #options ul.times span.ticker .tickertime{
-                display: inline-block;
-                width: 3.2em;
-                text-align: center;
-            }
-            #options ul.times span.ticker button{
-                line-height: 1em;
-                width: 2.4rem;
-                padding: .1rem 0;
-                border: 1px solid #4F170A;
-                box-shadow: inset 0 .1rem 0 0 #d87264;
-                color: #E3E5CF;
-            }
-            #options ul.times span.ticker button.sub{
-                padding: 0 0 .2rem 0;
-            }
-
-#popups{
-    position: absolute;
-    padding: 4em;
-    width: 100%;
-    height: 80%;
-    z-index: 999999;
-    -webkit-transition:  -webkit-transform 0.2s ease-in;
-    -moz-transition:  -moz-transform 0.2s ease-in;
-    -o-transition:  -o-transform 0.2s ease-in;
-    transition:  transform 0.2s ease-in;
-
-    -webkit-transform: translate3d(0,-100%,0);
-    -moz-transform: translate3d(0,-100%,0);
-    -ms-transform: translate3d(0,-100%,0);
-    -o-transform: translate3d(0,-100%,0);
-    transform: translate3d(0,-100%,0);
-}
-#popups.active{
-    display: inherit;
-    -webkit-transform: translate3d(0,0,0);
-    -moz-transform: translate3d(0,0,0);
-    -ms-transform: translate3d(0,0,0);
-    -o-transform: translate3d(0,0,0);
-    transform: translate3d(0,0,0);
-}
-#popups .popup{
-    display: none;
-    box-shadow: 0 .2em 0.4em 0 rgba(0,0,0,0.5);
-    background-color: #E3E5CF;
-    border-radius: .5em;
-    padding: 1em;
-    width: 100%;
-    height: 100%;
-    max-width: 40em;
+#Main{
+    padding: 0 1rem;
     margin: 0 auto;
+    padding: .5em 0;
+    width: 50rem;
 }
-#popups .popup.active{
-    display: inherit;
-}
-#popups .popup button.closePopup {
-    float: right;
-    width: 1.6em;
-    padding: .1rem 0 0;
-    border: 1px solid #4F170A;
-    box-shadow: inset 0 .1rem 0 0 #d87264;
-    color: #E3E5CF;
-}
-#popups .popup ul{
-    padding: 0;
-    margin: 0;
-}
-    #popups .popup li{
-        list-style: none;
-    }
-        #popups .popup h3{
-            margin: 0;
-        }
-        #popups .popup textarea{
-            width: 100%;
-            font-size: 1.6em;
-            background: none;
-            border: 1px solid #4F170A;
-            box-shadow: inset 0 0.1rem 0 0 #b6b7a7, 0 0.1rem 0 0 #F2F2E9;
-        }
-/* ==========================================================================
-   Login Page
-   ========================================================================== */
-.login h1{
-    font-size: 3em;
-    text-align: center;
-    margin: 2.5em 0 1.5em;
-    text-shadow: 0 .1rem .1rem rgba(0,0,0,0.25);
-}
-form#loginform {
-    width: 30em;
-    max-width: 100%;
-    margin: 0 auto;
-}
-    form#loginform input{
-        font-size: 1.6rem;
-        width: 100%;
-        margin-bottom: 1em;
-        -webkit-appearance: none;
-        padding: .7rem;
-        border-radius: .2rem;
-    }
-    form#loginform input[type="text"],
-    form#loginform input[type="email"],
-    form#loginform input[type="password"]{
-        background-color: #E3E5CF;
-        border: .1em solid #4F170A;
-        box-shadow: inset .1rem .1rem 0 0 #B6B7A7,  0 .1rem 0 0 #D87264;
-    }
-        form#loginform input#submit{
-
-        }
 
 
 
-/* ==========================================================================
-   Pom markers
-   ========================================================================== */
-.pomMarker{
-    vertical-align: middle;
-    color: #E3E5CF;
-    text-align: center;
-    display: inline-block;
-    width: 2em;
-    height: 2em;
-    margin: 0 .75em;
-    padding: .2em 0;
-    border-radius: 50%;
-    border: 1px solid #4F170A;
-    background-color: #7F1C17;
-    box-shadow: 0 .1em 0 0 rgba(255, 255, 255, 0.25), inset 0 .2em 0 0 rgba(0, 0, 0, 0.5);
-}
-.pomMarker.done{
-    background-color: #BC4C2E;
-    background: -webkit-linear-gradient(top, #C65944, #BC4C2E);
-    background: linear-gradient(to bottom, #C65944, #BC4C2E);
-    box-shadow: 0 .1em 0 0 rgba(0, 0, 0, 0.5), inset 0 .2em 0 0 rgba(255, 255, 255, 0.25);
-}
+
 /* ==========================================================================
    Helper classes
    ========================================================================== */
