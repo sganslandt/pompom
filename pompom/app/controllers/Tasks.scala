@@ -10,9 +10,9 @@ object Tasks extends Controller with Secured {
 
   val createTaskForm = Form(
     tuple(
-      "title" -> text(3),
+      "title" -> text(1),
       "initialEstimate" -> number(1, 12),
-      "description" -> text(3)
+      "description" -> text(0)
     )
   )
 

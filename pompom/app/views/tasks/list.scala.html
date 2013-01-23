@@ -20,13 +20,13 @@
             <h2>New task</h2>
             <form class="createTask" name="createTask" method="post" action="/tasks/">
                 <label>Title</label>
-                <input clas="title required" name="title" type="text"/>
+                <input clas="title required" name="title" type="text" pattern="...+"required/>
                 
                 <label>Estimate</label>
-                <input class="initialEstimate required" name="initialEstimate" type="number"/>
+                <input class="initialEstimate required" name="initialEstimate" type="number" min="1" max="12" required/>
                 
                 <label>Description</label>
-                <input class="description" name="description" type="text"/>
+                <textarea class="description" name="description" type="text"></textarea>
                 
                 <input name="createTask" type="submit" value="Create"/>
             </form>

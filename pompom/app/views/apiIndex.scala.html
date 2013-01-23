@@ -5,10 +5,12 @@
     <title>Pompom - API</title>
 </head>
 <body>
-    <h1>Available actions:</h1>
-    <p><a id="currentUser" href="/auth/currentUser">Current user</a></p>
-    <p><a id="tasks" href="/tasks/">Tasks</a></p>
-    <p><a id="projects" href="/projects/">Projects</a></p>
-    <form method="post" action="/auth/logout"><input type="submit" value="logout"></form>
+	<main role="main">
+	    <h1>Available actions:</h1>
+	    <p><a id="currentUser" href="/auth/currentUser">Current user</a></p>
+	    <p><a id="tasks" href="/tasks/">Tasks</a></p>
+	    <p><a id="projects" href="/projects/">Projects</a></p>
+	    <form id="logout" method="post" action="/auth/logout"><input type="submit" value="logout"></form>
+	</main>
 </body>
 </html>
