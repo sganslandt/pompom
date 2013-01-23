@@ -61,7 +61,7 @@ function flipToIndex(targetIndex){
 		$targetCard.removeClass('posRight').addClass('posCenter');
 	};
 
-	$('menu#navigation a').eq(currentIndex).removeClass('active');
-	$('menu#navigation a').eq(targetIndex).addClass('active');
+	$('menu#MainMenu a').eq(currentIndex).removeClass('active');
+	$('menu#MainMenu a').eq(targetIndex).addClass('active');
 	currentIndex = targetIndex;
 }
