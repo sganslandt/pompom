@@ -1,18 +1,27 @@
 	var task = {id:'null', title:'', taskLength:'0'};
 	var currentTaskUrl = "null";
+	var appBuilt = false;
 
 	$(document).on("ajaxDone", function() {
-		$(".addTaskSection button").click(function(e) {
-			createNewTaskInList();
-		});
-		$('.tasks li').click(function(e) {
-			e.preventDefault();
-			highlightTask($(this));
-		});
+		bindTaskLinks ();
+		appBuilt = true;
+		
 	});
 	$(document).on("taskChange", function(event, taskUrl) {
 		currentTaskUrl = taskUrl;
 	});
+	$('.card').on("cardUpdated",  function(event, target, content) {
+		if (target == 'tasksCard' && appBuilt == true) {
+			bindTaskLinks ();
+		};
+	});
+
+	function bindTaskLinks () {
+		$('.tasks li').click(function(e) {
+			e.preventDefault();
+			highlightTask($(this));
+		});
+	}
 
 	function createNewTaskInList () {
 		var title = $.trim($('.addTaskSection .title').val());
