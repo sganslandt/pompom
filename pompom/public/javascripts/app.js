@@ -1,62 +1,66 @@
-  var httpRequest;
-  var APIurl = 'http://app.pompom.nu:9000/api';
-  var pomodoroTimer = 0;
-  var userLinkId = "currentUser";
-  var APICache = $('<div id="API"></div>');
+var httpRequest;
+var APIurl = 'http://app.pompom.nu:9000/api';
+var pomodoroTimer = 0;
+var userLinkId = "currentUser";
+var APICache = $('<div id="API"></div>');
+var activeRequests = 0;
+(function() {
 
 	$(document).ready(function() {
     fetchApiAndBuild ();
 	});
 
-$(document).ajaxError(function(event, request, settings) {
-  console.log( "Error requesting " + settings.url );
-  console.log(request.status + ' ' + request.statusText);
-});
+  $(document).on("ajaxDone",  function() {
+    hideSplash();
+  });
+  $(document).on("requestAjaxRequestForMain", function(event, url, target){
+    ajaxRequestForMain(url, target);
+  });
+
+  $(document).ajaxError(function(event, request, settings) {
+    activeRequests--;
+    console.log( "Error requesting " + settings.url );
+    console.log(request.status + ' ' + request.statusText);
+  });
 
   function fetchApiAndBuild () {
-
+    activeRequests++;
     $.ajax({
       url: APIurl,
       dataType: 'html',
       success: function(response) {
+        activeRequests--;
         var links = $(response).find('a');
         for (var i = 0; i < links.length; i++) {
           if ($(links[i]).attr("id") == userLinkId) {
-            createCard($(links[i]));
+            $(document).trigger("newCard", [$(links[i])]);
             $('#userId').attr('id', userLinkId + 'Link');
           }
           else {
-            createCard ($(links[i]));
+
+            $(document).trigger("newCard", [$(links[i])]);
             insertInMenu($(links[i]));
           };
         }
-        buildDeck();
+        appBuilt();
       }
     });
   }
-  function updateApiAndBuild () {
-    $.get(APIurl, function(data) {
-      var links = $(data).find('a');
-      for (var i = 0; i < links.length; i++) {
-        fillCard ($(links[i]).attr("id") + 'Card', $(links[i]).attr("href"));
-      };
-    });
+
+  function appBuilt () {
+    if (activeRequests <= 0) {
+      $(document).trigger("ajaxDone", ['appBuilt'])
+    }
+    else{
+      recheckAppBuilt = setTimeout(appBuilt, 100);
+    };
+  }
+
+  function hideSplash () {
+    $('#spalshScreen').fadeOut(500)
   }
 
 
-  function createCard (object) {
-    var cardId = $(object).attr("id") + 'Card';
-    insertBeforeIfPossible("#Deck", '<section id="' + cardId + '" class="card" data-url="' + $(object).attr("href") + '"></section>', '#' + userLinkId + 'Card');
-    fillCard (cardId, $(object).attr("href"));
-  }
-  function fillCard (cardId, url) {
-    console.log('filling ' + cardId + ' from ' + url)
-    ajaxRequestForMain (url, cardId);
-  }
-  function updateCard (target, content) {
-    console.log(target + content)
-    $('#' + target).html(content);
-  }
 
   function insertInMenu (object) {
     var newLinkId = $(object).attr("id") + 'Link';
@@ -77,15 +81,21 @@ $(document).ajaxError(function(event, request, settings) {
 
   function ajaxRequestForMain (url, target) {
     // TODO Get built in function to work
+    activeRequests++;
     $.ajax({
       url: url,
       dataType: 'html',
       success: function(response) {
+        activeRequests--;
         var tempElement = $('<div>');
         $(tempElement).html(response);
-        var stripped = $(tempElement).find('main').html();
-        //$('#' + target).html(stripped);
-        updateAPICache(target, stripped)
+        if ($(tempElement).find('.loginForm').length > 0) {
+          location.reload();
+        }
+        else{
+          var stripped = $(tempElement).find('main').html();
+          updateAPICache(target, stripped)
+        };
       },
       error: function(event, jqxhr, settings, exception) {
         errorTitle = '<h2>Oops, something went wrong</h2>'
@@ -100,43 +110,20 @@ $(document).ajaxError(function(event, request, settings) {
     */
   }
   function updateAPICache(target, response) {
-    /*if ($(APICache).find('#' + target).length > 0 && $(APICache).find('#' + target).html() == response) {
-      
+    if ($(APICache).find('#' + target).length > 0 && $(APICache).find('#' + target).html() == response) {
+      // Nothing happens
     }
-    else*/ if ($(APICache).find('#' + target).length > 0) {
+    else if ($(APICache).find('#' + target).length > 0) {
       $(APICache).find('#' + target).html(response);
-      updateCard(target, $(APICache).find('#' + target).html());
+      $('.card').trigger("cardUpdated", [target, $(APICache).find('#' + target).html()])
     }
     else{
       $(APICache).append('<div id="' + target + '">').find('#' + target).html(response);
-      updateCard(target, $(APICache).find('#' + target).html());
       if ($(APICache).find('#' + target).length <= 0) {
         $(APICache).find('#' + target).append('<p>Ooops! Empty</p>');
       }
-      if ($(APICache).find('#' + target + ' form').length > 0) {
-        bindForm($('#' + target + ' form'));
-      }
+      $('.card').trigger("cardUpdated", [target, $(APICache).find('#' + target).html()])
     };
   }
 
-function bindForm (form) {
-  $(form).submit(function(e) { 
-    e.preventDefault();
-    $.ajax({
-      url   : form.attr('action'),
-      type  : form.attr('method'),
-      data  : form.serialize(),
-      success: function(response){
-        console.log(response);
-        var target = $(form).closest(".card");
-        if ($(target).length > 0) {
-          fillCard($(target).attr('id'), $(target).data('url'));
-        }
-        else if ($(target).length <= 0) {
-          alert('no card');
-        }
-      }
-    });
-    return false;
-  });
-}
+}());

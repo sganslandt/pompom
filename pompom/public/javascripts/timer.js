@@ -3,22 +3,43 @@ var duration = 0;
 var pomodoroTimer = 0;
 var activeTask = 'A pomodoro App'
 
+$(document).on("ajaxDone",  function() {
+	setupTask(1, 'Pompom', 25);
 
-$(document).ready(function() {
-	setupTask('task');
-	
 	$(".tasktracker span").click(function(e) {
 		toggleTaskTokens($(this));
 	});
 });
-function setupTask (type) {
+$(document).on("taskChange", function(event, taskUrl) {
+	$.ajax({
+		url: taskUrl,
+		dataType: 'html',
+		success: function(response) {
+        	var tempElement = $('<div>');
+        	$(tempElement).html(response);
+        	if ($(tempElement).find('.loginForm').length > 0) {
+        		location.reload();
+        	}
+        	else{
+        		$('#currentTaskTitle').html($(tempElement).find('h1').html());
+        		setupTask (taskUrl, $(tempElement).find('h1').html(), 25)
 
-	$newTask = createNewTask(1, 'A pomodoro app', 25);
-	
-	$('#currentTaskTitle').html($newTask.prop('id')+' '+$newTask.prop('title'));
-	startTimer($newTask.prop('taskLength'));
+        	};
+      },
+		error: function(event, jqxhr, settings, exception) {
+			errorTitle = 'Could not load task';
+			$('#currentTaskTitle').html(errorTitle);
+    	}
+    });
+});
+
+function setupTask (id, title, duration) {
+	$('#currentTaskTitle').html(title);
+	$('#currentTaskTitle').wrap('<a href="' + id + '" title="goto ' + title + ' summary page">');
+	startTimer(duration);
 }
 function startTimer(durationInMinutes) {
+	stopTimer();
 	startTime = $.now();
 	duration = durationInMinutes*60;
 	pomodoroTimer = setTimeout(checkAndRestartPomodoroTimer, 100);
@@ -40,9 +61,11 @@ function updateTimeGrade (elapsedTime) {
 }
 function stopTimer () {
 	clearTimeout(pomodoroTimer);
-	document.getElementById('alarm').play();
-	console.log('ping');
+	if (startTime > 0) {
+		document.getElementById('alarm').play();
+		console.log('ping');
+	};
 }
 function toggleTaskTokens (token) {
-	token.toggleClass('done')
+	token.toggleClass('done');
 }
