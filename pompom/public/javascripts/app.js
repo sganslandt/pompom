@@ -1,5 +1,5 @@
   var httpRequest;
-  var url = 'http://app.pompom.nu:9000/api';
+  var APIurl = 'http://app.pompom.nu:9000/api';
   var pomodoroTimer = 0;
   var userLinkId = "currentUser";
   var APICache = $('<div id="API"></div>');
@@ -16,7 +16,7 @@ $(document).ajaxError(function(event, request, settings) {
   function fetchApiAndBuild () {
 
     $.ajax({
-      url: url,
+      url: APIurl,
       dataType: 'html',
       success: function(response) {
         var links = $(response).find('a');
@@ -35,7 +35,7 @@ $(document).ajaxError(function(event, request, settings) {
     });
   }
   function updateApiAndBuild () {
-    $.get(url, function(data) {
+    $.get(APIurl, function(data) {
       var links = $(data).find('a');
       for (var i = 0; i < links.length; i++) {
         fillCard ($(links[i]).attr("id") + 'Card', $(links[i]).attr("href"));
@@ -54,6 +54,7 @@ $(document).ajaxError(function(event, request, settings) {
     ajaxRequestForMain (url, cardId);
   }
   function updateCard (target, content) {
+    console.log(target + content)
     $('#' + target).html(content);
   }
 
@@ -99,10 +100,10 @@ $(document).ajaxError(function(event, request, settings) {
     */
   }
   function updateAPICache(target, response) {
-    if ($(APICache).find('#' + target).length > 0 && $(APICache).find('#' + target).html() == response) {
+    /*if ($(APICache).find('#' + target).length > 0 && $(APICache).find('#' + target).html() == response) {
       
     }
-    else if ($(APICache).find('#' + target).length > 0) {
+    else*/ if ($(APICache).find('#' + target).length > 0) {
       $(APICache).find('#' + target).html(response);
       updateCard(target, $(APICache).find('#' + target).html());
     }
@@ -124,8 +125,9 @@ function bindForm (form) {
     $.ajax({
       url   : form.attr('action'),
       type  : form.attr('method'),
-      data  : form.serialize(), // data to be submitted
+      data  : form.serialize(),
       success: function(response){
+        console.log(response);
         var target = $(form).closest(".card");
         if ($(target).length > 0) {
           fillCard($(target).attr('id'), $(target).data('url'));
