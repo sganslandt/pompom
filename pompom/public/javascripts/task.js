@@ -1,26 +1,52 @@
 	var task = {id:'null', title:'', taskLength:'0'};
-	var currentTaskUrl = "null";
+	var currentTaskUrl = "id";
 	var appBuilt = false;
 
 	$(document).on("ajaxDone", function() {
-		bindTaskLinks ();
-		appBuilt = true;
 		
 	});
 	$(document).on("taskChange", function(event, taskUrl) {
 		currentTaskUrl = taskUrl;
 	});
 	$('.card').on("cardUpdated",  function(event, target, content) {
-		if (target == 'tasksCard' && appBuilt == true) {
-			bindTaskLinks ();
-		};
+		bindAndFillTaskLinks();
 	});
 
-	function bindTaskLinks () {
-		$('.tasks li').click(function(e) {
-			e.preventDefault();
-			highlightTask($(this));
-		});
+	function bindAndFillTaskLinks() {
+		var tasks = $('.tasks li');
+		for (var i = 0; i < tasks.length; i++) {
+		if (($($(tasks)[i])).find('.taskinfo').length <= 0) {
+			console.log('empty');
+			$($(tasks)[i]).click(function(e) {
+				e.preventDefault();
+				highlightTask($(this));
+			});
+			var url = ($($(tasks)[i])).find('a').attr('href')
+			var target = $($(tasks)[i]);
+			$.ajax({
+				url: url,
+				context: target,
+				dataType: 'html',
+				success: function(response) {
+					var tempElement = $('<div>');
+					$(tempElement).html(response);
+					var stripped = $(tempElement).find('main *').html();
+
+					$(this).append('<div class="taskinfo"></div>');
+					$(this).find('.taskinfo').html(stripped);
+				},
+				error: function(event, jqxhr, settings, exception) {
+					
+				}
+		    });
+		}
+          else {
+
+            $(document).trigger("newCard", [$(links[i])]);
+            insertInMenu($(links[i]));
+          };
+        }
+		
 	}
 
 	function createNewTaskInList () {
@@ -43,7 +69,6 @@
 	function highlightTask (task) {
 		if (task.hasClass('active')) {
 			$(task).removeClass('active');
-			$(document).trigger("taskChange", ['null']);
 		}
 		else{
 			$('.tasks li').removeClass('active');

@@ -36,9 +36,9 @@
 
                     <h2>Extend estimate</h2>
                     <form class="extendEstimate" method="post" action="/tasks/@task.id/extendEstimate">
-                        <label>
-                            Additional pomodoros <input type="number"/>
-                        </label> <input type="submit" value="Extend estimate">
+                        <label>Additional pomodoros</label>
+                        <input type="number"/>
+                        <input type="submit" value="Extend estimate">
                     </form>
 
                     <h2>Done</h2>
@@ -54,9 +54,8 @@
 
                     <h2>Interruption</h2>
                     <form class="interrupt" method="post" action="/tasks/@task.id/interrupt">
-                        <label>
-                            Reason <input class="note required" type="text" name="note">
-                        </label>
+                        <label>Reason</label>
+                        <input class="note required" type="text" name="note">
                         <input type="submit" value="Interrupt"/>
                     </form>
 
