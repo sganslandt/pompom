@@ -21,7 +21,7 @@ object Tasks extends Controller with Secured {
       Action {
         implicit request =>
           createTaskForm.bindFromRequest.fold(
-          errors => Forbidden("Validation errors."), {
+          form => Forbidden(views.html.formValidationError(form.errors)), {
             case (title, initialEstimate, description) =>
               val taskId = Task.createTask(userId, title, initialEstimate, description)
               Created(views.html.tasks.link("Created", taskId))
