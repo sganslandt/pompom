@@ -18,15 +18,15 @@
             </ul>
 
             <h2>New task</h2>
-            <form class="createTask" name="createTask" method="post" action="/tasks/">
-                <label>Title</label>
-                <input clas="title required" name="title" type="text" pattern="...+"required/>
-                
-                <label>Estimate</label>
-                <input class="initialEstimate required" name="initialEstimate" type="number" min="1" max="12" required/>
-                
-                <label>Description</label>
-                <textarea class="description" name="description" type="text"></textarea>
+            <form id="createTask" name="createTask" method="post" action="/tasks/">
+                <label for="createTaskTitle">Title</label>
+                <input clas="title required" id="createTaskTitle" name="title" type="text" pattern=".+" required/>
+
+                <label for="createTaskInitialEstimate">Estimate</label>
+                <input class="initialEstimate required" id="createTaskInitialEstimate" name="initialEstimate" type="number" min="1" max="12" required/>
+
+                <label for="createTaskDescription">Description</label>
+                <textarea class="description" id="createTaskDescription" name="description" type="text"></textarea>
                 
                 <input name="createTask" type="submit" value="Create"/>
             </form>
