@@ -6,7 +6,7 @@ import controllers.Authentication.Secured
 
 object Application extends Controller with Secured {
 
-  def index = AsAuthenticatedUser(userId => Action {
+  def index = AsAuthenticatedUser(userId => {
     request =>
       if (request.host.startsWith("api"))
         Ok(views.html.apiIndex()).withHeaders(
@@ -25,8 +25,7 @@ object Application extends Controller with Secured {
   })
 
   def currentAuthenticatedUser = AsAuthenticatedUser {
-    userId =>
-      Action {
+    userId => { request =>
         Ok(views.html.auth.currentUser(userId))
       }
   }
