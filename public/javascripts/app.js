@@ -87,9 +87,8 @@ var activeRequests = 0;
       dataType: 'html',
       success: function(response) {
         activeRequests--;
-        var tempElement = $('<div>');
-        $(tempElement).html(response);
-        if ($(tempElement).find('.loginForm').length > 0) {
+        var tempElement = $('<div>').html(response);
+        if (tempElement.find('.loginForm').length > 0) {
           location.reload();
         }
         else{
