@@ -25,15 +25,19 @@ class Task(val id: String, val title: String, val description: String, val initi
   }
 
   def startPomodoro() {
-    if (isDone || inPomodoro || pomodoros.length == estimate)
-      throw new IllegalStateException()
+    if (isDone)
+      throw new IllegalStateException("Can't start a pomodoro on Task that is done.")
+    if (inPomodoro)
+      throw new IllegalStateException("Can't start a new pomodoro while there is already one active.")
+    if (pomodoros.length == estimate)
+      throw new IllegalStateException("All estimated pomodoros used, re-estimate.")
 
     pomodoros = new Pomodoro :: pomodoros
   }
 
   def endPomodoro() {
     if (!inPomodoro)
-      throw new IllegalStateException()
+      throw new IllegalStateException("No current pomodoro to end.")
 
     pomodoros.head.end()
   }
@@ -44,7 +48,7 @@ class Task(val id: String, val title: String, val description: String, val initi
 
   def break() {
     if (!inPomodoro)
-      throw new IllegalStateException()
+      throw new IllegalStateException("No current pomodoro to register an interruption in.")
 
     pomodoros.head.break()
   }
@@ -54,8 +58,10 @@ class Task(val id: String, val title: String, val description: String, val initi
   }
 
   def done() {
-    if (inPomodoro || isDone)
-      throw new IllegalStateException()
+    if (inPomodoro)
+      throw new IllegalStateException("Can't finnish a task while in a Pomodoro. Finnish the current pomodoro first.")
+    if (isDone)
+      throw new IllegalStateException("The task is already done.")
 
     isDone = true
   }
@@ -70,19 +76,19 @@ class Task(val id: String, val title: String, val description: String, val initi
 
     def end() {
       if (!isActive)
-        throw new IllegalStateException()
+        throw new IllegalStateException("The pomodoro is not activet and can't be ended.")
       isActive = false
     }
 
     def interrupt(note: String) {
       if (!isActive)
-        throw new IllegalStateException()
+        throw new IllegalStateException("The pomodoro is not active and can't be interrupted.")
       interruptions ::= Interruption(note, DateTime.now)
     }
 
     def break() {
       if (!isActive)
-        throw new IllegalStateException()
+        throw new IllegalStateException("The pomodoro is not active and can't be broken.")
       isActive = false
     }
 
