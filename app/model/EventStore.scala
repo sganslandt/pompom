@@ -2,7 +2,6 @@ package model
 
 import akka.actor.Actor
 
-
 class EventStore extends Actor {
 
   var events: List[AnyRef] = List()

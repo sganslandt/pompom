@@ -7,9 +7,9 @@ import java.util.UUID
 import play.api.Play.current
 import model.api.{TaskCreatedEvent, TaskEvent}
 
-class TaskCommandHandler(eventStore: EventStore) extends Actor {
+class TaskCommandHandler(val eventStore: ActorRef) extends Actor {
 
-  eventStore.replay(this)
+  eventStore ! Replay()
 
   def createTask(userId: User, title: String, initialEstimate: Int, description: String): String = {
     val id = UUID.randomUUID().toString

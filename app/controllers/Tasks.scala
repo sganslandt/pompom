@@ -17,47 +17,36 @@ object Tasks extends Controller with Secured {
   )
 
   def createTask() = AsAuthenticatedUser(
-    userId => { implicit request =>
-          createTaskForm.bindFromRequest.fold(
-          form => Forbidden(views.html.formValidationError(form.errors)), {
-            case (title, initialEstimate, description) =>
-              val taskId = Task.createTask(userId, title, initialEstimate, description)
-              Created(views.html.tasks.link("Created", taskId))
-          })
-      }
+    userId => {
+      implicit request =>
+        createTaskForm.bindFromRequest.fold(
+        form => Forbidden(""), {
+          case (title, initialEstimate, description) =>
+            val taskId = Task.createTask(userId, title, initialEstimate, description)
+            Ok("")
+        })
+    }
   )
 
-  def listTasks = AsAuthenticatedUser {
-    userId => { _ =>
-        Ok(views.html.tasks.list(Task.listForUser(userId)))
-      }
-  }
-
-  def getTask(taskId: String) = AsAuthenticatedUser {
-    userId => { _ =>
-      withTask(userId, taskId, {
-        t => Ok(views.html.tasks.task(t))
-      })
-    }
-  }
-
   def startPomodoro(taskId: String) = AsAuthenticatedUser {
-    userId => { _ =>
-      withTask(userId, taskId, {
-        task =>
+    userId => {
+      _ =>
+        withTask(userId, taskId, {
+          task =>
             task.startPomodoro()
-            Accepted(views.html.tasks.link("Pomodoro started", task.id))
-      })
+            Ok("")
+        })
     }
   }
 
   def endPomodoro(taskId: String) = AsAuthenticatedUser {
-    userId => { _ =>
-      withTask(userId, taskId, {
-        task =>
+    userId => {
+      _ =>
+        withTask(userId, taskId, {
+          task =>
             task.endPomodoro()
-            Accepted(views.html.tasks.link("Pomodoro ended", task.id))
-      })
+            Ok("")
+        })
     }
   }
 
@@ -75,8 +64,8 @@ object Tasks extends Controller with Secured {
             interruptForm.bindFromRequest.fold(
               errors => Forbidden("Validation errors."),
               value => {
-                  task.interrupt(value)
-                  Accepted(views.html.tasks.link("Interruption recorded", task.id))
+                task.interrupt(value)
+                Ok("")
               }
             )
         })
@@ -84,12 +73,13 @@ object Tasks extends Controller with Secured {
   }
 
   def break(taskId: String) = AsAuthenticatedUser {
-    userId => { _ =>
-      withTask(userId, taskId, {
-        task =>
+    userId => {
+      _ =>
+        withTask(userId, taskId, {
+          task =>
             task.break()
-            Accepted(views.html.tasks.link("Pomodoro broken", task.id))
-      })
+            Ok("")
+        })
     }
   }
 
@@ -108,7 +98,7 @@ object Tasks extends Controller with Secured {
               errors => Forbidden("Validation"),
               value => {
                 task.extendEstimate(value)
-                Accepted(views.html.tasks.link("Estimate extended", task.id))
+                Ok("")
               }
             )
         })
@@ -116,12 +106,13 @@ object Tasks extends Controller with Secured {
   }
 
   def complete(taskId: String) = AsAuthenticatedUser {
-    userId => { _ =>
-      withTask(userId, taskId, {
-        task =>
-          task.done()
-          Accepted(views.html.tasks.link("Task completed", task.id))
-      })
+    userId => {
+      _ =>
+        withTask(userId, taskId, {
+          task =>
+            task.done()
+            Ok("")
+        })
     }
   }
 
@@ -132,7 +123,7 @@ object Tasks extends Controller with Secured {
         try {
           f(t)
         } catch {
-          case e: IllegalStateException => Forbidden(views.html.tasks.link("Illegal state", t.id))
+          case e: IllegalStateException => Forbidden("")
         }
       }
       case None => NotFound("404 - Task not found")

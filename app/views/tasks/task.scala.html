@@ -1,70 +1,14 @@
-@(task: model.Task)
+@(task: views.Task)
 
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>Task</title>
-    </head>
-    <body>
-        <main role="main">
-            <div id="@task.id" class="task @(if(task.isDone) "complete") ">
-                <h1 class="title">@task.title</h1>
-                <p class="description">
-                    @task.description
-                </p>
-                <p class="pomodoros">
-                    Poms used: <span class="used">@task.usedPomodoros</span>
-                    of <span class="estimate">@task.estimate</span>
-                </p>
+<div class="task" data-taskId="@task.taskId">
+    <h3>@task.title</h3>
+    <p>@task.description</p>
 
-                <div class="interruptions">
-                @for(i <- task.interruptions) {
-                    <p class="interruption">
-                        <span class="timeStamp">@i.when</span>, <span class="note">@i.what</span>
-                    </p>
-                }
-                </div>
+    <ol class="pomodoros">
+        @for(p <- task.pomodoros) {
+            <li class="@p.state.getClass().getSimpleName().toString().toLowerCase() @if(!p.interruptions.isEmpty) {interrupted}">&nbsp;</li>
+        }
+    </ol>
+</div>
 
-                <a href="/tasks/@task.id" class="this">Get state</a>
-
-                @if(!task.inPomodoro && !task.isDone) {
-                    <h2>Start pomodoro</h2>
-                    <form class="startPomodoro" method="post" action="/tasks/@task.id/startPomodoro">
-                        <input type="submit" value="Start pomodoro"/>
-                    </form>
-
-                    <h2>Extend estimate</h2>
-                    <form class="extendEstimate" method="post" action="/tasks/@task.id/extendEstimate">
-                        <label>Additional pomodoros</label>
-                        <input type="number"/>
-                        <input type="submit" value="Extend estimate">
-                    </form>
-
-                    <h2>Done</h2>
-                    <form class="complete" method="post" action="/tasks/@task.id/complete">
-                        <input type="submit" value="Done">
-                    </form>
-                }
-                @if(task.inPomodoro) {
-                    <h2>End pomodoro</h2>
-                    <form class="endPomodoro" method="post" action="/tasks/@task.id/endPomodoro">
-                        <input type="submit" value="End pomodoro"/>
-                    </form>
-
-                    <h2>Interruption</h2>
-                    <form class="interrupt" method="post" action="/tasks/@task.id/interrupt">
-                        <label>Reason</label>
-                        <input class="note required" type="text" name="note">
-                        <input type="submit" value="Interrupt"/>
-                    </form>
-
-                    <h2>Break pomodoro</h2>
-                    <form class="break" method="post" action="/tasks/@task.id/break">
-                        <input type="submit" value="Break">
-                    </form>
-                }
-            </div>
-        </main>
-    </body>
-</html>
+<!-- ExtendEstimateTask, CompleteTask -->

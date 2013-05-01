@@ -2,12 +2,18 @@ package model
 
 import java.util.UUID
 import org.joda.time.DateTime
+import akka.actor.Actor
+import model.api.CreateTaskCommand
 
-class Task(val id: String, val title: String, val description: String, val initialEstimate: Int) {
+class Task(val id: String, val title: String, val description: String, val initialEstimate: Int) extends Actor {
 
   var estimate = initialEstimate
   var pomodoros: List[Pomodoro] = List()
   var isDone = false
+
+  def receive = {
+    case _ => {}
+  }
 
   def inPomodoro = {
     pomodoros.nonEmpty && pomodoros.head.isActive

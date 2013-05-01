@@ -1,9 +1,11 @@
 package model.api
 
-case class TaskEvent(taskId: String)
+abstract class TaskEvent {
+  def taskId: String
+}
 
-case class TaskCreatedEvent(override val taskId: String, title: String, description: String, initialEstiamet: Int) extends TaskEvent(taskId)
-case class TaskDoneEvent(override val taskId: String) extends TaskEvent(taskId)
+case class TaskCreatedEvent(override val taskId: String, title: String, description: String, initialEstiamet: Int) extends TaskEvent
+case class TaskDoneEvent(override val taskId: String) extends TaskEvent
 case class EstimateExtendedEvent(taskId: String, extension: Int)
 
 case class PomodoroStartedEvent(taskId: String, pomodoro: Int)
