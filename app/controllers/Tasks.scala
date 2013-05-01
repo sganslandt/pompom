@@ -17,28 +17,24 @@ object Tasks extends Controller with Secured {
   )
 
   def createTask() = AsAuthenticatedUser(
-    userId =>
-      Action {
-        implicit request =>
+    userId => { implicit request =>
           createTaskForm.bindFromRequest.fold(
           form => Forbidden(views.html.formValidationError(form.errors)), {
             case (title, initialEstimate, description) =>
               val taskId = Task.createTask(userId, title, initialEstimate, description)
               Created(views.html.tasks.link("Created", taskId))
-          }
-          )
+          })
       }
   )
 
   def listTasks = AsAuthenticatedUser {
-    userId =>
-      Action {
+    userId => { _ =>
         Ok(views.html.tasks.list(Task.listForUser(userId)))
       }
   }
 
   def getTask(taskId: String) = AsAuthenticatedUser {
-    userId => Action {
+    userId => { _ =>
       withTask(userId, taskId, {
         t => Ok(views.html.tasks.task(t))
       })
@@ -46,7 +42,7 @@ object Tasks extends Controller with Secured {
   }
 
   def startPomodoro(taskId: String) = AsAuthenticatedUser {
-    userId => Action {
+    userId => { _ =>
       withTask(userId, taskId, {
         task =>
             task.startPomodoro()
@@ -56,7 +52,7 @@ object Tasks extends Controller with Secured {
   }
 
   def endPomodoro(taskId: String) = AsAuthenticatedUser {
-    userId => Action {
+    userId => { _ =>
       withTask(userId, taskId, {
         task =>
             task.endPomodoro()
@@ -72,7 +68,7 @@ object Tasks extends Controller with Secured {
   )
 
   def interrupt(taskId: String) = AsAuthenticatedUser {
-    userId => Action {
+    userId => {
       implicit request =>
         withTask(userId, taskId, {
           task =>
@@ -88,7 +84,7 @@ object Tasks extends Controller with Secured {
   }
 
   def break(taskId: String) = AsAuthenticatedUser {
-    userId => Action {
+    userId => { _ =>
       withTask(userId, taskId, {
         task =>
             task.break()
@@ -104,7 +100,7 @@ object Tasks extends Controller with Secured {
   )
 
   def extendEstimate(taskId: String) = AsAuthenticatedUser {
-    userId => Action {
+    userId => {
       implicit request =>
         withTask(userId, taskId, {
           task =>
@@ -120,7 +116,7 @@ object Tasks extends Controller with Secured {
   }
 
   def complete(taskId: String) = AsAuthenticatedUser {
-    userId => Action {
+    userId => { _ =>
       withTask(userId, taskId, {
         task =>
           task.done()
