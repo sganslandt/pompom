@@ -12,3 +12,5 @@ out
 .classpath
 .project
 RUNNING_PID
+*.sublime-project
+*.sublime-workspace
