@@ -19,6 +19,42 @@ object TaskQueryRepository {
           Pomodoro(Active(DateTime.now()), List())
         ),
         false
+      ),
+      Task(
+        "124",
+        "Update pompom",
+        "Description of task",
+        List(
+          Pomodoro(Ended(DateTime.now(), DateTime.now()), List()),
+          Pomodoro(Ended(DateTime.now(), DateTime.now()), List(Interruption(DateTime.now(), "What?"))),
+          Pomodoro(Broken(DateTime.now(), DateTime.now(), "Why?"), List()),
+          Pomodoro(Active(DateTime.now()), List())
+        ),
+        false
+      ),
+      Task(
+        "125",
+        "Update pompom",
+        "Description of task",
+        List(
+          Pomodoro(Ended(DateTime.now(), DateTime.now()), List()),
+          Pomodoro(Ended(DateTime.now(), DateTime.now()), List(Interruption(DateTime.now(), "What?"))),
+          Pomodoro(Broken(DateTime.now(), DateTime.now(), "Why?"), List()),
+          Pomodoro(Active(DateTime.now()), List())
+        ),
+        false
+      ),
+      Task(
+        "126",
+        "Update pompom",
+        "Description of task",
+        List(
+          Pomodoro(Ended(DateTime.now(), DateTime.now()), List()),
+          Pomodoro(Ended(DateTime.now(), DateTime.now()), List(Interruption(DateTime.now(), "What?"))),
+          Pomodoro(Broken(DateTime.now(), DateTime.now(), "Why?"), List()),
+          Pomodoro(Active(DateTime.now()), List())
+        ),
+        false
       )
     )
   }

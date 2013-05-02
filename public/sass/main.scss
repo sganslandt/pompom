@@ -1,0 +1,266 @@
+@import "base";
+
+html {
+	font-size: 62.5%;
+	height: 100%;
+	@include background-image(linear-gradient($color-main-text, darken($color-main-text, 30)));
+}
+body{
+	font-size: 1.4rem;
+	height: 100%;
+	margin: 0;
+	position: relative;
+	padding-top: 4.2rem;
+}
+a{
+	color: $color-complement;
+	text-decoration: none;
+}
+.ielt9info{
+	display: none;
+}
+.lt-ie9 .ielt9info{
+	display: block;
+
+}
+header#pageheader{
+	@include redbox;
+	@include cf;
+	padding: 0.4rem;
+	height: 4.2rem;
+	position: fixed;
+	width: 100%;
+	top: 0;
+	z-index: 10;
+
+	h1 {
+		padding-left: 2rem;
+		line-height: 1em;
+		background: transparent url("../img/icon_pompom.svg") left center no-repeat;
+		float: left;
+		margin: 0;
+		a{
+			color: $color-complement;
+			font-size: 2.8rem;
+		}
+	}
+	nav{
+		float: right;
+		a{
+			padding: 1rem 0 0.8rem;
+			display: inline-block;
+			color: $color-complement;
+		}
+	}
+}
+
+section#taskCreator{
+	@include redbox;
+	padding: 0.4rem;
+
+	button.expand{
+		@include button;
+	}
+	&:hover form{
+		display: block;
+	}
+	form{
+		display: none;
+
+		input[type="text"],
+		input[type="submit"],
+		textarea{
+			width: 100%;
+		}
+		input{
+			height: 4.8rem;
+		}
+		input[type="text"],
+		input[type="number"],
+		textarea{
+			margin-bottom: 0.4rem;
+			font-size: 2.4rem;
+			@include textboxonred
+		}
+		textarea{
+			height: 6.4rem;
+			font-size: 1.4rem;
+		}
+		input[type="number"]{
+			float: right;
+			width: 6.4rem;
+			text-align: center;
+		}
+		label{
+			margin-top: 1rem;
+			font-size: 2.4rem;
+			color: $color-main-darker;
+		}
+		input[type="submit"]{
+			@include button;
+		}
+	}
+
+	@include breakpoint($tablet) {
+		position: fixed;
+		bottom: 0;
+		left: 33%;
+		width: 67%;
+		height: 23rem;
+		z-index: 10;
+
+		button.expand{
+			display: none;
+		}
+		form{
+			display: block;
+		}
+	}
+	@include breakpoint($desktop-large) {
+		width: 25%;
+		position: initial;
+		float: right;
+		height: 100%;
+	}
+
+}
+section#tasks{
+	@include cf;
+	@include app-section;
+	
+	@include breakpoint($tablet) {
+		width: 67%;
+		padding-bottom: 23rem;
+	}
+	@include breakpoint($desktop-large) {
+		width: 50%;
+		padding-bottom: 0;
+	}
+	ol.taskList{
+		padding: 0;
+		margin: 0;
+		list-style: none;
+
+		& > li{
+			@include lightbox;
+			@include taskbox;
+		}
+
+		& > li:first-child,
+		&.topfix > li:nth-child(2),
+		& > li.expanded{
+			@include redbox;
+			@include taskbox;
+			height: 6.4rem;
+
+			@include breakpoint($desktop-small) {
+				width: 100%;
+			}
+			h3{
+				margin: 0 0 0.4rem;
+				color: $color-complement;
+			}
+			p{
+				display: block;
+				color: $color-complement;
+			}
+
+			ol.pomodoros{
+				width: 5.6rem;
+
+				li{
+					@include circle (1.6rem, $color-main-darker);
+					margin-right: 0.4rem;
+					margin-bottom: 0.4rem;
+
+					&.active{
+					}
+					&.ended{
+					}
+					&.interrupted{
+
+						&:after{
+							content: url("../img/icon_interrupted.svg");
+							position: absolute;
+							left: -0.1rem;
+							top: -0.1rem;
+						}
+					}
+					&.broken{
+
+						&:after{
+							content: url("../img/icon_broken.svg");
+							position: absolute;
+							left: -0.1rem;
+							top: -0.1rem;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+#timer {
+	@include cf;
+	@include redbox;
+	@include app-section;
+	overflow: hidden;
+
+	@include breakpoint($tablet) {
+		width: 33%;
+	}
+	@include breakpoint($desktop-large) {
+		width: 25%;
+	}
+
+  .top {
+      position: relative;
+      height: 50%;
+      border-bottom: 2px solid $color-main-darker;
+  }
+}
+        #timer .top #currentTaskTitle{
+            margin: 0;
+            padding-top: 3rem;
+            text-align: center;
+            color: $color-complement;
+            font-weight: normal;
+        }
+        #timer .top .timegradeholder{
+            position: absolute;
+            bottom: .2rem;
+            left: 50%;
+            margin-left: -0.1rem;
+        }
+            #timer .top .timegradeholder .numbers{
+                margin-left: -1.4rem;
+            }
+                #timer .top .timegradeholder .numbers span{
+                    color: $color-complement;
+                    display: inline-block;
+                    width: 3rem;
+                    text-align: center;
+                    margin-right: 2rem;
+                }
+            #timer .top .timegradeholder img{
+                width: 65rem;
+                height: auto;
+                margin-right: 3rem;
+            }
+    #timer .bottom {
+        position: relative;
+        height: 50%;
+        border-top: 1px solid $color-main-highlight;
+    }
+        #timer .bottom .arrowholder{
+            padding: .1rem 0 0;
+            width: 100%;
+            text-align: center;
+        }
+        #timer .bottom .tasktracker{
+            position: absolute;
+            width: 100%;
+            bottom: 1rem;
+            text-align: center;
+        }
+
