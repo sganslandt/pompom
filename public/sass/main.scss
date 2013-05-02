@@ -61,7 +61,7 @@ section#taskCreator{
 	button.expand{
 		@include button;
 	}
-	&:hover form{
+	form.expanded{
 		display: block;
 	}
 	form{
