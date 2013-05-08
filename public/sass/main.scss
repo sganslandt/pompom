@@ -3,7 +3,7 @@
 html {
 	font-size: 62.5%;
 	height: 100%;
-	@include background-image(linear-gradient($color-main-text, darken($color-main-text, 30)));
+	@include background-image(linear-gradient(lighten($color-main-text, 30), $color-main-text));
 }
 body{
 	font-size: 1.4rem;
@@ -56,15 +56,26 @@ header#pageheader{
 
 section#taskCreator{
 	@include redbox;
-	padding: 0.4rem;
+	position: relative;
+	padding-top: 0px;
+	border-top: none;
 
-	button.expand{
-		@include button;
+	h2{
+		@include redheader;
+		margin: 0;
+	}
+	.mobileControls{
+		padding: 0.4rem;
+
+		button.expand{
+			@include button;
+		}
 	}
 	form.expanded{
 		display: block;
 	}
 	form{
+		padding: 0.4rem;
 		display: none;
 
 		input[type="text"],
@@ -97,7 +108,7 @@ section#taskCreator{
 			color: $color-main-darker;
 		}
 		input[type="submit"]{
-			@include button;
+			@include button($color-action, darken($color-action, 30));
 		}
 	}
 
@@ -106,10 +117,10 @@ section#taskCreator{
 		bottom: 0;
 		left: 33%;
 		width: 67%;
-		height: 23rem;
+		height: 27rem;
 		z-index: 10;
 
-		button.expand{
+		.mobileControls{
 			display: none;
 		}
 		form{
@@ -127,14 +138,37 @@ section#taskCreator{
 section#tasks{
 	@include cf;
 	@include app-section;
+	border-top: none;
 	
 	@include breakpoint($tablet) {
 		width: 67%;
-		padding-bottom: 23rem;
+		padding-bottom: 27rem;
 	}
 	@include breakpoint($desktop-large) {
 		width: 50%;
 		padding-bottom: 0;
+	}
+	#today,
+	#inventory{
+		position: relative;
+		h2{
+			@include redheader;
+			border-right: 0.1rem solid $color-main-darker;
+			margin: 0;
+		}
+
+		@include breakpoint($desktop-small) {
+			width: 50%;
+			float: left;
+			padding-top: 4rem;
+
+			h2{
+				position: absolute;
+				border-top: none;
+				top: 0;
+				left: 0;
+			}
+		}
 	}
 	ol.taskList{
 		padding: 0;
@@ -144,58 +178,86 @@ section#tasks{
 		& > li{
 			@include lightbox;
 			@include taskbox;
+			border-top: none;
 		}
 
-		& > li:first-child,
-		&.topfix > li:nth-child(2),
-		& > li.expanded{
-			@include redbox;
-			@include taskbox;
-			height: 6.4rem;
-
-			@include breakpoint($desktop-small) {
-				width: 100%;
-			}
-			h3{
-				margin: 0 0 0.4rem;
-				color: $color-complement;
-			}
-			p{
-				display: block;
-				color: $color-complement;
+		
+	}
+	#today{
+		ol.taskList{
+			& > li{
+				border-left: none;
 			}
 
-			ol.pomodoros{
-				width: 5.6rem;
+			& > li:first-child,
+			&.topfix > li:nth-child(2){
+				@include redbox();
+				@include taskbox;
+				height: 6.4rem;
+				border-top: none;
+				border-left: none;
+				border-right: 0.1rem solid $color-main-darker;
 
-				li{
-					@include circle (1.6rem, $color-main-darker);
-					margin-right: 0.4rem;
-					margin-bottom: 0.4rem;
+				h3{
+					margin: 0 0 0.4rem;
+					color: $color-complement;
+				}
+				p{
+					display: block;
+					color: $color-complement;
+				}
 
-					&.active{
-					}
-					&.ended{
-					}
-					&.interrupted{
+				ol.pomodoros{
+					width: 5.6rem;
 
-						&:after{
-							content: url("../img/icon_interrupted.svg");
-							position: absolute;
-							left: -0.1rem;
-							top: -0.1rem;
+					li{
+						@include circle (1.6rem, $color-main-darker);
+						margin-right: 0.4rem;
+						margin-bottom: 0.4rem;
+
+						&.active{
 						}
-					}
-					&.broken{
+						&.ended{
+						}
+						&.interrupted{
 
-						&:after{
-							content: url("../img/icon_broken.svg");
-							position: absolute;
-							left: -0.1rem;
-							top: -0.1rem;
+							&:after{
+								content: url("../img/icon_interrupted.svg");
+								position: absolute;
+								left: -0.1rem;
+								top: -0.1rem;
+							}
+						}
+						&.broken{
+
+							&:after{
+								content: url("../img/icon_broken.svg");
+								position: absolute;
+								left: -0.1rem;
+								top: -0.1rem;
+							}
 						}
 					}
 				}
+
+
+
+
+			}
+		}
+	}
+	#inventory{
+		h2{
+			border-top: 0.1rem solid $color-main-darker;
+		}
+		@include breakpoint($desktop-small) {
+			h2{
+				border-top: none;
+			}
+		}
+		@include breakpoint($desktop-large) {
+			h2{
+				border-right: none;
 			}
 		}
 	}
@@ -204,6 +266,7 @@ section#tasks{
 	@include cf;
 	@include redbox;
 	@include app-section;
+	border-top: none;
 	overflow: hidden;
 
 	@include breakpoint($tablet) {
@@ -212,55 +275,104 @@ section#tasks{
 	@include breakpoint($desktop-large) {
 		width: 25%;
 	}
-
+	h2{
+		@include redheader;
+		position: absolute;
+		margin: 0;
+		top: 0;
+		left: 0;
+	}
   .top {
       position: relative;
       height: 50%;
-      border-bottom: 2px solid $color-main-darker;
-  }
-}
-        #timer .top #currentTaskTitle{
+      border-bottom: 0.2rem solid $color-main-darker;
+
+        #currentTaskTitle{
             margin: 0;
             padding-top: 3rem;
             text-align: center;
             color: $color-complement;
             font-weight: normal;
         }
-        #timer .top .timegradeholder{
+        .timegradeholder{
             position: absolute;
             bottom: .2rem;
             left: 50%;
             margin-left: -0.1rem;
-        }
-            #timer .top .timegradeholder .numbers{
+            transition: margin-left 0.500s;
+						-webkit-transition: margin-left 0.500s; /* Safari */
+
+            .numbers{
                 margin-left: -1.4rem;
-            }
-                #timer .top .timegradeholder .numbers span{
+
+                span{
                     color: $color-complement;
                     display: inline-block;
                     width: 3rem;
                     text-align: center;
                     margin-right: 2rem;
                 }
-            #timer .top .timegradeholder img{
+            }
+            img{
                 width: 65rem;
                 height: auto;
                 margin-right: 3rem;
             }
-    #timer .bottom {
-        position: relative;
-        height: 50%;
-        border-top: 1px solid $color-main-highlight;
-    }
-        #timer .bottom .arrowholder{
-            padding: .1rem 0 0;
-            width: 100%;
-            text-align: center;
         }
-        #timer .bottom .tasktracker{
-            position: absolute;
-            width: 100%;
-            bottom: 1rem;
-            text-align: center;
+  }
+  .bottom {
+    position: relative;
+    height: 50%;
+    border-top: 1px solid $color-main-highlight;
+
+      .arrowholder{
+          padding: .1rem 0 0;
+          width: 100%;
+          text-align: center;
+      }
+      #controls{
+      	padding: 1rem 35%;
+        button {
+        	@include button;
+        	margin-top: 1rem;
         }
+        button#interruptPomodoro{
+        	@include button($color-warning, darken($color-warning, 30), darken($color-warning, 30));
+        	display: none;
+        	float: left;
+        	width: 48%;
+        	margin-right: 4%;
+
+        	img{
+        		height: 100%;
+        		width: auto;
+        	}
+        }
+        button#breakPomodoro{
+        	@include button($color-error, darken($color-error, 30), darken($color-error, 30));
+		  		display: none;
+		  		float: left;
+        	width: 48%;
+
+        	img{
+        		height: 100%;
+        		width: auto;
+        	}
+		  	}
+      }
+  }
+  &.active{
+  	.bottom {
+  		#controls{
+		  	button#startPomodoro{
+		  		display: none;
+		  	}
+		  	button#interruptPomodoro,
+		    button#breakPomodoro{
+		  		display: initial;
+		  	}
+		  }
+		}
+  }
+}
 

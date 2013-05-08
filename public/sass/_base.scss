@@ -33,15 +33,19 @@ $color-complement-darker: darken($color-complement, 20);
 $color-highlight: rgba(255, 255, 255, 0.2);
 $color-shadow: rgba(0, 0, 0, 0.2);
 
+$color-action: #619E9E;
+$color-ok: #448400;
+$color-warning: #FF8F08;
+$color-error: #C11717;
+
 $background-color: #F2F2F2;
 
 *{
 	@include box-sizing(border-box);
 }
-
+// clearfix
 @mixin cf{
 	*zoom: 1;
-
 	&:before,
 	&:after {
 	    content: " ";
@@ -61,14 +65,22 @@ $background-color: #F2F2F2;
 	border: 0.1rem solid $color-main-darker;
 	@include box-shadow(inset 0 0.1rem 0 0 $color-main-highlight);
 }
-@mixin button{
+@mixin redheader{
+	width: 100%;
+	color: $color-complement;
+	@include gradient($color-main-lighter, $color-main);
+	border-bottom: 0.1rem solid $color-main-darker;
+	@include box-shadow(inset 0 0.1rem 0 0 $color-main-highlight);
+	padding: 0.5rem 1rem;
+}
+@mixin button($btnBgColor: $color-main, $btnBorderColor: darken($btnBgColor, 20), $btnTextColor: $color-complement){
 	padding: 0.4rem;
 	width: 100%;
 	font-size: 2.4rem;
 	height: 4.8rem;
-	color: $color-complement;
-	@include gradient($color-main-lighter, $color-main);
-	border: 0.1rem solid $color-main-darker;
+	color: $btnTextColor;
+	@include gradient(lighten($btnBgColor, 10), $btnBgColor);
+	border: 0.1rem solid $btnBorderColor;
 	@include box-shadow(inset 0 0.1rem 0 0 $color-highlight, 0 0.2rem 0 0 $color-shadow);
 	&:active{
 		padding: 0.5rem 0.4rem 0.3rem;
@@ -110,7 +122,6 @@ $background-color: #F2F2F2;
 	position: relative;
 	height: 4.8rem;
 	padding: 0.4rem;
-
 
 	h3{
 		font-size: 2.1rem;
@@ -154,8 +165,8 @@ $background-color: #F2F2F2;
 				@include box-shadow((inset 0 0.1rem 0 0 $color-highlight, 0 0.1rem 0 0 $color-highlight));
 			}
 			&.interrupted{
-				border-color: #774400;
-				background-color: #FFA506;
+				border-color: darken($color-warning, 30);
+				background-color: $color-warning;
 				@include box-shadow((inset 0 0.1rem 0 0 $color-highlight, 0 0.1rem 0 0 $color-highlight));
 
 			}
@@ -166,9 +177,7 @@ $background-color: #F2F2F2;
 			}
 		}
 	}
-
-	@include breakpoint($desktop-medium) {
-		float: left;
-		width: 50%;
+	@include breakpoint($desktop-small) {
+		border-left: none;
 	}
 }

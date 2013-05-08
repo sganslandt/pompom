@@ -1,6 +1,6 @@
 @(tasks: Seq[views.Task])
 
-<ol class="taskList sortable">
+<ol class="taskList sortable connected">
     @for(t <- tasks) {
     <li draggable="true">
         @task(t)

@@ -1,14 +1,14 @@
-$(function() {
-			$('.sortable').sortable();
-			$('.handles').sortable({
-				handle: '.handle'
-			});
+requirejs.config({
+    "baseUrl": "assets/js",
+    "paths": {
+      "jquery": "vendor/jquery-2.0.0.min",
+      "modernizr": "vendor/modernizr-2.6.2.min",
+      "sortable": "jquery.sortable.custom"
+    },
+    "shim": {
+        'sortable': [ 'jquery' ]
+    }
 });
-jQuery(document).ready(function($) {
-	$('.sortable li').click(function() {
-	  console.log("clicked"+$(this));
-	});
-	$('#taskCreator button.expand').click(function() {
-	  $('#taskCreator form').toggleClass('expanded');
-	});
+require(['jquery','timer','todoList','taskCreator'], function($, timer) {
+	console.log('all done');
 });

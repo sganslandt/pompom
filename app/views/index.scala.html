@@ -2,12 +2,21 @@
 
 @main {
 <section id="timer" class="">
+	<h2>track your time</h2>
     @timer()
 </section>
 <section id="taskCreator">
+	<h2>create a new task</h2>
     @tasks.createTask()
 </section>
 <section id="tasks">
-    @tasks.list(taskList)
+	<section id="today">
+		<h2>todo today</h2>
+	    @tasks.list(taskList)
+	</section>
+	<section id="inventory">
+		<h2>activity inventory</h2>
+	    @tasks.list(taskList)
+	</section>
 </section>
 }
