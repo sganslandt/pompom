@@ -11,16 +11,18 @@ import model.{EventStore, TaskCommandHandler}
 
 object Application extends Controller with Secured {
 
-  val eventStore = Akka.system.actorOf(Props[EventStore], name = "eventStore")
-  Akka.system.actorOf(Props(new TaskCommandHandler(eventStore)), name = "taskCommandHandler")
+  Akka.system.actorOf(Props[EventStore], name = "eventStore")
+  Akka.system.actorOf(Props[TaskCommandHandler], name = "taskCommandHandler")
   println("Starting updater and sending init")
-  Akka.system.actorOf(Props[TaskQueryRepository.Updater]) ! "init"
+
+  val taskQueryRepository = new TaskQueryRepository
+  Akka.system.actorOf(Props(new TaskQueryRepository.Updater(taskQueryRepository))) ! "init"
 
   def index = AsAuthenticatedUser(userId => {
     request =>
       Ok(views.html.index(
         userId,
-        TaskQueryRepository.listForUser(userId)
+        taskQueryRepository.listForUser(userId)
       ))
   })
 

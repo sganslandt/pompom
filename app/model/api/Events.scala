@@ -1,7 +1,12 @@
 package model.api
 
-abstract class UserEvent {
+abstract class DomainEvent{
+  def aggregateIdentifier: String
+}
+
+abstract class UserEvent extends DomainEvent {
   def userId: String
+  def aggregateIdentifier = userId
 }
 
 case class UserRegisteredEvent(override val userId: String) extends UserEvent

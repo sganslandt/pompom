@@ -1,35 +1,29 @@
 package model
 
-import akka.actor.{Props, ActorRef, Actor}
+import akka.actor.{ActorRef, Actor}
 import model.api._
 import model.api.UserLoggedInEvent
-import model.api.RegisterUserCommand
-import model.api.UserRegisteredEvent
 import model.api.LoginUserCommand
+import play.api.libs.concurrent.Akka
+import play.api.Play.current
 
 class User(userId: String) extends Actor {
 
   private var prioritizedTaskList: List[ActorRef] = List()
   private val settings: Settings = new Settings()
 
-  def receive = {
-    case _: RegisterUserCommand => self ! UserRegisteredEvent(userId)
-    case _: LoginUserCommand => self ! UserLoggedInEvent(userId)
-    case c: CreateTaskCommand => {
-      context.actorOf(Props(new Task(c.taskId, c.title, c.description, c.initialEstimate)), name = c.taskId) ! c
-    }
+  val eventStore = Akka.system.actorFor("/user/eventStore")
+  eventStore ! Replay(Some(userId))
 
-    case e: UserLoggedInEvent => {
-      context.parent ! e
-    }
+  def receive = {
+    case _: LoginUserCommand => eventStore ! UserLoggedInEvent(userId)
+    case c: CreateTaskCommand => eventStore ! TaskCreatedEvent(c.userId, c.taskId, c.title, c.description, c.initialEstimate)
+
     case e: TaskCreatedEvent => {
       prioritizedTaskList = sender :: prioritizedTaskList
-      context.parent ! e
     }
 
-    case e => {
-      context.parent ! e
-    }
+    case _ => {}
   }
 }
 

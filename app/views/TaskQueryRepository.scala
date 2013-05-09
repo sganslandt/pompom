@@ -7,16 +7,42 @@ import play.api.Play.current
 import model.{AfterReplay, BeforeReplay, Replay}
 
 
+class TaskQueryRepository {
+
+  def clear() {
+    userTasks = Map()
+  }
+
+  def addUser(userId: String) {
+    userTasks = userTasks + (userId -> List())
+  }
+
+  def addTask(userId: String, t: Task) {
+    userTasks = userTasks + (userId -> (Task(t.taskId, t.title, t.description, List(), false) :: userTasks(userId)))
+  }
+
+  private var userTasks: Map[String, List[Task]] = Map()
+
+  def listForUser(userId: String): Seq[Task] = {
+    if (userTasks.contains(userId))
+      userTasks(userId)
+    else
+      List() // TODO Make this one not needed
+  }
+}
+
 object TaskQueryRepository {
 
-  class Updater extends Actor {
+  class Updater(repo: TaskQueryRepository) extends Actor {
 
+    Akka.system.eventStream.subscribe(self, classOf[BeforeReplay])
+    Akka.system.eventStream.subscribe(self, classOf[AfterReplay])
     Akka.system.eventStream.subscribe(self, classOf[UserRegisteredEvent])
     Akka.system.eventStream.subscribe(self, classOf[UserLoggedInEvent])
     Akka.system.eventStream.subscribe(self, classOf[TaskCreatedEvent])
     Akka.system.eventStream.subscribe(self, classOf[PomodoroStartedEvent])
 
-    println("Updater started4")
+    println("Updater started")
 
     def receive = {
 
@@ -27,6 +53,7 @@ object TaskQueryRepository {
 
       case e: BeforeReplay => {
         println("starting replay")
+        repo.clear()
       }
       case e: AfterReplay => {
         println("replay done")
@@ -34,14 +61,14 @@ object TaskQueryRepository {
 
       case e: UserRegisteredEvent => {
         println("user registered")
-        userTasks = userTasks + (e.userId -> List())
+        repo.addUser(e.userId)
       }
 
       case e: UserLoggedInEvent => {}
 
       case e: TaskCreatedEvent => {
         println("task created")
-        userTasks = userTasks + (e.userId -> (Task(e.taskId, e.title, e.description, List(), false) :: userTasks(e.userId)))
+        repo.addTask(e.userId, Task(e.taskId, e.title, e.description, List(), false))
       }
 
       case event: PomodoroStartedEvent => {}
@@ -49,9 +76,4 @@ object TaskQueryRepository {
     }
   }
 
-  def getTask(taskId: String): Option[Task] = None
-
-  private var userTasks: Map[String, List[Task]] = Map()
-
-  def listForUser(userId: String): Seq[Task] = List() //userTasks(userId)
 }
