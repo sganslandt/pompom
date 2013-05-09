@@ -1,7 +1,6 @@
 import sbt._
 import Keys._
 import play.Project._
-import net.litola.SassPlugin
 
 object ApplicationBuild extends Build {
 
@@ -14,8 +13,7 @@ object ApplicationBuild extends Build {
     )
 
     val main = play.Project(appName, appVersion, appDependencies).settings(
-      // Add your own project settings here
-      SassPlugin.sassSettings:_*
+      // Add your own project settings here      
     )
 
 }
