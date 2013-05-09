@@ -64,14 +64,13 @@ $background-color: #F2F2F2;
 	@include gradient($color-main-lighter, $color-main);
 	border: 0.1rem solid $color-main-darker;
 	@include box-shadow(inset 0 0.1rem 0 0 $color-main-highlight);
+	@include border-radius(0.3rem);
 }
 @mixin redheader{
 	width: 100%;
+	@include redbox;
 	color: $color-complement;
-	@include gradient($color-main-lighter, $color-main);
-	border-bottom: 0.1rem solid $color-main-darker;
-	@include box-shadow(inset 0 0.1rem 0 0 $color-main-highlight);
-	padding: 0.5rem 1rem;
+	padding: 0.5rem 0.4rem;
 }
 @mixin button($btnBgColor: $color-main, $btnBorderColor: darken($btnBgColor, 20), $btnTextColor: $color-complement){
 	padding: 0.4rem;
@@ -176,8 +175,5 @@ $background-color: #F2F2F2;
 				@include box-shadow((inset 0 0.1rem 0 0 $color-highlight, 0 0.1rem 0 0 $color-highlight));
 			}
 		}
-	}
-	@include breakpoint($desktop-small) {
-		border-left: none;
 	}
 }

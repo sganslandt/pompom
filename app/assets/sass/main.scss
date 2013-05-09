@@ -23,7 +23,7 @@ a{
 	display: block;
 
 }
-header#pageheader{
+#pageheader{
 	@include redbox;
 	@include cf;
 	padding: 0.4rem;
@@ -31,6 +31,7 @@ header#pageheader{
 	position: fixed;
 	width: 100%;
 	top: 0;
+	left: 0;
 	z-index: 10;
 
 	h1 {
@@ -54,7 +55,7 @@ header#pageheader{
 	}
 }
 
-section#taskCreator{
+#taskCreator{
 	@include redbox;
 	position: relative;
 	padding-top: 0px;
@@ -135,7 +136,7 @@ section#taskCreator{
 	}
 
 }
-section#tasks{
+#tasks{
 	@include cf;
 	@include app-section;
 	border-top: none;
@@ -153,21 +154,7 @@ section#tasks{
 		position: relative;
 		h2{
 			@include redheader;
-			border-right: 0.1rem solid $color-main-darker;
 			margin: 0;
-		}
-
-		@include breakpoint($desktop-small) {
-			width: 50%;
-			float: left;
-			padding-top: 4rem;
-
-			h2{
-				position: absolute;
-				border-top: none;
-				top: 0;
-				left: 0;
-			}
 		}
 	}
 	ol.taskList{
@@ -186,7 +173,6 @@ section#tasks{
 	#today{
 		ol.taskList{
 			& > li{
-				border-left: none;
 			}
 
 			& > li:first-child,
@@ -194,9 +180,6 @@ section#tasks{
 				@include redbox();
 				@include taskbox;
 				height: 6.4rem;
-				border-top: none;
-				border-left: none;
-				border-right: 0.1rem solid $color-main-darker;
 
 				h3{
 					margin: 0 0 0.4rem;
@@ -247,19 +230,7 @@ section#tasks{
 		}
 	}
 	#inventory{
-		h2{
-			border-top: 0.1rem solid $color-main-darker;
-		}
-		@include breakpoint($desktop-small) {
-			h2{
-				border-top: none;
-			}
-		}
-		@include breakpoint($desktop-large) {
-			h2{
-				border-right: none;
-			}
-		}
+		
 	}
 }
 #timer {
@@ -271,9 +242,6 @@ section#tasks{
 
 	@include breakpoint($tablet) {
 		width: 33%;
-	}
-	@include breakpoint($desktop-large) {
-		width: 25%;
 	}
 	h2{
 		@include redheader;
@@ -375,4 +343,36 @@ section#tasks{
 		}
   }
 }
+/************ Responsive Layout *************/
 
+@include breakpoint($desktop-small) {
+	body {
+		padding: 6.2rem 3rem 3rem;
+	}
+	#timer{
+		width: 20%;
+		height: 25rem;
+		margin-right: 2%;
+		border-top: 0.1rem solid $color-main-darker;
+	}
+	#taskCreator{
+		width: 20%;
+		left: 3rem;
+		top: 33.2rem;
+		border-top: 0.1rem solid $color-main-darker;
+	}
+	#tasks{
+		width: 78%;
+
+		#today{
+			width: 64%;
+			margin-right: 2%;
+			float: left;
+
+		}
+		#inventory{
+			width: 34%;
+			float: left;
+		}
+	}
+}
