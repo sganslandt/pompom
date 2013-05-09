@@ -4,10 +4,13 @@
 <form id="createTask" name="createTask" method="post" action="/tasks/">
     <input clas="title required" id="createTaskTitle" name="title" type="text" pattern=".+" required placeholder="Title"/>
 
-    <label for="createTaskInitialEstimate">Estimated pomodoros</label>
+    <label for="createTaskInitialEstimate"># Poms</label>
     <input class="initialEstimate required" id="createTaskInitialEstimate" name="initialEstimate" type="number" min="1" max="12" required/>
 
     <textarea class="description" id="createTaskDescription" name="description" type="text" placeholder="A short description of the task"></textarea>
+
+    <input type="checkbox" name="targetList" value="inventory">
+    <span class="small">Create new task in activity inventory</span>
 
     <input name="createTask" type="submit" id="taskcreatorbutton" value="Create"/>
 </form>

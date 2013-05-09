@@ -4,12 +4,13 @@ define(['jquery','sortable'], function($) {
 		$('.sortable').sortable({
 			connectWith: '.connected'
 		});
-		/*$('.handles').sortable({
-			handle: '.handle'
+		$('.sortable li li').each(function( index ) {
+			if ($(this).hasClass('interrupted')) {
+				$(this).html('<img src="assets/img/icon_interrupted.svg" />');
+			}
+			else if ($(this).hasClass('broken')) {
+				$(this).html('<img src="assets/img/icon_broken.svg" />');
+			}
 		});
-
-		$('.sortable li').click(function() {
-		  console.log("clicked"+$(this));
-		});*/
 	});
 });

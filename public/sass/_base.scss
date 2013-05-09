@@ -16,7 +16,7 @@ $desktop-medium: only screen 1200px;
 $desktop-large: only screen 1600px;
 $not-handheld: not handheld;
 
-
+$border-radius: 0.3rem;
 
 // Colors
 $color-main: #BC4C2E;
@@ -43,28 +43,23 @@ $background-color: #F2F2F2;
 *{
 	@include box-sizing(border-box);
 }
-// clearfix
-@mixin cf{
-	*zoom: 1;
-	&:before,
-	&:after {
-	    content: " ";
-	    display: table;
-	}
-	&:after {
-	    clear: both;
-	}
+
+@mixin calc($property, $expression) { 
+  #{$property}: -moz-calc(#{$expression}); 
+  #{$property}: -o-calc(#{$expression}); 
+  #{$property}: -webkit-calc(#{$expression}); 
+  #{$property}: calc(#{$expression}); 
 }
 
-@mixin gradient ($color-top, $color-bottom) {
+@mixin gradient ($color-bottom: $color-main, $color-top: lighten($color-bottom, 10) ) {
 	background: $color-top;
 	@include background-image(linear-gradient($color-top, $color-bottom));
 }
 @mixin redbox{
-	@include gradient($color-main-lighter, $color-main);
+	@include gradient($color-main);
 	border: 0.1rem solid $color-main-darker;
 	@include box-shadow(inset 0 0.1rem 0 0 $color-main-highlight);
-	@include border-radius(0.3rem);
+	@include border-radius($border-radius);
 }
 @mixin redheader{
 	width: 100%;
@@ -78,7 +73,8 @@ $background-color: #F2F2F2;
 	font-size: 2.4rem;
 	height: 4.8rem;
 	color: $btnTextColor;
-	@include gradient(lighten($btnBgColor, 10), $btnBgColor);
+	@include border-radius($border-radius);
+	@include gradient($btnBgColor);
 	border: 0.1rem solid $btnBorderColor;
 	@include box-shadow(inset 0 0.1rem 0 0 $color-highlight, 0 0.2rem 0 0 $color-shadow);
 	&:active{
@@ -92,15 +88,17 @@ $background-color: #F2F2F2;
 	@include box-shadow(inset 0 0.1rem 0 0 $color-complement-lighter);
 }
 @mixin textbox{
+	@include border-radius($border-radius);
 	background-color: $color-complement;
 	border: 0.1rem solid $color-complement-darker;
-	@include box-shadow(inset 0 0.2rem 0 0 $color-complement-darker);
+	@include box-shadow(inset 0 0.2rem 0 0 $color-shadow);
 }
 @mixin textboxonred{
+	@include border-radius($border-radius);
 	padding: 0.4rem;
 	background-color: $color-complement;
 	border: 0.1rem solid $color-main-darker;
-	@include box-shadow(inset 0 0.2rem 0 0 $color-complement-darker, 0 0.1rem 0 0 $color-main-highlight);
+	@include box-shadow(inset 0 0.2rem 0 0 $color-shadow, 0 0.1rem 0 0 $color-highlight);
 }
 @mixin circle ($size, $border-color){
 	border-radius: 50%;
@@ -152,6 +150,13 @@ $background-color: #F2F2F2;
 			background-color: lighten($color-main-text, 20);
 			@include box-shadow((inset 0 0.1rem 0 0 $color-shadow, 0 0.1rem 0 0 $color-highlight));
 
+			img{
+				height: 100%;
+				width: auto;
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
 			&:nth-child(3n){
 				margin-right: 0;
 			}
@@ -167,6 +172,7 @@ $background-color: #F2F2F2;
 				border-color: darken($color-warning, 30);
 				background-color: $color-warning;
 				@include box-shadow((inset 0 0.1rem 0 0 $color-highlight, 0 0.1rem 0 0 $color-highlight));
+
 
 			}
 			&.broken{

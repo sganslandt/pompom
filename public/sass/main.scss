@@ -3,7 +3,9 @@
 html {
 	font-size: 62.5%;
 	height: 100%;
-	@include background-image(linear-gradient(lighten($color-main-text, 30), $color-main-text));
+	//min-height: 100%;
+	background-color: $color-main-darker;
+	background-attachment: fixed;
 }
 body{
 	font-size: 1.4rem;
@@ -23,9 +25,10 @@ a{
 	display: block;
 
 }
+
 #pageheader{
 	@include redbox;
-	@include cf;
+	@include clearfix;
 	padding: 0.4rem;
 	height: 4.2rem;
 	position: fixed;
@@ -102,11 +105,43 @@ a{
 			float: right;
 			width: 6.4rem;
 			text-align: center;
+			&::-webkit-inner-spin-button {
+		    border-left: .1rem solid $color-main-darker;
+		    @include border-top-right-radius(0.2rem);
+		    @include border-bottom-right-radius(0.2rem);
+		    background-image: url("../img/icon_spinner.svg"), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #d3674a), color-stop(100%, #bc4c2e));
+				background-image: url("../img/icon_spinner.svg"), -webkit-linear-gradient(#d3674a,#bc4c2e);
+				background-image: url("../img/icon_spinner.svg"), -moz-linear-gradient(#d3674a,#bc4c2e);
+				background-image: url("../img/icon_spinner.svg"), -o-linear-gradient(#d3674a,#bc4c2e);
+				background-image: url("../img/icon_spinner.svg"), linear-gradient(#d3674a,#bc4c2e);
+				background-position: center;
+		    @include box-shadow(inset 0 0.1rem 0 0 $color-highlight, 0 0.2rem 0 0 $color-shadow);
+		    width: 24px;
+		    -webkit-appearance: none;
+		    margin: 0;
+			}
+			&::-webkit-outer-spin-button {
+		    
+			}
 		}
 		label{
+			display: inline-block;
 			margin-top: 1rem;
 			font-size: 2.4rem;
 			color: $color-main-darker;
+		}
+		input[type="checkbox"]{
+			float: left;
+		}
+		span.small{
+			padding-left: 0.4rem;
+			margin-top: 1.4rem;
+			display: inline-block;
+			float: left;
+			color: $color-main-darker;
+			font-size: 1.4rem;
+			width: 90%;
+			@include calc(width, "100% - 13px");
 		}
 		input[type="submit"]{
 			@include button($color-action, darken($color-action, 30));
@@ -137,7 +172,7 @@ a{
 
 }
 #tasks{
-	@include cf;
+	@include clearfix;
 	@include app-section;
 	border-top: none;
 	
@@ -153,7 +188,7 @@ a{
 	#inventory{
 		position: relative;
 		h2{
-			@include redheader;
+			color: $color-main-text;
 			margin: 0;
 		}
 	}
@@ -166,6 +201,8 @@ a{
 			@include lightbox;
 			@include taskbox;
 			border-top: none;
+
+
 		}
 
 		
@@ -191,12 +228,12 @@ a{
 				}
 
 				ol.pomodoros{
-					width: 5.6rem;
+					width: 8.8rem;
 
 					li{
-						@include circle (1.6rem, $color-main-darker);
-						margin-right: 0.4rem;
-						margin-bottom: 0.4rem;
+						@include circle (2.4rem, $color-main-darker);
+						margin-right: 0.8rem;
+						margin-bottom: 0.8rem;
 
 						&.active{
 						}
@@ -204,21 +241,10 @@ a{
 						}
 						&.interrupted{
 
-							&:after{
-								content: url("../img/icon_interrupted.svg");
-								position: absolute;
-								left: -0.1rem;
-								top: -0.1rem;
-							}
+
 						}
 						&.broken{
 
-							&:after{
-								content: url("../img/icon_broken.svg");
-								position: absolute;
-								left: -0.1rem;
-								top: -0.1rem;
-							}
 						}
 					}
 				}
@@ -234,7 +260,7 @@ a{
 	}
 }
 #timer {
-	@include cf;
+	@include clearfix;
 	@include redbox;
 	@include app-section;
 	border-top: none;
@@ -299,7 +325,7 @@ a{
           text-align: center;
       }
       #controls{
-      	padding: 1rem 35%;
+      	padding: 1rem 20%;
         button {
         	@include button;
         	margin-top: 1rem;
@@ -346,6 +372,9 @@ a{
 /************ Responsive Layout *************/
 
 @include breakpoint($desktop-small) {
+	html{
+			@include background-image(linear-gradient(lighten($color-main-text, 30), lighten($color-main-text, 50)));
+	}
 	body {
 		padding: 6.2rem 3rem 3rem;
 	}
@@ -356,23 +385,45 @@ a{
 		border-top: 0.1rem solid $color-main-darker;
 	}
 	#taskCreator{
-		width: 20%;
+		position: absolute;
+		width: 19%;
+		@include calc(width, "(100% - 60px) * 0.2");
 		left: 3rem;
 		top: 33.2rem;
 		border-top: 0.1rem solid $color-main-darker;
+		height: 28.4rem;
 	}
 	#tasks{
 		width: 78%;
+		padding-bottom: 0;
+		overflow: visible;
 
+		ol.taskList{
+			& > li{
+				margin-bottom: 0.8rem;
+			}
+		}
 		#today{
 			width: 64%;
 			margin-right: 2%;
 			float: left;
+			padding: 0 0.5rem 0.5rem;
+			background-color: $color-highlight;
+			min-height: 100%;
 
+			ol.taskList{
+				& > li:first-child,
+				&.topfix > li:nth-child(2){
+					height: 10.4rem;
+				}
+			}
 		}
 		#inventory{
 			width: 34%;
 			float: left;
+			padding: 0 0.5rem 0.5rem;
+			background-color: $color-highlight;
+			min-height: 100%;
 		}
 	}
 }
