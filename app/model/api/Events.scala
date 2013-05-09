@@ -1,10 +1,17 @@
 package model.api
 
+abstract class UserEvent {
+  def userId: String
+}
+
+case class UserRegisteredEvent(override val userId: String) extends UserEvent
+case class UserLoggedInEvent(override val userId: String) extends  UserEvent
+
 abstract class TaskEvent {
   def taskId: String
 }
 
-case class TaskCreatedEvent(override val taskId: String, title: String, description: String, initialEstiamet: Int) extends TaskEvent
+case class TaskCreatedEvent(override val userId: String, taskId: String, title: String, description: String, initialEstimate: Int) extends UserEvent
 case class TaskDoneEvent(override val taskId: String) extends TaskEvent
 case class EstimateExtendedEvent(taskId: String, extension: Int)
 

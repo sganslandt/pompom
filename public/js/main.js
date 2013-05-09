@@ -10,5 +10,8 @@ requirejs.config({
     }
 });
 require(['jquery','timer','todoList','taskCreator'], function($, timer) {
-	console.log('all done');
+    $("form").submit(function(eventData){
+        $.post(eventData.currentTarget.action, $(eventData.currentTarget).serialize());
+        return false;
+    });
 });

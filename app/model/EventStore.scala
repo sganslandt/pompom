@@ -1,6 +1,8 @@
 package model
 
 import akka.actor.Actor
+import play.api.libs.concurrent.Akka
+import play.api.Play.current
 
 class EventStore extends Actor {
 
@@ -16,6 +18,7 @@ class EventStore extends Actor {
 
     case e: AnyRef => {
       events = e :: events
+      Akka.system.eventStream.publish(e)
     }
   }
 }

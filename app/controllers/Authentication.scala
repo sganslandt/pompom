@@ -3,8 +3,14 @@ package controllers
 import play.api.mvc._
 import play.api.data.Form
 import play.api.data.Forms.nonEmptyText
+import play.api.libs.concurrent.Akka
+import play.api.Play.current
+import akka.actor.ActorRef
+import model.api.LoginUserCommand
 
 object Authentication extends Controller {
+
+  val taskCommandHandler: ActorRef = Akka.system.actorFor("/user/taskCommandHandler")
 
   def login = Action {
     Ok(views.html.auth.login())
@@ -18,8 +24,10 @@ object Authentication extends Controller {
     implicit request =>
       loginForm.bindFromRequest.fold(
         errors => BadRequest(views.html.auth.login()),
-        email => Redirect(routes.Application.index()).withSession(session + ("email" -> email)
-        )
+        email => {
+          taskCommandHandler ! LoginUserCommand(email)
+          Redirect(routes.Application.index()).withSession(session + ("email" -> email))
+        }
       )
   }
 

@@ -1,12 +1,19 @@
 package controllers
 
-import play.api.mvc.{Result, Action, Controller}
+import play.api.mvc.{Result, Controller}
 import controllers.Authentication.Secured
 import model.Task
 import play.api.data._
 import play.api.data.Forms._
+import akka.actor.ActorRef
+import model.api.CreateTaskCommand
+import java.util.UUID
+import play.api.libs.concurrent.Akka
+import play.api.Play.current
 
 object Tasks extends Controller with Secured {
+
+  val taskCommandHandler: ActorRef = Akka.system.actorFor("/user/taskCommandHandler")
 
   val createTaskForm = Form(
     tuple(
@@ -22,7 +29,7 @@ object Tasks extends Controller with Secured {
         createTaskForm.bindFromRequest.fold(
         form => Forbidden(""), {
           case (title, initialEstimate, description) =>
-            val taskId = Task.createTask(userId, title, initialEstimate, description)
+            taskCommandHandler ! CreateTaskCommand(userId, UUID.randomUUID().toString, title, description, initialEstimate)
             Ok("")
         })
     }

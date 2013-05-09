@@ -5,18 +5,24 @@ import play.api.libs.concurrent.Akka
 import java.util.UUID
 
 import play.api.Play.current
-import model.api.{TaskCreatedEvent, TaskEvent}
+import model.api._
+import model.Replay
+import model.api.RegisterUserCommand
+import model.api.LoginUserCommand
+import scala.Some
 
 class TaskCommandHandler(val eventStore: ActorRef) extends Actor {
 
   eventStore ! Replay()
 
-  def createTask(userId: User, title: String, initialEstimate: Int, description: String): String = {
+  def login(userId: String) {
+  }
+
+  def createTask(userId: String, title: String, initialEstimate: Int, description: String): String = {
     val id = UUID.randomUUID().toString
     val userTasks = tasks.get(userId).getOrElse(EMPTY)
     val newTask = Akka.system.actorOf(Props(new Task(id, title, description, initialEstimate)))
-    val newEntry: (User, List[ActorRef]) = (userId, newTask :: userTasks)
-    tasks = tasks + newEntry
+    tasks = tasks + (userId -> (newTask :: userTasks))
 
     id
   }
@@ -34,11 +40,11 @@ class TaskCommandHandler(val eventStore: ActorRef) extends Actor {
 
   def startPomodoro(s: String) {}
 
-  type User = String
-
   val EMPTY: List[ActorRef] = List(Akka.system.actorOf(Props(new Task("id", "title", "desc", 3))))
 
-  var tasks: Map[User, List[ActorRef]] = Map()
+  var tasks: Map[String, List[ActorRef]] = Map()
+
+  var users: Map[String, ActorRef] = Map()
 
   def getTask(userId: User, taskId: String): Option[ActorRef] = {
     Some(Akka.system.actorOf(Props[Task]))
@@ -54,13 +60,33 @@ class TaskCommandHandler(val eventStore: ActorRef) extends Actor {
 
 
   def receive = {
+
+    /**
+     * Commands
+     */
+
+    case c: LoginUserCommand => {
+      val userId = c.userId
+      if (!users.contains(userId)) {
+        users = users + (userId -> context.actorOf(Props(new User(userId))))
+        users(userId) ! RegisterUserCommand()
+      }
+
+      users(userId) ! LoginUserCommand(userId)
+    }
+
+    case c: CreateTaskCommand => users(c.userId) ! c
+
+    /**
+     * Events
+     */
+
+    case e: UserEvent => {
+      eventStore ! e
+    }
+
     case e: TaskEvent => {
       eventStore ! e
-      getOrCreateTask(e.taskId) ! e
     }
-  }
-
-  def getOrCreateTask(taskId: String) = {
-    Akka.system.actorOf(Props[Task])
   }
 }

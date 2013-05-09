@@ -3,7 +3,7 @@ package model
 import java.util.UUID
 import org.joda.time.DateTime
 import akka.actor.Actor
-import model.api.CreateTaskCommand
+import model.api.{TaskCreatedEvent, CreateTaskCommand}
 
 class Task(val id: String, val title: String, val description: String, val initialEstimate: Int) extends Actor {
 
@@ -12,7 +12,9 @@ class Task(val id: String, val title: String, val description: String, val initi
   var isDone = false
 
   def receive = {
-    case _ => {}
+    case c: CreateTaskCommand => self ! TaskCreatedEvent(c.userId, id, title, description, initialEstimate)
+
+    case e: TaskCreatedEvent => context.parent ! e
   }
 
   def inPomodoro = {

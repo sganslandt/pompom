@@ -1,6 +1,9 @@
 package model.api
 
-case class CreateTaskCommand(taskId: String, title: String, description: String, initialEstimate: Int)
+case class RegisterUserCommand()
+case class LoginUserCommand(userId: String)
+
+case class CreateTaskCommand(userId: String, taskId: String, title: String, description: String, initialEstimate: Int)
 
 case class StartPomodoroCommand(taskId: String)
 case class EndPomodoroCommand(taskId: String)
