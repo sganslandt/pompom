@@ -2,15 +2,15 @@
 	<button class="expand">New Task</button>
 </div>
 <form id="createTask" name="createTask" method="post" action="/tasks/">
-    <input clas="title required" id="createTaskTitle" name="title" type="text" pattern=".+" required placeholder="Title"/>
+    <input class="title required" id="createTaskTitle" name="title" type="text" pattern=".+" required placeholder="Title"/>
 
     <label for="createTaskInitialEstimate"># Poms</label>
     <input class="initialEstimate required" id="createTaskInitialEstimate" name="initialEstimate" type="number" min="1" max="12" required/>
 
     <textarea class="description" id="createTaskDescription" name="description" type="text" placeholder="A short description of the task"></textarea>
 
-    <input type="checkbox" name="targetList" value="inventory">
-    <span class="small">Create new task in activity inventory</span>
+    <input type="checkbox" id="createTaskTargetList" name="targetList" value="inventory" class="checkbox">
+    <label class="targetLabel" for="createTaskTargetList"><span></span>Create new task in activity inventory</label>
 
     <input name="createTask" type="submit" id="taskcreatorbutton" value="Create"/>
 </form>

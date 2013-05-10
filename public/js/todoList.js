@@ -13,4 +13,14 @@ define(['jquery','sortable'], function($) {
 			}
 		});
 	});
+
 });
+function markAsInProgress() {
+	$('#today .task .pomodoros li.active').first().addClass('inprogress');
+}
+function markAsBroken () {
+	activeTask = $('#today .task .inprogress').removeClass('active inprogress').addClass('broken').html('<img src="assets/img/icon_broken.svg" />');
+}
+function markAsInterrupted () {
+	activeTask = $('#today .task .inprogress').addClass('interrupted').html('<img src="assets/img/icon_interrupted.svg" />');
+}

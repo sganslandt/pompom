@@ -14,7 +14,7 @@ define('timer',['jquery'], function($) {
 		    }
 		});
 		$('button#interruptPomodoro').click(function() {
-		  registerInterruption();
+		  markAsInterrupted();
 		});
 	});
 
@@ -24,7 +24,10 @@ define('timer',['jquery'], function($) {
 		updateTimeGrade(duration, 0);
 		pomodoroTimer = setTimeout(checkAndRestartPomodoroTimer, 1000);
 		$('#timer').addClass('active');
-		console.log('timer starts');
+		if ($('#today .taskList li').length < 1) {
+			addTaskToList(false, 'Your New Task', 1, "I automagicaly created a task for you. You should probably edit it to fit your new task.<br /> If you don't know the <a href='http://www.pomodorotechnique.com/' target='_blank' title='Go to www.pomodorotechnique.com in a new window'>Pomodoro Technique</a> yet, you should watch the video there.");
+		};
+		markAsInProgress();
 	}
 
 	function checkAndRestartPomodoroTimer () {
@@ -48,14 +51,13 @@ define('timer',['jquery'], function($) {
 		clearTimeout(pomodoroTimer);
 		updateTimeGrade(1, 1);
 		document.getElementById('alarm').play();
-		console.log('rrrrrrrring! timer stops');
 	}
 	function breakPomodoro () {
     stopTimer();
+    markAsBroken();
 	}
-	function registerInterruption (argument) {
-		
-		// body...
+	function registerInterruption () {
+		interruptPomodoro();
 	}
 	return{
 		

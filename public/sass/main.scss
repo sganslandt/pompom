@@ -5,7 +5,6 @@ html {
 	height: 100%;
 	//min-height: 100%;
 	background-color: $color-main-darker;
-	background-attachment: fixed;
 }
 body{
 	font-size: 1.4rem;
@@ -94,7 +93,7 @@ a{
 		input[type="number"],
 		textarea{
 			margin-bottom: 0.4rem;
-			font-size: 2.4rem;
+			font-size: 2.1rem;
 			@include textboxonred
 		}
 		textarea{
@@ -127,22 +126,38 @@ a{
 		label{
 			display: inline-block;
 			margin-top: 1rem;
-			font-size: 2.4rem;
+			font-size: 2.1rem;
 			color: $color-main-darker;
 		}
-		input[type="checkbox"]{
-			float: left;
+
+		input[type="checkbox"] {
+			position: absolute;
+			opacity: 0;
+
+			&:checked + label span{
+				background-image: url("../img/icon_check.svg");
+				background-position: center;
+			}
 		}
-		span.small{
-			padding-left: 0.4rem;
-			margin-top: 1.4rem;
-			display: inline-block;
-			float: left;
-			color: $color-main-darker;
-			font-size: 1.4rem;
-			width: 90%;
-			@include calc(width, "100% - 13px");
+		label.targetLabel { 
+		  display: inline-block;
+		  cursor: pointer;
+		  padding-left: 4rem;
+		  font-size: 1.8rem;
+		  height: 3.2rem;
+		  margin: 0 0 0.4rem;
+		  line-height: 1.8em;
+
+		  span{
+		  	@include textboxonred;
+		  	display: inline-block;
+				width: 3.2rem;
+				height: 3.2rem;
+				position: absolute;
+				left: .4rem;
+		  }
 		}
+
 		input[type="submit"]{
 			@include button($color-action, darken($color-action, 30));
 		}
@@ -174,7 +189,6 @@ a{
 #tasks{
 	@include clearfix;
 	@include app-section;
-	border-top: none;
 	
 	@include breakpoint($tablet) {
 		width: 67%;
@@ -198,9 +212,7 @@ a{
 		list-style: none;
 
 		& > li{
-			@include lightbox;
 			@include taskbox;
-			border-top: none;
 
 
 		}
@@ -225,6 +237,10 @@ a{
 				p{
 					display: block;
 					color: $color-complement;
+					line-height: 1.25em;
+					a{
+						text-decoration: underline;
+					}
 				}
 
 				ol.pomodoros{
@@ -245,6 +261,9 @@ a{
 						}
 						&.broken{
 
+						}
+						&.inprogress{
+							@include gradient($color-action);
 						}
 					}
 				}
@@ -373,7 +392,11 @@ a{
 
 @include breakpoint($desktop-small) {
 	html{
-			@include background-image(linear-gradient(lighten($color-main-text, 30), lighten($color-main-text, 50)));
+		background-color: $color-complement-darker;
+		background-image: url("../img/logo.png");
+		background-position: center;
+		background-attachment: fixed;
+		background-repeat: no-repeat;
 	}
 	body {
 		padding: 6.2rem 3rem 3rem;

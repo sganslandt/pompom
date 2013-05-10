@@ -4,4 +4,5 @@ define('taskCreator',['jquery'], function($) {
 		  $('#taskCreator form').toggleClass('expanded');
 		});
 	});
+	
 });
