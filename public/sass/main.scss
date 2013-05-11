@@ -36,6 +36,7 @@ a{
 	left: 0;
 	z-index: 10;
 
+
 	h1 {
 		padding-left: 2rem;
 		line-height: 1em;
@@ -56,7 +57,57 @@ a{
 		}
 	}
 }
+#login{
+	main{
+		width: 51rem;
+		margin: 0 auto;
+		padding: 0 0.5rem 0.5rem;
+		@include transparentBox(white, 0.35);
 
+		h1{
+			width: 50rem;
+			margin: 0 auto;
+		}
+		form {
+			@include redbox;
+			margin: 0 auto;
+			padding: 0.4rem;
+
+			input{
+				height: 4.8rem;
+			}
+			label{
+				display: none;
+				font-size: 2.1rem;
+				color: $color-main-darker;
+			}
+			input[type="email"]{
+				width: 100%;
+				margin-bottom: 0.4rem;
+				font-size: 2.1rem;
+				@include textboxonred
+			}
+			input[type="submit"]{
+				@include button($color-action, darken($color-action, 30));
+			}
+		}
+	}
+	.extras{
+		width: 51rem;
+		margin: 1rem auto;
+		padding: 0.5rem;
+		@include transparentBox(white, 0.35);
+		color: $color-main-text;
+		
+		h3{
+			margin-top: 0;
+		}
+		a{
+			color: $color-main-text;
+			text-decoration: underline;
+		}
+	}
+}
 #taskCreator{
 	@include redbox;
 	position: relative;
@@ -202,8 +253,14 @@ a{
 	#inventory{
 		position: relative;
 		h2{
-			color: $color-main-text;
+			position: absolute;
+			line-height: 1em;
+			top: 0.4rem;
+			left: 0.4rem;
+			font-size: 5rem;
+			color: rgba(white, 0.5);
 			margin: 0;
+			z-index: 0;
 		}
 	}
 	ol.taskList{
@@ -224,54 +281,7 @@ a{
 			& > li{
 			}
 
-			& > li:first-child,
-			&.topfix > li:nth-child(2){
-				@include redbox();
-				@include taskbox;
-				height: 6.4rem;
 
-				h3{
-					margin: 0 0 0.4rem;
-					color: $color-complement;
-				}
-				p{
-					display: block;
-					color: $color-complement;
-					line-height: 1.25em;
-					a{
-						text-decoration: underline;
-					}
-				}
-
-				ol.pomodoros{
-					width: 8.8rem;
-
-					li{
-						@include circle (2.4rem, $color-main-darker);
-						margin-right: 0.8rem;
-						margin-bottom: 0.8rem;
-
-						&.active{
-						}
-						&.ended{
-						}
-						&.interrupted{
-
-
-						}
-						&.broken{
-
-						}
-						&.inprogress{
-							@include gradient($color-action);
-						}
-					}
-				}
-
-
-
-
-			}
 		}
 	}
 	#inventory{
@@ -357,7 +367,7 @@ a{
         	margin-right: 4%;
 
         	img{
-        		height: 100%;
+        		height: 3.8rem;
         		width: auto;
         	}
         }
@@ -368,7 +378,7 @@ a{
         	width: 48%;
 
         	img{
-        		height: 100%;
+        		height: 3.8rem;
         		width: auto;
         	}
 		  	}
@@ -393,13 +403,14 @@ a{
 @include breakpoint($desktop-small) {
 	html{
 		background-color: $color-complement-darker;
-		background-image: url("../img/logo.png");
+		background-image: url("../img/green_dust_scratch.png");
 		background-position: center;
 		background-attachment: fixed;
-		background-repeat: no-repeat;
+		background-repeat: repeat;
 	}
 	body {
 		padding: 6.2rem 3rem 3rem;
+		font-family: Calluna-Regular;
 	}
 	#timer{
 		width: 20%;
@@ -414,7 +425,11 @@ a{
 		left: 3rem;
 		top: 33.2rem;
 		border-top: 0.1rem solid $color-main-darker;
-		height: 28.4rem;
+		height: 29rem;
+
+		form{
+			@include clearfix;
+		}
 	}
 	#tasks{
 		width: 78%;
@@ -422,6 +437,7 @@ a{
 		overflow: visible;
 
 		ol.taskList{
+			padding: 4.8rem 0.5rem 0.5rem;
 			& > li{
 				margin-bottom: 0.8rem;
 			}
@@ -430,22 +446,20 @@ a{
 			width: 64%;
 			margin-right: 2%;
 			float: left;
-			padding: 0 0.5rem 0.5rem;
-			background-color: $color-highlight;
+			@include transparentBox(white, 0.35);
 			min-height: 100%;
 
 			ol.taskList{
 				& > li:first-child,
 				&.topfix > li:nth-child(2){
-					height: 10.4rem;
+					//height: 10.4rem;
 				}
 			}
 		}
 		#inventory{
 			width: 34%;
 			float: left;
-			padding: 0 0.5rem 0.5rem;
-			background-color: $color-highlight;
+			@include transparentBox(white, 0.35);
 			min-height: 100%;
 		}
 	}

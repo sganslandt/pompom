@@ -1,3 +1,5 @@
+@import url("http://fnt.webink.com/wfs/webink.css/?project=3AC395CE-F178-4C47-8528-73CA3386ED53&fonts=12FD0F01-C741-2AB4-78FE-CECD1BE87FB9:f=Calluna-BoldIt,3A13BFCA-7DC7-D1EE-757E-40EF7086214E:f=Calluna-Regular,4CFB49CB-EBCD-45D1-8C1A-D9B64EAC409C:f=Calluna-It");
+
 @import "h5bp";
 @import "compass/reset";
 @import "compass/utilities";
@@ -17,6 +19,10 @@ $desktop-large: only screen 1600px;
 $not-handheld: not handheld;
 
 $border-radius: 0.3rem;
+
+@mixin font-heading{
+	font-family: Calluna-BoldIt;
+} 
 
 // Colors
 $color-main: #BC4C2E;
@@ -43,7 +49,9 @@ $background-color: #F2F2F2;
 *{
 	@include box-sizing(border-box);
 }
-
+#{headings()}{
+	@include font-heading;
+}
 @mixin calc($property, $expression) { 
   #{$property}: -moz-calc(#{$expression}); 
   #{$property}: -o-calc(#{$expression}); 
@@ -57,41 +65,47 @@ $background-color: #F2F2F2;
 }
 @mixin redbox{
 	@include gradient($color-main);
-	border: 0.1rem solid $color-main-darker;
 	@include box-shadow(inset 0 0.1rem 0 0 $color-main-highlight);
 	@include border-radius($border-radius);
+	border: 0.1rem solid $color-main-darker;
+}
+@mixin transparentBox($color: white, $alpha: 0.5, $borderRadius: $border-radius){
+	background-color: rgba($color, $alpha);
+	@include border-radius($borderRadius);
 }
 @mixin redheader{
-	width: 100%;
 	@include redbox;
+	@include font-heading;
+	width: 100%;
 	color: $color-complement;
 	padding: 0.5rem 0.4rem;
 }
 @mixin button($btnBgColor: $color-main, $btnBorderColor: darken($btnBgColor, 20), $btnTextColor: $color-complement){
+	@include font-heading;
+	@include border-radius($border-radius);
+	@include gradient($btnBgColor);
+	@include box-shadow(inset 0 0.1rem 0 0 $color-highlight, 0 0.2rem 0 0 $color-shadow);
 	padding: 0.4rem;
 	width: 100%;
 	font-size: 2.4rem;
 	height: 4.8rem;
 	color: $btnTextColor;
-	@include border-radius($border-radius);
-	@include gradient($btnBgColor);
 	border: 0.1rem solid $btnBorderColor;
-	@include box-shadow(inset 0 0.1rem 0 0 $color-highlight, 0 0.2rem 0 0 $color-shadow);
 	&:active{
-		padding: 0.5rem 0.4rem 0.3rem;
 		@include box-shadow(inset 0 0.1rem 0 0 $color-shadow);
+		padding: 0.5rem 0.4rem 0.3rem;
 	}
 }
 @mixin lightbox{
+	@include box-shadow(inset 0 0.1rem 0 0 $color-complement-lighter);
 	background-color: $color-complement;
 	border: 0.1rem solid $color-complement-darker;
-	@include box-shadow(inset 0 0.1rem 0 0 $color-complement-lighter);
 }
 @mixin textbox{
 	@include border-radius($border-radius);
+	@include box-shadow(inset 0 0.2rem 0 0 $color-shadow);
 	background-color: $color-complement;
 	border: 0.1rem solid $color-complement-darker;
-	@include box-shadow(inset 0 0.2rem 0 0 $color-shadow);
 }
 @mixin textboxonred{
 	@include border-radius($border-radius);
@@ -142,11 +156,11 @@ $background-color: #F2F2F2;
 
 		li{
 			position: relative;
-			@include circle (1rem, $color-main-text);
+			@include circle (1.6rem, $color-main-text);
 			overflow: hidden;
 			float: left;
-			margin-right: 0.5rem;
-			margin-bottom: 0.5rem;
+			margin-right: 0.6rem;
+			margin-bottom: 0.6rem;
 			padding: 0;
 			background-color: lighten($color-main-text, 20);
 			@include box-shadow((inset 0 0.1rem 0 0 $color-shadow, 0 0.1rem 0 0 $color-highlight));
@@ -158,7 +172,7 @@ $background-color: #F2F2F2;
 				top: 0;
 				left: 0;
 			}
-			&:nth-child(3n){
+			&:nth-child(4n){
 				margin-right: 0;
 			}
 			&.active{
@@ -180,6 +194,9 @@ $background-color: #F2F2F2;
 				background-color: #C11717;
 				border-color: #770600;
 				@include box-shadow((inset 0 0.1rem 0 0 $color-highlight, 0 0.1rem 0 0 $color-highlight));
+			}
+			&.inprogress{
+				@include gradient($color-action);
 			}
 		}
 	}
