@@ -7,7 +7,7 @@ html {
 	background-color: $color-main-darker;
 }
 body{
-	font-size: 1.4rem;
+	font-size: $font-text;
 	height: 100%;
 	margin: 0;
 	position: relative;
@@ -45,7 +45,7 @@ a{
 		margin: 0;
 		a{
 			color: $color-complement;
-			font-size: 2.8rem;
+			font-size: $font-large;
 		}
 	}
 	nav{
@@ -78,13 +78,13 @@ a{
 			}
 			label{
 				display: none;
-				font-size: 2.1rem;
+				font-size: $font-medium;
 				color: $color-main-darker;
 			}
 			input[type="email"]{
 				width: 100%;
 				margin-bottom: 0.4rem;
-				font-size: 2.1rem;
+				font-size: $font-medium;
 				@include textboxonred
 			}
 			input[type="submit"]{
@@ -144,12 +144,12 @@ a{
 		input[type="number"],
 		textarea{
 			margin-bottom: 0.4rem;
-			font-size: 2.1rem;
+			font-size: $font-medium;
 			@include textboxonred
 		}
 		textarea{
 			height: 6.4rem;
-			font-size: 1.4rem;
+			font-size: $font-text;
 		}
 		input[type="number"]{
 			float: right;
@@ -177,7 +177,7 @@ a{
 		label{
 			display: inline-block;
 			margin-top: 1rem;
-			font-size: 2.1rem;
+			font-size: $font-medium;
 			color: $color-main-darker;
 		}
 
@@ -194,10 +194,10 @@ a{
 		  display: inline-block;
 		  cursor: pointer;
 		  padding-left: 4rem;
-		  font-size: 1.8rem;
+		  font-size: $font-text;
 		  height: 3.2rem;
 		  margin: 0 0 0.4rem;
-		  line-height: 1.8em;
+		  line-height: 2.2em;
 
 		  span{
 		  	@include textboxonred;
@@ -257,8 +257,8 @@ a{
 			line-height: 1em;
 			top: 0.4rem;
 			left: 0.4rem;
-			font-size: 5rem;
-			color: rgba(white, 0.5);
+			font-size: $font-x-large;
+			color: rgb(180, 207, 207);
 			margin: 0;
 			z-index: 0;
 		}
@@ -271,8 +271,13 @@ a{
 		& > li{
 			@include taskbox;
 
-
+			&.sortable-placeholder{
+				background-color: transparent;
+				border: 0.1rem solid $color-shadow;
+				@include box-shadow(inset 0 0.2rem 0 0 $color-shadow, 0 0.1rem 0 0 $color-highlight);
+			}
 		}
+
 
 		
 	}
@@ -334,6 +339,7 @@ a{
                     width: 3rem;
                     text-align: center;
                     margin-right: 2rem;
+                    font-size: $font-medium;
                 }
             }
             img{
@@ -402,8 +408,8 @@ a{
 
 @include breakpoint($desktop-small) {
 	html{
-		background-color: $color-complement-darker;
-		background-image: url("../img/green_dust_scratch.png");
+		background-color: rgb(180, 207, 207);
+		//background-image: url("../img/green_dust_scratch.png");
 		background-position: center;
 		background-attachment: fixed;
 		background-repeat: repeat;

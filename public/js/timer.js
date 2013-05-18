@@ -1,4 +1,4 @@
-define('timer',['jquery'], function($) {
+define('timer',['jquery', 'taskList'], function($, taskList) {
 	var startTime = 0;
 	var duration = 0;
 	var pomodoroTimer = 0;
@@ -10,13 +10,16 @@ define('timer',['jquery'], function($) {
 		});
 		$('button#breakPomodoro').click (function(){
 		    if (confirm('Do you really want to break this pomodoro')){
-		    breakPomodoro();
+		    	breakPomodoro();
 		    }
 		});
 		$('button#interruptPomodoro').click(function() {
-		  markAsInterrupted();
+		  interruptPomodoro();
+		  showNotification();
 		});
 	});
+
+	
 
 	function startTimer(durationInMinutes) {
 		startTime = $.now();
@@ -25,9 +28,9 @@ define('timer',['jquery'], function($) {
 		pomodoroTimer = setTimeout(checkAndRestartPomodoroTimer, 1000);
 		$('#timer').addClass('active');
 		if ($('#today .taskList li').length < 1) {
-			addTaskToList(false, 'Your New Task', 1, "I automagicaly created a task for you. You should probably edit it to fit your new task.<br /> If you don't know the <a href='http://www.pomodorotechnique.com/' target='_blank' title='Go to www.pomodorotechnique.com in a new window'>Pomodoro Technique</a> yet, you should watch the video there.");
+			taskList.addTaskToList(false, 'Your New Task', 1, "I automagicaly created a task for you. You should probably edit it to fit your new task.<br /> If you don't know the <a href='http://www.pomodorotechnique.com/' target='_blank' title='Go to www.pomodorotechnique.com in a new window'>Pomodoro Technique</a> yet, you should watch the video there.");
 		};
-		markAsInProgress();
+		taskList.markAsInProgress();
 	}
 
 	function checkAndRestartPomodoroTimer () {
@@ -54,10 +57,10 @@ define('timer',['jquery'], function($) {
 	}
 	function breakPomodoro () {
     stopTimer();
-    markAsBroken();
+    taskList.markAsBroken();
 	}
-	function registerInterruption () {
-		interruptPomodoro();
+	function interruptPomodoro () {
+		taskList.markAsInterrupted();
 	}
 	return{
 		
