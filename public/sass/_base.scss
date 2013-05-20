@@ -71,8 +71,11 @@ $background-color: #F2F2F2;
 @mixin redbox{
 	@include gradient($color-main);
 	@include box-shadow(inset 0 0.1rem 0 0 $color-main-highlight);
-	@include border-radius($border-radius);
 	border: 0.1rem solid $color-main-darker;
+
+	@include breakpoint($desktop-small) {
+		@include border-radius($border-radius);
+	}
 }
 @mixin transparentBox($color: white, $alpha: 0.5, $borderRadius: $border-radius){
 	background-color: rgba($color, $alpha);
@@ -139,6 +142,7 @@ $background-color: #F2F2F2;
 	position: relative;
 	height: 4.8rem;
 	padding: 0.4rem;
+	-webkit-transition: opacity 0.25s;
 	transition: opacity 0.25s;
 
 	h3{
@@ -205,5 +209,90 @@ $background-color: #F2F2F2;
 				@include gradient($color-action);
 			}
 		}
+	}
+}
+@mixin standardform{
+	position: relative;
+	padding: 0.4rem;
+
+	input[type="text"],
+	input[type="submit"],
+	textarea{
+		width: 100%;
+	}
+	input{
+		height: 4.8rem;
+	}
+	input[type="text"],
+	input[type="number"],
+	textarea{
+		margin-bottom: 0.4rem;
+		font-size: $font-medium;
+		@include textboxonred
+	}
+	textarea{
+		height: 6.4rem;
+		font-size: $font-text;
+	}
+	input[type="number"]{
+		float: right;
+		width: 6.4rem;
+		text-align: center;
+		&::-webkit-inner-spin-button {
+	    border-left: .1rem solid $color-main-darker;
+	    @include border-top-right-radius(0.2rem);
+	    @include border-bottom-right-radius(0.2rem);
+	    background-image: url("../img/icon_spinner.svg"), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #d3674a), color-stop(100%, #bc4c2e));
+			background-image: url("../img/icon_spinner.svg"), -webkit-linear-gradient(#d3674a,#bc4c2e);
+			background-image: url("../img/icon_spinner.svg"), -moz-linear-gradient(#d3674a,#bc4c2e);
+			background-image: url("../img/icon_spinner.svg"), -o-linear-gradient(#d3674a,#bc4c2e);
+			background-image: url("../img/icon_spinner.svg"), linear-gradient(#d3674a,#bc4c2e);
+			background-position: center;
+	    @include box-shadow(inset 0 0.1rem 0 0 $color-highlight, 0 0.2rem 0 0 $color-shadow);
+	    width: 24px;
+	    -webkit-appearance: none;
+	    margin: 0;
+		}
+		&::-webkit-outer-spin-button {
+	    
+		}
+	}
+	label{
+		display: inline-block;
+		margin-top: 1rem;
+		font-size: $font-medium;
+		color: $color-main-darker;
+	}
+
+	input[type="checkbox"] {
+		position: absolute;
+		opacity: 0;
+
+		&:checked + label span{
+			background-image: url("../img/icon_check.svg");
+			background-position: center;
+		}
+	}
+	label.targetLabel { 
+	  display: inline-block;
+	  cursor: pointer;
+	  padding-left: 4rem;
+	  font-size: $font-text;
+	  height: 3.2rem;
+	  margin: 0 0 0.4rem;
+	  line-height: 2.2em;
+
+	  span{
+	  	@include textboxonred;
+	  	display: inline-block;
+			width: 3.2rem;
+			height: 3.2rem;
+			position: absolute;
+			left: .4rem;
+	  }
+	}
+
+	input[type="submit"]{
+		@include button($color-action, darken($color-action, 30));
 	}
 }

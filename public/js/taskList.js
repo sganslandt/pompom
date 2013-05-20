@@ -62,7 +62,6 @@ define(['jquery','sortable'], function($) {
 			$(targetList).append($newLi);
 			//wait a bit with opacity or else the animation don't occur
 			setTimeout(function(){$(targetList).find(">li").css("opacity", 1);}, 30);
-			console.log($(targetList));
 			$(targetList).sortable('refresh')
 		}
 	}

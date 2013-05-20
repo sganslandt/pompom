@@ -4,7 +4,7 @@ html {
 	font-size: 62.5%;
 	height: 100%;
 	//min-height: 100%;
-	background-color: $color-main-darker;
+	background-color: white;
 }
 body{
 	font-size: $font-text;
@@ -112,7 +112,6 @@ a{
 	@include redbox;
 	position: relative;
 	padding-top: 0px;
-	border-top: none;
 
 	h2{
 		@include redheader;
@@ -129,89 +128,8 @@ a{
 		display: block;
 	}
 	form{
-		padding: 0.4rem;
+		@include standardform;
 		display: none;
-
-		input[type="text"],
-		input[type="submit"],
-		textarea{
-			width: 100%;
-		}
-		input{
-			height: 4.8rem;
-		}
-		input[type="text"],
-		input[type="number"],
-		textarea{
-			margin-bottom: 0.4rem;
-			font-size: $font-medium;
-			@include textboxonred
-		}
-		textarea{
-			height: 6.4rem;
-			font-size: $font-text;
-		}
-		input[type="number"]{
-			float: right;
-			width: 6.4rem;
-			text-align: center;
-			&::-webkit-inner-spin-button {
-		    border-left: .1rem solid $color-main-darker;
-		    @include border-top-right-radius(0.2rem);
-		    @include border-bottom-right-radius(0.2rem);
-		    background-image: url("../img/icon_spinner.svg"), -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #d3674a), color-stop(100%, #bc4c2e));
-				background-image: url("../img/icon_spinner.svg"), -webkit-linear-gradient(#d3674a,#bc4c2e);
-				background-image: url("../img/icon_spinner.svg"), -moz-linear-gradient(#d3674a,#bc4c2e);
-				background-image: url("../img/icon_spinner.svg"), -o-linear-gradient(#d3674a,#bc4c2e);
-				background-image: url("../img/icon_spinner.svg"), linear-gradient(#d3674a,#bc4c2e);
-				background-position: center;
-		    @include box-shadow(inset 0 0.1rem 0 0 $color-highlight, 0 0.2rem 0 0 $color-shadow);
-		    width: 24px;
-		    -webkit-appearance: none;
-		    margin: 0;
-			}
-			&::-webkit-outer-spin-button {
-		    
-			}
-		}
-		label{
-			display: inline-block;
-			margin-top: 1rem;
-			font-size: $font-medium;
-			color: $color-main-darker;
-		}
-
-		input[type="checkbox"] {
-			position: absolute;
-			opacity: 0;
-
-			&:checked + label span{
-				background-image: url("../img/icon_check.svg");
-				background-position: center;
-			}
-		}
-		label.targetLabel { 
-		  display: inline-block;
-		  cursor: pointer;
-		  padding-left: 4rem;
-		  font-size: $font-text;
-		  height: 3.2rem;
-		  margin: 0 0 0.4rem;
-		  line-height: 2.2em;
-
-		  span{
-		  	@include textboxonred;
-		  	display: inline-block;
-				width: 3.2rem;
-				height: 3.2rem;
-				position: absolute;
-				left: .4rem;
-		  }
-		}
-
-		input[type="submit"]{
-			@include button($color-action, darken($color-action, 30));
-		}
 	}
 
 	@include breakpoint($tablet) {
@@ -219,23 +137,23 @@ a{
 		bottom: 0;
 		left: 33%;
 		width: 67%;
-		height: 27rem;
+		height: 5.8rem;
 		z-index: 10;
-
-		.mobileControls{
-			display: none;
-		}
-		form{
-			display: block;
-		}
+		border-left: none;
 	}
-	@include breakpoint($desktop-large) {
+	@include breakpoint($desktop-small) {
 		width: 25%;
 		position: initial;
 		float: right;
 		height: 100%;
-	}
 
+		form{
+			display: block;
+		}
+		.mobileControls{
+			display: none;
+		}
+	}
 }
 #tasks{
 	@include clearfix;
@@ -249,20 +167,7 @@ a{
 		width: 50%;
 		padding-bottom: 0;
 	}
-	#today,
-	#inventory{
-		position: relative;
-		h2{
-			position: absolute;
-			line-height: 1em;
-			top: 0.4rem;
-			left: 0.4rem;
-			font-size: $font-x-large;
-			color: rgb(180, 207, 207);
-			margin: 0;
-			z-index: 0;
-		}
-	}
+	
 	ol.taskList{
 		padding: 0;
 		margin: 0;
@@ -404,7 +309,61 @@ a{
 		}
   }
 }
+.popup{
+	position: absolute;
+	z-index: 20;
+	background-color: $color-shadow;
+	width: 100%;
+	height: 100%;
+	padding: 10%;
+	top: 0;
+	left: 0;
+	
+	.content{
+		@include redbox;
+		@include border-radius($border-radius);
+		max-width: 40rem;
+		margin: 0 auto;
+		height: 100%;
+
+		form{
+			@include standardform;
+		}
+	}
+}
 /************ Responsive Layout *************/
+
+@include breakpoint($tablet) {
+	#tasks{
+		position: relative;
+
+		h2{
+			@include redheader;
+			position: absolute;
+			border-top: none;
+			border-left: none;
+			margin: 0;
+			width: 50%;
+			left: 0;
+			top: -50px;
+		}
+		#today{
+			position: absolute;
+			top: 50px;
+			width: 100%;
+
+		}
+		#inventory{
+			position: absolute;
+			top: 50px;
+			width: 100%;
+
+			h2{
+				left: 50%;
+			}
+		}
+	}
+}
 
 @include breakpoint($desktop-small) {
 	html{
@@ -442,6 +401,20 @@ a{
 		padding-bottom: 0;
 		overflow: visible;
 
+		h2{
+			position: absolute;
+			width: 98%;
+			line-height: 1em;
+			top: 0.4rem;
+			left: 0.4rem;
+			font-size: $font-x-large;
+			color: rgb(180, 207, 207);
+			margin: 0;
+			z-index: 0;
+			background: none;
+			border: none;
+			@include box-shadow(none);
+		}
 		ol.taskList{
 			padding: 4.8rem 0.5rem 0.5rem;
 			& > li{
@@ -449,6 +422,8 @@ a{
 			}
 		}
 		#today{
+			top: auto;
+			position: relative;
 			width: 64%;
 			margin-right: 2%;
 			float: left;
@@ -463,10 +438,16 @@ a{
 			}
 		}
 		#inventory{
+			top: auto;
+			position: relative;
 			width: 34%;
 			float: left;
 			@include transparentBox(white, 0.35);
 			min-height: 100%;
+
+			h2{
+				left: 0.4rem;
+			}
 		}
 	}
 }

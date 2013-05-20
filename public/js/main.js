@@ -14,15 +14,7 @@ require(['jquery','timer','taskList','taskCreator','desktopAlert'], function($, 
     $.post(eventData.currentTarget.action, $(eventData.currentTarget).serialize());
 
     if ($(eventData.currentTarget).attr("name") == "createTask") {
-      if ($(eventData.currentTarget).find(':checkbox').prop('checked')) { var targetList = $('#inventory .taskList');}
-      else{ var targetList = $('#today .taskList');}
-    	taskList.addTaskToList(
-        targetList,
-      	$(eventData.currentTarget).serializeArray()[0].value,
-      	$(eventData.currentTarget).serializeArray()[1].value,
-      	$(eventData.currentTarget).serializeArray()[2].value
-      );
-      taskCreator.resetForm();
+      taskCreator.createTask(eventData);
     };
 
     return false;
