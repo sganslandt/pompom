@@ -1,13 +1,16 @@
 package views
 
 import model.api.{PomodoroStartedEvent, TaskCreatedEvent, UserLoggedInEvent, UserRegisteredEvent}
-import akka.actor.Actor
+import akka.actor.{ActorLogging, Actor}
 import play.api.libs.concurrent.Akka
 import play.api.Play.current
 import model.{AfterReplay, BeforeReplay, Replay}
+import akka.event.Logging
 
 
 class TaskQueryRepository {
+
+  val log = Logging(Akka.system.eventStream, getClass.getName)
 
   def clear() {
     userTasks = Map()
@@ -24,16 +27,20 @@ class TaskQueryRepository {
   private var userTasks: Map[String, List[Task]] = Map()
 
   def listForUser(userId: String): Seq[Task] = {
-    if (userTasks.contains(userId))
+    if (userTasks.contains(userId)) {
+      log.debug("Listing tasks for userId {}, [{}]", userId, userTasks(userId))
       userTasks(userId)
-    else
+    }
+    else {
+      log.debug("No tasks found for user {}, returning empty list.", userId)
       List() // TODO Make this one not needed
+    }
   }
 }
 
 object TaskQueryRepository {
 
-  class Updater(repo: TaskQueryRepository) extends Actor {
+  class Updater(repo: TaskQueryRepository) extends Actor with ActorLogging {
 
     Akka.system.eventStream.subscribe(self, classOf[BeforeReplay])
     Akka.system.eventStream.subscribe(self, classOf[AfterReplay])
@@ -42,32 +49,39 @@ object TaskQueryRepository {
     Akka.system.eventStream.subscribe(self, classOf[TaskCreatedEvent])
     Akka.system.eventStream.subscribe(self, classOf[PomodoroStartedEvent])
 
-    println("Updater started")
+    override def preStart() = {
+      log.debug("Starting")
+    }
+
+    override def preRestart(reason: Throwable, message: Option[Any]) {
+      log.error(reason, "Restarting due to [{}] when processing [{}]",
+        reason.getMessage, message.getOrElse(""))
+    }
 
     def receive = {
 
       case "init" => {
-        println("received init message")
+        log.debug("Received init message")
         Akka.system.actorFor("/user/eventStore") ! Replay
       }
 
       case e: BeforeReplay => {
-        println("starting replay")
+        log.debug("Starting replay")
         repo.clear()
       }
       case e: AfterReplay => {
-        println("replay done")
+        log.debug("Replay done")
       }
 
       case e: UserRegisteredEvent => {
-        println("user registered")
+        log.debug("User registered")
         repo.addUser(e.userId)
       }
 
       case e: UserLoggedInEvent => {}
 
       case e: TaskCreatedEvent => {
-        println("task created")
+        log.debug("Task created")
         repo.addTask(e.userId, Task(e.taskId, e.title, e.description, List(), false))
       }
 
