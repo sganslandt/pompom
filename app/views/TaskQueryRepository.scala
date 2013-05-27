@@ -6,7 +6,31 @@ import play.api.libs.concurrent.Akka
 import play.api.Play.current
 import model.{AfterReplay, BeforeReplay, Replay}
 import akka.event.Logging
+import org.joda.time.DateTime
 
+case class Task(taskId: String,
+                title: String,
+                description: String,
+                pomodoros: Seq[Pomodoro],
+                isDone: Boolean) {
+}
+
+case class Pomodoro(state: PomodoroState, interruptions: Seq[Interruption])
+case object Pomodoro {
+  def apply(): Pomodoro = { new Pomodoro(Fresh, List()) }
+  def apply(nrOfPomodoros: Int): List[Pomodoro] = nrOfPomodoros match {
+    case 0 => List()
+    case n => apply() :: apply(n - 1)
+  }
+}
+
+case class Interruption(when: DateTime, what: String) {}
+
+trait PomodoroState
+case object Fresh extends PomodoroState
+case class Active(startTime: DateTime) extends PomodoroState
+case class Ended(startTime: DateTime, endTime: DateTime) extends PomodoroState
+case class Broken(startTime: DateTime, endTime: DateTime, reason: String) extends PomodoroState
 
 class TaskQueryRepository {
 
@@ -21,7 +45,7 @@ class TaskQueryRepository {
   }
 
   def addTask(userId: String, t: Task) {
-    userTasks = userTasks + (userId -> (Task(t.taskId, t.title, t.description, List(), false) :: userTasks(userId)))
+    userTasks = userTasks + (userId -> (t :: userTasks(userId)))
   }
 
   private var userTasks: Map[String, List[Task]] = Map()
@@ -82,7 +106,7 @@ object TaskQueryRepository {
 
       case e: TaskCreatedEvent => {
         log.debug("Task created")
-        repo.addTask(e.userId, Task(e.taskId, e.title, e.description, List(), false))
+        repo.addTask(e.userId, Task(e.taskId, e.title, e.description, Pomodoro(e.initialEstimate), false))
       }
 
       case event: PomodoroStartedEvent => {}
