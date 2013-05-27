@@ -1,24 +1,27 @@
 define('taskCreator',['jquery', 'taskList'], function($, taskList) {
 	$(document).ready(function($) {
 		$('#taskCreator button.expand').click(function() {
-		  $('#taskCreator form').toggleClass('expanded');
 		  openPupup();
 		});
 		focusForm();
 	});
 
 	function resetForm () {
-		$('#taskCreator form').find("input[type=text], textarea, input[type=number]").val("");
+		$('form#createTask').find("input[type=text], textarea, input[type=number]").val("");
 	}
 	function focusForm () {
-		$('#taskCreator form').find('#createTaskTitle').focus();
+		$('form#createTask').find('#createTaskTitle').focus();
+	}
+	function blurForm () {
+		$('#createTask input, #createTask textarea').blur();
 	}
 	function openPupup () {
 		$newPop = $('<div class="popup"><div class="content"></div></div>');
 		$newPop.find('.content').append('<h2>Create new pomodoros<h2/>');
+		$newPop.find('.content').append('<button title="close popup" class="closeButton">x</button>');
 		$('body').append($newPop);
 
-		$('.popup').click(function()
+		$('.popup, .popup .closeButton').click(function()
 		{
 			closePopup();
 		});
@@ -27,9 +30,11 @@ define('taskCreator',['jquery', 'taskList'], function($, taskList) {
         e.stopPropagation();
   	});
   	$('.popup .content').append($('#createTask'));
+  	focusForm();
 	}
 	function closePopup () {
   	$('#taskCreator').append($('#createTask'));
+  	blurForm();
 		$('.popup').remove();
 	}
 
@@ -47,6 +52,10 @@ define('taskCreator',['jquery', 'taskList'], function($, taskList) {
       );
       resetForm();
       focusForm();
+		},
+		closeCreateFormPopup: function ()
+		{
+			closePopup();
 		}
 	}
 });

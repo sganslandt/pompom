@@ -9,7 +9,7 @@ requirejs.config({
         'sortable': [ 'jquery' ]
     }
 });
-require(['jquery','timer','taskList','taskCreator','desktopAlert'], function($, timer, taskList, taskCreator, notify) {
+require(['jquery','timer','taskList','taskCreator','desktopAlert', 'responsive'], function($, timer, taskList, taskCreator, notify, responsive) {
   $("form").submit(function(eventData){
     $.post(eventData.currentTarget.action, $(eventData.currentTarget).serialize());
 

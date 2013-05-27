@@ -7,7 +7,7 @@ define(['jquery'], function($) {
 
 	function init (){
 		notifications.support = window.webkitNotifications;
-		console.log(testBrowserSupport());
+		//console.log(testBrowserSupport());
 		setupEventHandlers();
 	};
 

@@ -1,7 +1,7 @@
 @(userId: String, taskList: Seq[views.Task])
 
 @main {
-<section id="timer" class="">
+<section id="timer">
     @timer()
 </section>
 <section id="taskCreator">
@@ -9,11 +9,11 @@
 </section>
 <section id="tasks">
 	<section id="today">
-		<h2>todo today</h2>
+		<h2>Today:</h2>
 	    @tasks.list(taskList)
 	</section>
 	<section id="inventory">
-		<h2>activity inventory</h2>
+		<h2>Inventory:</h2>
 	    @tasks.list(taskList)
 	</section>
 </section>
