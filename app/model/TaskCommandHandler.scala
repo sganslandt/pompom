@@ -2,39 +2,15 @@ package model
 
 import akka.actor.{Actor, Props, ActorRef}
 import play.api.libs.concurrent.Akka
-import java.util.UUID
 
 import play.api.Play.current
 import model.api._
-import model.api.RegisterUserCommand
 import model.api.LoginUserCommand
-import scala.Some
 
 class TaskCommandHandler extends Actor {
 
   val eventStore = Akka.system.actorFor("/user/eventStore")
-
   eventStore ! Replay
-
-  def login(userId: String) {
-  }
-
-  def done() {}
-
-  def extendEstimate(i: Int) {}
-
-  def break(s: String) {}
-
-  def interrupt(s: String) {}
-
-  def endPomodoro() {}
-
-
-  def startPomodoro(s: String) {}
-
-  var tasks: Map[String, List[ActorRef]] = Map()
-
-  var users: Map[String, ActorRef] = Map()
 
   def receive = {
 
@@ -49,6 +25,10 @@ class TaskCommandHandler extends Actor {
     }
 
     case c: CreateTaskCommand => users(c.userId) ! c
+    case c: StartPomodoroCommand => users(c.userId) ! c
+    case c: EndPomodoroCommand => users(c.userId) ! c
+    case c: InterruptPomodoroCommand => users(c.userId) ! c
+    case c: BreakPomodoroCommand => users(c.userId) ! c
 
     /**
      * Events
@@ -58,5 +38,10 @@ class TaskCommandHandler extends Actor {
       users = users + (e.userId -> context.actorOf(Props(new User(e.userId)), name = e.userId))
     }
 
+    case _ => {}
+
   }
+
+  var users: Map[String, ActorRef] = Map()
+
 }

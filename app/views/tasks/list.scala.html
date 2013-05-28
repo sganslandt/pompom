@@ -1,4 +1,4 @@
-@(tasks: Seq[views.Task])
+@(tasks: Iterable[views.Task])
 
 <ol class="taskList sortable connected">
     @for(t <- tasks) {
