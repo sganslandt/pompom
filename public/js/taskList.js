@@ -2,6 +2,11 @@ define(['jquery','sortable'], function($) {
 
 	$(document).ready(function($) {
 		sortablize();
+		$("#tasks h2").click(function(e)
+		{
+      $("#tasks section").removeClass('active');
+      $(this).closest('section').addClass('active');
+  	});
 	});
 
 	function sortablize(list) {
@@ -29,7 +34,7 @@ define(['jquery','sortable'], function($) {
 	return {
 		markAsInProgress: function(pomodoro) {
 			if (! pomodoro) {
-				pomodoro = $('#today .task .pomodoros li.active').first();
+				pomodoro = $('#today .task .pomodoros li.fresh').first();
 			};
 			$(pomodoro).addClass('inprogress').html('<img src="assets/img/icon_inprogress.svg" />');
 		},
@@ -49,11 +54,10 @@ define(['jquery','sortable'], function($) {
 				$(pomodoro).addClass('interrupted').html('<img src="assets/img/icon_interrupted.svg" />');
 			};
 		},
-		addTaskToList: function (targetList, title, numberOfPoms, description) {
+		addTaskToList: function (targetList, title, numberOfPoms) {
 			$newLi = $('<li draggable="true" />');
 			$newLi.append('<div class="task" data-taskId="temp100">');
 			$newLi.find('.task').append('<h3>'+title+'</h3>');
-			$newLi.find('.task').append('<p>'+description+'</p>');
 			$newLi.find('.task').append('<ol class="pomodoros">');
 			for (var i = numberOfPoms - 1; i >= 0; i--) {
 				$newLi.find('.pomodoros').append('<li class="active">&nbsp;</li>');

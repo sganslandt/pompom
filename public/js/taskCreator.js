@@ -43,12 +43,11 @@ define('taskCreator',['jquery', 'taskList'], function($, taskList) {
 		createTask: function(eventData)
 		{
 			if ($(eventData.currentTarget).find(':checkbox').prop('checked')) { var targetList = $('#inventory .taskList');}
-      else{ var targetList = $('#today .taskList');}
+      else{ var targetList = $('#tasks section.active .taskList');}
     	taskList.addTaskToList(
         targetList,
       	$(eventData.currentTarget).serializeArray()[0].value,
-      	$(eventData.currentTarget).serializeArray()[1].value,
-      	$(eventData.currentTarget).serializeArray()[2].value
+      	$(eventData.currentTarget).serializeArray()[1].value
       );
       resetForm();
       focusForm();

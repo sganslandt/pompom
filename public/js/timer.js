@@ -27,10 +27,10 @@ define('timer',['jquery', 'taskList'], function($, taskList) {
 		updateTimeGrade(duration, 0);
 		pomodoroTimer = setTimeout(checkAndRestartPomodoroTimer, 1000);
 		$('#timer').addClass('active');
-		console.log($('#timer').attr('class'));
 		if ($('#today .taskList li').length < 1) {
 			taskList.addTaskToList($('#today .taskList'), 'Your New Task', 1, "I automagicaly created a task for you. You should probably edit it to fit your new task.<br /> If you don't know the <a href='http://www.pomodorotechnique.com/' target='_blank' title='Go to www.pomodorotechnique.com in a new window'>Pomodoro Technique</a> yet, you should watch the video there.");
 		};
+		$('#today .taskList li').first().append('<div class="timeStripe" />');
 		taskList.markAsInProgress();
 	}
 
@@ -47,8 +47,10 @@ define('timer',['jquery', 'taskList'], function($, taskList) {
 	}
 
 	function updateTimeGrade (duration, elapsedTime) {
-		var margin = ((duration-elapsedTime)*0.01666666666666667)+0.1;
-		$('.timegradeholder').css('margin-left', '-'+margin+'rem');
+		//var margin = ((duration-elapsedTime)*0.01666666666666667)+0.1;
+		//$('.timegradeholder').css('margin-left', '-'+margin+'rem');
+		var percentage = (elapsedTime/duration)*100;
+		$('.timeStripe').width(percentage+'%')
 	}
 	function stopTimer () {
 		$('#timer').removeClass('active');

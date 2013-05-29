@@ -1,7 +1,7 @@
 @(tasks: Iterable[views.Task])
 
 <ol class="taskList sortable connected">
-    @for(t <- tasks) {
+    @for(t <- tasks.reverse) {
     <li draggable="true">
         @task(t)
     </li>

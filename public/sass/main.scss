@@ -10,6 +10,7 @@ body{
 	font-size: $font-text;
 	height: 100%;
 	margin: 0;
+	padding: 1rem;
 	position: relative;
 	font-family: AktivGrotesk-Light;
 	//padding-top: 4.2rem;
@@ -27,48 +28,59 @@ a{
 }
 
 #pageheader{
-	display: none;
-	@include redbox;
-	@include clearfix;
-	padding: 0.4rem;
-	height: 4.2rem;
-	position: fixed;
+	text-align: center;
 	width: 100%;
-	top: 0;
-	left: 0;
-	z-index: 10;
-
-
-	h1 {
-		padding-left: 2rem;
-		line-height: 1em;
-		background: transparent url("../img/icon_pompom.svg") left center no-repeat;
-		float: left;
-		margin: 0;
-		a{
-			color: $color-complement;
-			font-size: $font-large;
-		}
-	}
-	nav{
-		float: right;
-		a{
-			padding: 1rem 0 0.8rem;
-			display: inline-block;
-			color: $color-complement;
-		}
+	img{
+		max-width: 25%;
+		height: auto;
 	}
 }
 #login{
 	main{
-		width: 51rem;
-		margin: 0 auto;
-		padding: 0 0.5rem 0.5rem;
-		@include transparentBox(white, 0.35);
+		width: 34rem;
+		margin: 0 auto 6rem;
+		text-align: center;
 
+		img.logo{
+			width: 80%;
+			height: auto;
+		}
 		h1{
-			width: 50rem;
-			margin: 0 auto;
+			margin: 0;
+		}
+		h3{
+			margin: 0;
+		}
+		.loginOptions{
+			margin: 3rem 0;
+			padding: 0 0 1rem;
+			@include clearfix;
+
+			h3{
+				margin: 0 0 1rem;
+			}
+			.google{
+				@include button(#df4a32);
+				width: 49%;
+				margin-right: 2%;
+				float: left;
+				display: block;
+			}
+			.facebook{
+				@include button(#3864a3);
+				width: 49%;
+				float: left;
+				display: block;
+			}
+		}
+		
+	}
+	.extras{
+		width: 34rem;
+		margin: 0 auto;
+
+		h3{
+			margin: 0;
 		}
 		form {
 			@include redbox;
@@ -90,53 +102,45 @@ a{
 				@include textboxonred
 			}
 			input[type="submit"]{
-				@include button($color-action, darken($color-action, 30));
+				@include button($color-action);
 			}
-		}
-	}
-	.extras{
-		width: 51rem;
-		margin: 1rem auto;
-		padding: 0.5rem;
-		@include transparentBox(white, 0.35);
-		color: $color-main-text;
-		
-		h3{
-			margin-top: 0;
-		}
-		a{
-			color: $color-main-text;
-			text-decoration: underline;
 		}
 	}
 }
 #taskCreator{
-	@include redbox;
-	position: relative;
-	padding-top: 0px;
+	padding: 0;
+	margin-left: 1rem;
 
-	.mobileControls{
-		padding: 0.4rem;
-
-		button.expand{
-			@include button;
-		}
-	}
-	form.expanded{
-		display: block;
-	}
 	form{
 		@include standardform;
-		display: none;
+		padding: 0;
+
+		input[type="text"]{
+			@include experimental-value(width, calc(100% - 17.4rem));
+			float: left;
+		}
+		input[type="submit"],
+		input[type="number"]{
+			width: 4.8rem;
+			margin-left: 1rem;
+			display: block;
+			float: left;
+		}
+		input[type="submit"]{
+			background-image: url("../img/icon_star.svg");
+		}
 	}
 
 
 }
 #tasks{
-	@include clearfix;
-	@include app-section;
+	margin: 0 5.8rem 0 1rem;
+	clear: left;
+	position: relative;
 
 	h2{
+		position: absolute;
+		top: -8.8rem;
 		margin: 0;
 		color: $color-main-darker;
 		font-size: $font-medium;
@@ -145,10 +149,26 @@ a{
 		padding: 0;
 		margin: 0;
 		list-style: none;
+		display: none;
 
 		& > li{
 			@include taskbox;
+			left: 0;
 
+			.timeStripe{
+				position: absolute;
+				bottom: -0.2rem;
+				left: 0;
+				height: 2px;
+				width: 0%;
+				background-color: $color-complement;
+			}
+
+			h3{
+				font-size: $font-large;
+				margin-top: 0;
+				line-height: 1.5em;
+			}
 			&.sortable-placeholder{
 				background-color: transparent;
 				border: 0.1rem solid $color-shadow;
@@ -156,124 +176,41 @@ a{
 			}
 		}
 	}
-	#today{
-		ol.taskList{
-			margin: 0 0 6rem;
 
-			h3{
-				font-size: $font-large;
-				margin-top: 0;
-				line-height: 1.5em;
-			}
+	#inventory{
+		h2{
+			left: 8rem;
 		}
 	}
-	#inventory{
-		
+	& .active{
+		h2{
+			text-decoration: underline;
+		}
+		ol.taskList{
+			display: block;
+		}
 	}
 }
 #timer {
-	@include clearfix;
-	@include redbox;
-	@include app-section;
-	overflow: hidden;
+	float: right;
+	padding-top: 5rem;
 
-  .top {
-      position: relative;
-      height: 50%;
-      border-bottom: 0.2rem solid $color-main-darker;
-
-        #currentTaskTitle{
-            margin: 0;
-            padding-top: 3rem;
-            text-align: center;
-            color: $color-complement;
-            font-weight: normal;
-        }
-        .timegradeholder{
-            position: absolute;
-            bottom: .2rem;
-            left: 50%;
-            margin-left: -0.1rem;
-            transition: margin-left 0.500s;
-						-webkit-transition: margin-left 0.500s; /* Safari */
-
-            .numbers{
-                margin-left: -1.4rem;
-
-                span{
-                    color: $color-complement;
-                    display: inline-block;
-                    width: 3rem;
-                    text-align: center;
-                    margin-right: 2rem;
-                    font-size: $font-medium;
-                }
-            }
-            img{
-                width: 65rem;
-                height: auto;
-                max-height: 2rem;
-                margin-right: 3rem;
-            }
-        }
-  }
-  .bottom {
-    position: relative;
-    height: 50%;
-    border-top: 1px solid $color-main-highlight;
-
-      .arrowholder{
-          padding: .1rem 0 0;
-          width: 100%;
-          text-align: center;
-      }
-      #controls{
-      	padding: 1rem 20%;
-        button {
-        	@include button;
-        	margin-top: 1rem;
-        }
-        button#interruptPomodoro{
-        	@include button($color-warning, darken($color-warning, 30), darken($color-warning, 30));
-        	display: none;
-        	float: left;
-        	width: 48%;
-        	margin-right: 4%;
-
-        	img{
-        		height: 3.8rem;
-        		width: auto;
-        	}
-        }
-        button#breakPomodoro{
-        	@include button($color-error, darken($color-error, 30), darken($color-error, 30));
-		  		display: none;
-		  		float: left;
-        	width: 48%;
-
-        	img{
-        		height: 3.8rem;
-        		width: auto;
-        	}
-		  	}
-      }
-  }
-  &.active{
-  	.bottom {
-  		#controls{
-		  	button#startPomodoro{
-		  		display: none;
-		  	}
-		  	button#interruptPomodoro,
-		    button#breakPomodoro{
-		  		display: block;
-		  	}
-		  }
+	button {
+		@include button;
+		width: 4.8rem;
+		background-image: url("../img/icon_clock.svg");
+		color: transparent;
+	}
+	&.active{
+		button#startPomodoro{
+			display: none;
 		}
-  }
-  &.active{
-  	background-color: black;
-  }
+		button#interruptPomodoro,
+		button#breakPomodoro{
+			display: block;
+		}
+	}
+
 }
 .popup{
 	position: absolute;
@@ -284,7 +221,7 @@ a{
 	padding: 10%;
 	top: 0;
 	left: 0;
-	
+
 	.content{
 		@include redbox;
 		@include border-radius($border-radius);
@@ -297,59 +234,147 @@ a{
 		}
 	}
 }
-/************ Responsive Layout *************/
+#standalone-timer {
+	@include clearfix;
+	@include redbox;
+	overflow: hidden;
 
-@include breakpoint($tablet) {
-	#taskCreator {
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		width: 33%;
-		z-index: 10;
+	button {
+		@include button;
+		width: 4.8rem;
 	}
 
-	#timer{
-		width: 33%;
-		float: left;
+	.top {
+		position: relative;
+		height: 50%;
+		border-bottom: 0.2rem solid $color-main-darker;
+
+		#currentTaskTitle{
+			margin: 0;
+			padding-top: 3rem;
+			text-align: center;
+			color: $color-complement;
+			font-weight: normal;
+		}
+		.timegradeholder{
+			position: absolute;
+			bottom: .2rem;
+			left: 50%;
+			margin-left: -0.1rem;
+			transition: margin-left 0.500s;
+			-webkit-transition: margin-left 0.500s; /* Safari */
+
+			.numbers{
+				margin-left: -1.4rem;
+
+				span{
+					color: $color-complement;
+					display: inline-block;
+					width: 3rem;
+					text-align: center;
+					margin-right: 2rem;
+					font-size: $font-medium;
+				}
+			}
+			img{
+				width: 65rem;
+				height: auto;
+				max-height: 2rem;
+				margin-right: 3rem;
+			}
+		}
+	}
+	.bottom {
+		position: relative;
+		height: 50%;
+		border-top: 1px solid $color-main-highlight;
+
+		.arrowholder{
+			padding: .1rem 0 0;
+			width: 100%;
+			text-align: center;
+		}
+		#controls{
+			padding: 1rem 20%;
+			button {
+				@include button;
+				margin-top: 1rem;
+			}
+			button#interruptPomodoro{
+				@include button($color-warning, darken($color-warning, 30), darken($color-warning, 30));
+				display: none;
+				float: left;
+				width: 48%;
+				margin-right: 4%;
+
+				img{
+					height: 3.8rem;
+					width: auto;
+				}
+			}
+			button#breakPomodoro{
+				@include button($color-error, darken($color-error, 30), darken($color-error, 30));
+				display: none;
+				float: left;
+				width: 48%;
+
+				img{
+					height: 3.8rem;
+					width: auto;
+				}
+			}
+		}
+	}
+	&.active{
+		.bottom {
+			#controls{
+				button#startPomodoro{
+					display: none;
+				}
+				button#interruptPomodoro,
+				button#breakPomodoro{
+					display: block;
+				}
+			}
+		}
 	}
 }
+/************ Responsive Layout *************/
+@include breakpoint($large-phones){
+	#taskCreator{
+		margin-left: 5.8rem;
+	}
+	#tasks{
+		margin: 0 5.8rem;
+	}
+	#timer{
+		button {
+		}
+	}
 
-@include breakpoint($desktop-medium) {
+}
+@include breakpoint($tablet) {
 
 	body {
-		width: 1100px;
+		width: 64rem;
 		padding: 3rem 0;
 		margin: 0 auto;
 	}
-	#timer{
-		width: 23%;
-		height: 26.6rem;
-		margin-right: 2%;
-	}
 	#taskCreator{
-		position: inherit;
-		bottom: auto;
-		left: auto;
-		float: right;
-		width: 23%;
-
-		.mobileControls{
-			display: none;
-		}
 		form{
 			display: block;
 			@include clearfix;
+
+			input[type="text"]{
+				width: 34.4rem;
+				float: left;
+			}
 		}
 	}
 	#tasks{
-		width: 50%;
-		float: left;
-		padding-bottom: 0;
-		overflow: visible;
 
 		ol.taskList{
 			padding: 0;
-
 		}
 	}
 }
