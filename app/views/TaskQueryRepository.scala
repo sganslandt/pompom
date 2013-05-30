@@ -21,11 +21,15 @@ case class Task(userId: String,
                 taskId: String,
                 title: String,
                 pomodoros: Seq[Pomodoro],
+                priority: Int,
                 isDone: Boolean) {
-  def startPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Active(now()), pomodoros(nr).interruptions)), isDone = false)
-  def endPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Ended(pomodoros(nr).state.asInstanceOf[Active].startTime, now()), pomodoros(nr).interruptions)), isDone = false)
-  def breakPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[Active].startTime, now(), reason), pomodoros(nr).interruptions)), isDone = false)
-  def interruptPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(pomodoros(nr).state, Interruption(now(), reason) :: pomodoros(nr).interruptions)), isDone = false)
+  def setPriority(newPriority: Int) = Task(userId, taskId, title, pomodoros, newPriority, isDone = false)
+  def increasePriority() = Task(userId, taskId, title, pomodoros, priority + 1, isDone = false)
+  def decreasePriority() = Task(userId, taskId, title, pomodoros, priority - 1, isDone = false)
+  def startPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Active(now()), pomodoros(nr).interruptions)), priority, isDone = false)
+  def endPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Ended(pomodoros(nr).state.asInstanceOf[Active].startTime, now()), pomodoros(nr).interruptions)), priority, isDone = false)
+  def breakPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[Active].startTime, now(), reason), pomodoros(nr).interruptions)), priority, isDone = false)
+  def interruptPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(pomodoros(nr).state, Interruption(now(), reason) :: pomodoros(nr).interruptions)), priority, isDone = false)
 }
 
 case class Pomodoro(state: PomodoroState, interruptions: List[Interruption])
@@ -53,8 +57,12 @@ class TaskQueryRepository {
 
   val log = Logging(Akka.system.eventStream, getClass.getName)
 
-  def getTask(taskId: String): Option[Task] = {
-    tasks.find(_.taskId == taskId)
+  def getTask(taskId: String): Task = {
+    val found = tasks.find(_.taskId == taskId)
+    found match {
+      case None => throw new RuntimeException("Not found")
+      case Some(t) => return t
+    }
   }
 
   def listForUser(userId: String): Iterable[Task] = {
@@ -121,28 +129,32 @@ object TaskQueryRepository {
 
       case e: TaskCreatedEvent => {
         log.debug("Task created")
-        repo.createTask(Task(e.userId, e.taskId, e.title, Pomodoro(e.initialEstimate), isDone = false))
+        val currentTaskCount = repo.listForUser(e.userId).size
+        repo.createTask(Task(e.userId, e.taskId, e.title, Pomodoro(e.initialEstimate), currentTaskCount + 1, isDone = false))
+      }
+
+      case e: TaskReprioritzedEvent => {
+        val userTasks = repo.listForUser(e.userId)
+        val task = repo.getTask(e.taskId)
+        val oldPriority = task.priority
+        val newPriority = e.newPriority
+        userTasks.foreach(t =>
+          if (newPriority < oldPriority && t.priority <= oldPriority && t.priority > newPriority) repo.replaceTask(t.increasePriority)
+          else if (newPriority > oldPriority && t.priority >= oldPriority && t.priority < newPriority) repo.replaceTask(t.decreasePriority)
+        )
       }
 
       case e: PomodoroStartedEvent => {
-        repo.getTask(e.taskId) match {
-          case Some(t) => repo.replaceTask(t.startPomodoro(e.pomodoro))
-        }
+        repo.replaceTask(repo.getTask(e.taskId).startPomodoro(e.pomodoro))
       }
       case e: PomodoroEndedEvent => {
-        repo.getTask(e.taskId) match {
-          case Some(t) => repo.replaceTask(t.endPomodoro(e.pomodoro))
-        }
+        repo.replaceTask(repo.getTask(e.taskId).endPomodoro(e.pomodoro))
       }
       case e: PomodoroInterruptedEvent => {
-        repo.getTask(e.taskId) match {
-          case Some(t) => repo.replaceTask(t.interruptPomodoro(e.pomodoro, e.note))
-        }
+        repo.replaceTask(repo.getTask(e.taskId).interruptPomodoro(e.pomodoro, e.note))
       }
       case e: PomodoroBrokenEvent => {
-        repo.getTask(e.taskId) match {
-          case Some(t) => repo.replaceTask(t.breakPomodoro(e.pomodoro, e.note))
-        }
+        repo.replaceTask(repo.getTask(e.taskId).breakPomodoro(e.pomodoro, e.note))
       }
 
       case _ => {}

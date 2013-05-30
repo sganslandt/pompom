@@ -13,6 +13,7 @@ GET     /auth/currentUser controllers.Application.currentAuthenticatedUser
 
 # Tasks
 POST    /tasks/                        controllers.Tasks.createTask()
+POST    /tasks/reprioritizeTask        controllers.Tasks.reprioritizeTask()
 POST    /tasks/startPomodoro           controllers.Tasks.startPomodoro()
 POST    /tasks/endPomodoro             controllers.Tasks.endPomodoro()
 POST    /tasks/interruptPomodoro       controllers.Tasks.interrupt()

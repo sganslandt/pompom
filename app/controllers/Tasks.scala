@@ -37,6 +37,25 @@ object Tasks extends Controller with Secured {
     }
   )
 
+  val reprioritizeTaskForm = Form(
+    tuple(
+      "taskId" -> text(),
+      "newPriority" -> number()
+    )
+  )
+
+  def reprioritizeTask() = AsAuthenticatedUser(
+    userId => {
+      implicit request =>
+        reprioritizeTaskForm.bindFromRequest.fold(
+        form => Forbidden(""), {
+          case (taskId, newPriority) =>
+            taskCommandHandler ! ReprioritizeTaskCommand(userId, taskId, newPriority)
+            Ok("")
+        })
+    }
+  )
+
   def startPomodoro() = AsAuthenticatedUser {
     userId => {
       _ =>

@@ -4,6 +4,7 @@ case class RegisterUserCommand()
 case class LoginUserCommand(userId: String)
 
 case class CreateTaskCommand(userId: String, taskId: String, title: String, initialEstimate: Int)
+case class ReprioritizeTaskCommand(userId: String, taskId: String, newPriority: Int)
 
 case class StartPomodoroCommand(userId: String)
 case class EndPomodoroCommand(userId: String)

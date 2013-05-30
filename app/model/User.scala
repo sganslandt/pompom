@@ -34,14 +34,37 @@ class User(userId: String) extends Actor with ActorLogging {
       log.debug("Received BreakPomodoroCommand")
       eventStore ! prioritizedTaskList.head.break()
     }
+    case c: ReprioritizeTaskCommand => {
+      log.debug("Received {}", c)
+      eventStore ! TaskReprioritzedEvent(userId, c.taskId, c.newPriority)
+    }
+
 
     case e: TaskCreatedEvent => {
-      prioritizedTaskList = new Task(userId, e.taskId, e.title, e.initialEstimate) :: prioritizedTaskList
+      prioritizedTaskList = prioritizedTaskList :+ new Task(userId, e.taskId, e.title, prioritizedTaskList.length, e.initialEstimate)
     }
-    case e: PomodoroStartedEvent => for (t <- prioritizedTaskList.find(_.id == e.taskId)) t.apply(e)
-    case e: PomodoroEndedEvent => for (t <- prioritizedTaskList.find(_.id == e.taskId)) t.apply(e)
-    case e: PomodoroInterruptedEvent => for (t <- prioritizedTaskList.find(_.id == e.taskId)) t.apply(e)
-    case e: PomodoroBrokenEvent => for (t <- prioritizedTaskList.find(_.id == e.taskId)) t.apply(e)
+    case e: TaskReprioritzedEvent => {
+      val task = prioritizedTaskList.find(_.taskId == e.taskId)
+      task match {
+        case
+          Some(taskToUpdate) => {
+          val oldPriority = taskToUpdate.priority
+          val newPriority = e.newPriority
+          taskToUpdate.setPriority(e.newPriority)
+          prioritizedTaskList.foreach(
+            t =>
+              if (newPriority < oldPriority && t.priority <= oldPriority && t.priority > newPriority) t.increasePriority
+              else if (newPriority > oldPriority && t.priority >= oldPriority && t.priority < newPriority) t.decreasePriority
+          )
+        }
+        case None =>
+      }
+    }
+
+    case e: PomodoroStartedEvent => for (t <- prioritizedTaskList.find(_.taskId == e.taskId)) t.apply(e)
+    case e: PomodoroEndedEvent => for (t <- prioritizedTaskList.find(_.taskId == e.taskId)) t.apply(e)
+    case e: PomodoroInterruptedEvent => for (t <- prioritizedTaskList.find(_.taskId == e.taskId)) t.apply(e)
+    case e: PomodoroBrokenEvent => for (t <- prioritizedTaskList.find(_.taskId == e.taskId)) t.apply(e)
 
     case _ => {}
   }

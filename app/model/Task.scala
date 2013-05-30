@@ -6,11 +6,15 @@ import model.api.PomodoroEndedEvent
 import model.api.PomodoroBrokenEvent
 import model.api.PomodoroStartedEvent
 
-class Task(val userId: String, val id: String, val title: String, val initialEstimate: Int) {
+class Task(val userId: String, val taskId: String, val title: String, var priority: Int, val initialEstimate: Int) {
 
   var estimate = initialEstimate
   var pomodoros: List[Pomodoro] = List()
   var isDone = false
+
+  def setPriority(newPriority: Int) { this.priority = priority }
+  def increasePriority { this.priority += 1 }
+  def decreasePriority { this.priority -= 1 }
 
   private def inPomodoro = {
     pomodoros.nonEmpty && pomodoros.head.isActive
@@ -24,7 +28,7 @@ class Task(val userId: String, val id: String, val title: String, val initialEst
     if (pomodoros.length == estimate)
       throw new IllegalStateException("All estimated pomodoros used, re-estimate.")
 
-    PomodoroStartedEvent(userId, id, pomodoros.length)
+    PomodoroStartedEvent(userId, taskId, pomodoros.length)
   }
 
   def endPomodoro() {
@@ -73,19 +77,19 @@ class Task(val userId: String, val id: String, val title: String, val initialEst
     def end() {
       if (!isActive)
         throw new IllegalStateException("The pomodoro is not activet and can't be ended.")
-      PomodoroEndedEvent(userId, id, pomodoros.length - 1)
+      PomodoroEndedEvent(userId, taskId, pomodoros.length - 1)
     }
 
     def interrupt(note: String) {
       if (!isActive)
         throw new IllegalStateException("The pomodoro is not active and can't be interrupted.")
-      PomodoroInterruptedEvent(userId, id, pomodoros.length - 1, note)
+      PomodoroInterruptedEvent(userId, taskId, pomodoros.length - 1, note)
     }
 
     def break() {
       if (!isActive)
         throw new IllegalStateException("The pomodoro is not active and can't be broken.")
-      PomodoroBrokenEvent(userId, id, pomodoros.length - 1, "")
+      PomodoroBrokenEvent(userId, taskId, pomodoros.length - 1, "")
     }
 
     def apply(e: DomainEvent) {

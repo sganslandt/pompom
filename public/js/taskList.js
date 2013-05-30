@@ -19,7 +19,12 @@ define(['jquery','sortable'], function($) {
 		};
 		$(list).sortable({
 			placeholder: "sortable-placeholder",
-			revert: "100"
+			revert: "100",
+            update: function(event, ui) {
+                var taskId = ui.item.find(".task").data("taskid");
+                var newPriority = ui.item.index();
+                $.post("/tasks/reprioritizeTask", "taskId=" + taskId + "&newPriority=" + newPriority);
+            }
 		});
 		$(list).find('.pomodoros li').each(function( index ) {
 			if ($(this).hasClass('broken')) {
