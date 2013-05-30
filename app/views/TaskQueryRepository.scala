@@ -23,9 +23,9 @@ case class Task(userId: String,
                 description: String,
                 pomodoros: Seq[Pomodoro],
                 isDone: Boolean) {
-  def startPomodoro(nr: Int) = Task(userId, taskId, title, description, pomodoros.updated(nr, Pomodoro(InProgress(now()), pomodoros(nr).interruptions)), false)
-  def endPomodoro(nr: Int) = Task(userId, taskId, title, description, pomodoros.updated(nr, Pomodoro(Ended(pomodoros(nr).state.asInstanceOf[InProgress].startTime, now()), pomodoros(nr).interruptions)), false)
-  def breakPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, description, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[InProgress].startTime, now(), reason), pomodoros(nr).interruptions)), false)
+  def startPomodoro(nr: Int) = Task(userId, taskId, title, description, pomodoros.updated(nr, Pomodoro(Active(now()), pomodoros(nr).interruptions)), false)
+  def endPomodoro(nr: Int) = Task(userId, taskId, title, description, pomodoros.updated(nr, Pomodoro(Ended(pomodoros(nr).state.asInstanceOf[Active].startTime, now()), pomodoros(nr).interruptions)), false)
+  def breakPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, description, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[Active].startTime, now(), reason), pomodoros(nr).interruptions)), false)
   def interruptPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, description, pomodoros.updated(nr, Pomodoro(pomodoros(nr).state, Interruption(now(), reason) :: pomodoros(nr).interruptions)), false)
 }
 
@@ -46,7 +46,7 @@ case class Interruption(when: DateTime, what: String) {}
 
 trait PomodoroState
 case object Fresh extends PomodoroState
-case class InProgress(startTime: DateTime) extends PomodoroState
+case class Active(startTime: DateTime) extends PomodoroState
 case class Ended(startTime: DateTime, endTime: DateTime) extends PomodoroState
 case class Broken(startTime: DateTime, endTime: DateTime, reason: String) extends PomodoroState
 
@@ -55,33 +55,27 @@ class TaskQueryRepository {
   val log = Logging(Akka.system.eventStream, getClass.getName)
 
   def getTask(taskId: String): Option[Task] = {
-    userTasks.values.find(_.contains(taskId)).flatMap(m => Some(m(taskId)))
+    tasks.find(_.taskId == taskId)
   }
 
   def listForUser(userId: String): Iterable[Task] = {
-    if (userTasks.contains(userId)) {
-      log.debug("Listing tasks for userId {}, [{}]", userId, userTasks(userId))
-      userTasks(userId).map(_._2)
-    }
-    else {
-      log.debug("No tasks found for user {}, returning empty list.", userId)
-      List() // TODO Make this one not needed
-    }
+    tasks.filter(_.userId == userId).reverse
   }
 
   protected def clear() {
-    userTasks = Map()
+    tasks = List()
   }
 
-  protected def addUser(userId: String) {
-    userTasks = userTasks + (userId -> Map())
+  protected def createTask(t: Task) {
+    tasks = t :: tasks
   }
 
-  protected def createOrReplaceTask(userId: String, t: Task) {
-    userTasks = userTasks + (userId -> (userTasks(userId) + (t.taskId -> t)))
+  protected def replaceTask(newVersion: Task) {
+    val index = tasks.indexOf(getTask(newVersion.taskId))
+    tasks = tasks.updated(index, newVersion)
   }
 
-  private var userTasks: Map[String, Map[String, Task]] = Map()
+  private var tasks: List[Task] = List()
 
 }
 
@@ -122,34 +116,33 @@ object TaskQueryRepository {
 
       case e: UserRegisteredEvent => {
         log.debug("User registered")
-        repo.addUser(e.userId)
       }
 
       case e: UserLoggedInEvent => {}
 
       case e: TaskCreatedEvent => {
         log.debug("Task created")
-        repo.createOrReplaceTask(e.userId, Task(e.userId, e.taskId, e.title, e.description, Pomodoro(e.initialEstimate), false))
+        repo.createTask(Task(e.userId, e.taskId, e.title, e.description, Pomodoro(e.initialEstimate), false))
       }
 
       case e: PomodoroStartedEvent => {
         repo.getTask(e.taskId) match {
-          case Some(t) => repo.createOrReplaceTask(t.userId, t.startPomodoro(e.pomodoro))
+          case Some(t) => repo.replaceTask(t.startPomodoro(e.pomodoro))
         }
       }
       case e: PomodoroEndedEvent => {
         repo.getTask(e.taskId) match {
-          case Some(t) => repo.createOrReplaceTask(t.userId, t.endPomodoro(e.pomodoro))
+          case Some(t) => repo.replaceTask(t.endPomodoro(e.pomodoro))
         }
       }
       case e: PomodoroInterruptedEvent => {
         repo.getTask(e.taskId) match {
-          case Some(t) => repo.createOrReplaceTask(t.userId, t.interruptPomodoro(e.pomodoro, e.note))
+          case Some(t) => repo.replaceTask(t.interruptPomodoro(e.pomodoro, e.note))
         }
       }
       case e: PomodoroBrokenEvent => {
         repo.getTask(e.taskId) match {
-          case Some(t) => repo.createOrReplaceTask(t.userId, t.breakPomodoro(e.pomodoro, e.note))
+          case Some(t) => repo.replaceTask(t.breakPomodoro(e.pomodoro, e.note))
         }
       }
 
