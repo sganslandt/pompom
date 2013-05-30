@@ -1,11 +1,11 @@
 @(userId: String, taskList: Iterable[views.Task])
 
 @main {
-<section id="timer">
-    @timer()
-</section>
 <section id="taskCreator">
     @tasks.createTask()
+</section>
+<section id="timer">
+    @timer()
 </section>
 <section id="tasks">
 	<section id="today" class="active">

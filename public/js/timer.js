@@ -26,7 +26,7 @@ define('timer',['jquery', 'taskList'], function($, taskList) {
 		duration = durationInMinutes*60;
 		updateTimeGrade(duration, 0);
 		pomodoroTimer = setTimeout(checkAndRestartPomodoroTimer, 1000);
-		$('#timer').addClass('active');
+		$('body').addClass('active');
 		if ($('#today .taskList li').length < 1) {
 			taskList.addTaskToList($('#today .taskList'), 'Your New Task', 1, "I automagicaly created a task for you. You should probably edit it to fit your new task.<br /> If you don't know the <a href='http://www.pomodorotechnique.com/' target='_blank' title='Go to www.pomodorotechnique.com in a new window'>Pomodoro Technique</a> yet, you should watch the video there.");
 		};

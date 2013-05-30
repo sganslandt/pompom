@@ -1,7 +1,9 @@
 <audio id="alarm" src="/assets/audio/11710__connum__ringing.mp3">
     Your browser does not support the <code>audio</code> element.
 </audio>
-<button id="startPomodoro">start</button>
+<button id="startPomodoro" type="submit" formmethod="post" formaction="/tasks/startPomodoro">start</button>
+<button id="interruptPomodoro" type="submit" formmethod="post" formaction="/tasks/interrupt">interrupt</button>
+<button id="breakPomodoro" type="submit" formmethod="post" formaction="/tasks/breakPomodoro">break</button>
 <!--<div class="top">
     <h1 id="currentTaskTitle"></h1>
 

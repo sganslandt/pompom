@@ -30,6 +30,7 @@ a{
 #pageheader{
 	text-align: center;
 	width: 100%;
+	margin: 2rem 0 4rem;
 	img{
 		max-width: 25%;
 		height: auto;
@@ -83,7 +84,7 @@ a{
 			margin: 0;
 		}
 		form {
-			@include redbox;
+			@include boxed;
 			margin: 0 auto;
 			padding: 0.4rem;
 
@@ -113,11 +114,15 @@ a{
 
 	form{
 		@include standardform;
+		@include clearfix;
 		padding: 0;
+		padding-bottom: 1rem;
+
 
 		input[type="text"]{
-			@include experimental-value(width, calc(100% - 17.4rem));
+			@include experimental-value(width, calc(100% - 11.6rem));
 			float: left;
+			margin-bottom: 0;
 		}
 		input[type="submit"],
 		input[type="number"]{
@@ -125,6 +130,7 @@ a{
 			margin-left: 1rem;
 			display: block;
 			float: left;
+			margin-bottom: 0;
 		}
 		input[type="submit"]{
 			background-image: url("../img/icon_star.svg");
@@ -140,10 +146,17 @@ a{
 
 	h2{
 		position: absolute;
-		top: -8.8rem;
+		top: -9.6rem;
 		margin: 0;
-		color: $color-main-darker;
+		padding: 0 .4rem;
+		color: $color-shadow-deep;
 		font-size: $font-medium;
+		@include boxed($color-main);
+		@include box-shadow(inset 0 0.1rem 0 0 $color-highlight, 0 0.2rem 0 0 $color-shadow);
+
+		&:active{
+			@include box-shadow(inset 0 0.1rem 0 0 $color-shadow);
+		}
 	}
 	ol.taskList{
 		padding: 0;
@@ -184,7 +197,8 @@ a{
 	}
 	& .active{
 		h2{
-			text-decoration: underline;
+			@include boxed();
+			@include box-shadow(inset 0 0.1rem 0 0 $color-highlight, 0 0.2rem 0 0 $color-shadow);
 		}
 		ol.taskList{
 			display: block;
@@ -193,7 +207,6 @@ a{
 }
 #timer {
 	float: right;
-	padding-top: 5rem;
 
 	button {
 		@include button;
@@ -201,14 +214,15 @@ a{
 		background-image: url("../img/icon_clock.svg");
 		color: transparent;
 	}
-	&.active{
-		button#startPomodoro{
-			display: none;
-		}
-		button#interruptPomodoro,
-		button#breakPomodoro{
-			display: block;
-		}
+	button#interruptPomodoro{
+		display: none;
+		opacity: 0;
+		background-image: url("../img/icon_interrupted.svg");
+	}
+	button#breakPomodoro{
+		display: none;
+		opacity: 0;
+		background-image: url("../img/icon_broken.svg");
 	}
 
 }
@@ -223,7 +237,7 @@ a{
 	left: 0;
 
 	.content{
-		@include redbox;
+		@include boxed;
 		@include border-radius($border-radius);
 		max-width: 40rem;
 		margin: 0 auto;
@@ -236,7 +250,7 @@ a{
 }
 #standalone-timer {
 	@include clearfix;
-	@include redbox;
+	@include boxed;
 	overflow: hidden;
 
 	button {
@@ -339,6 +353,23 @@ a{
 		}
 	}
 }
+/************ Active Timer *************/
+
+body.active ol.taskList li,
+body.active #tasks h2,
+body.active #taskCreator form,
+body.active #timer button#startPomodoro{
+	opacity: 0;
+	-webkit-transition: opacity 0.5s;
+	transition: opacity 0.5s;
+}
+body.active #today ol.taskList li:first-child,
+body.active #timer button#interruptPomodoro,
+body.active #timer button#breakPomodoro{
+		opacity: 1;
+		display: block;
+}
+
 /************ Responsive Layout *************/
 @include breakpoint($large-phones){
 	#taskCreator{
@@ -347,10 +378,7 @@ a{
 	#tasks{
 		margin: 0 5.8rem;
 	}
-	#timer{
-		button {
-		}
-	}
+	
 
 }
 @include breakpoint($tablet) {
@@ -360,13 +388,20 @@ a{
 		padding: 3rem 0;
 		margin: 0 auto;
 	}
+	#timer{
+		right: 0;
+
+		button {
+			
+		}
+	}
 	#taskCreator{
 		form{
 			display: block;
 			@include clearfix;
 
 			input[type="text"]{
-				width: 34.4rem;
+				width: 46.6rem;
 				float: left;
 			}
 		}

@@ -7,6 +7,10 @@ define(['jquery','sortable'], function($) {
       $("#tasks section").removeClass('active');
       $(this).closest('section').addClass('active');
   	});
+  	$("#tasks #inventory li").click(function(e)
+		{
+      //moveTaskToList($(this), $('#today ol.taskList'));
+  	});
 	});
 
 	function sortablize(list) {
@@ -14,7 +18,6 @@ define(['jquery','sortable'], function($) {
 			list = $('.sortable');
 		};
 		$(list).sortable({
-			connectWith: ".connected",
 			placeholder: "sortable-placeholder",
 			revert: "100"
 		});
@@ -29,6 +32,9 @@ define(['jquery','sortable'], function($) {
 				$(this).html('<img src="assets/img/icon_inprogress.svg" />');
 			}
 		});
+	}
+	function moveTaskToList (task, list) {
+		$(list).append($(task));
 	}
 
 	return {

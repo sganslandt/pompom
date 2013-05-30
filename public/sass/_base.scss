@@ -46,6 +46,7 @@ $color-complement-darker: darken($color-complement, 40);
 
 $color-highlight: rgba(255, 255, 255, 0.2);
 $color-shadow: rgba(0, 0, 0, 0.2);
+$color-shadow-deep: rgba(0, 0, 0, 0.4);
 
 $color-action: #619E9E;
 $color-ok: #448400;
@@ -70,21 +71,18 @@ h4{font-size: $font-text}
 	background: $color-top;
 	@include background-image(linear-gradient($color-top, $color-bottom));
 }
-@mixin redbox{
-	@include gradient($color-main);
-	@include box-shadow(inset 0 0.1rem 0 0 $color-main-highlight);
-	border: 0.1rem solid $color-main-darker;
-
-	@include breakpoint($desktop-small) {
-		@include border-radius($border-radius);
-	}
+@mixin boxed($bgColor: $color-main-lighter){
+	@include box-shadow(inset 0 0.1rem 0 0 $color-highlight);
+	@include border-radius($border-radius);
+	background-color: $bgColor;
+	border: 0.1rem solid darken($bgColor, 30);
 }
 @mixin transparentBox($color: white, $alpha: 0.5, $borderRadius: $border-radius){
 	background-color: rgba($color, $alpha);
 	@include border-radius($borderRadius);
 }
 @mixin redheader{
-	@include redbox;
+	@include boxed;
 	@include font-heading;
 	width: 100%;
 	color: $color-complement;
@@ -146,8 +144,8 @@ h4{font-size: $font-text}
 	height: 4.8rem;
 	padding: 0.4rem;
 	position: relative;
-	-webkit-transition: opacity 0.25s;
-	transition: opacity 0.25s;
+	-webkit-transition: opacity 0.5s;
+	transition: opacity 0.5s;
 
 	h3{
 		font-size: $font-medium;
