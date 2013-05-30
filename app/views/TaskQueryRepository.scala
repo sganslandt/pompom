@@ -20,13 +20,12 @@ import model.api.TaskCreatedEvent
 case class Task(userId: String,
                 taskId: String,
                 title: String,
-                description: String,
                 pomodoros: Seq[Pomodoro],
                 isDone: Boolean) {
-  def startPomodoro(nr: Int) = Task(userId, taskId, title, description, pomodoros.updated(nr, Pomodoro(Active(now()), pomodoros(nr).interruptions)), false)
-  def endPomodoro(nr: Int) = Task(userId, taskId, title, description, pomodoros.updated(nr, Pomodoro(Ended(pomodoros(nr).state.asInstanceOf[Active].startTime, now()), pomodoros(nr).interruptions)), false)
-  def breakPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, description, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[Active].startTime, now(), reason), pomodoros(nr).interruptions)), false)
-  def interruptPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, description, pomodoros.updated(nr, Pomodoro(pomodoros(nr).state, Interruption(now(), reason) :: pomodoros(nr).interruptions)), false)
+  def startPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Active(now()), pomodoros(nr).interruptions)), isDone = false)
+  def endPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Ended(pomodoros(nr).state.asInstanceOf[Active].startTime, now()), pomodoros(nr).interruptions)), isDone = false)
+  def breakPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[Active].startTime, now(), reason), pomodoros(nr).interruptions)), isDone = false)
+  def interruptPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(pomodoros(nr).state, Interruption(now(), reason) :: pomodoros(nr).interruptions)), isDone = false)
 }
 
 case class Pomodoro(state: PomodoroState, interruptions: List[Interruption])
@@ -90,7 +89,7 @@ object TaskQueryRepository {
     Akka.system.eventStream.subscribe(self, classOf[TaskCreatedEvent])
     Akka.system.eventStream.subscribe(self, classOf[PomodoroStartedEvent])
 
-    override def preStart() = {
+    override def preStart() {
       log.debug("Starting")
     }
 
@@ -122,7 +121,7 @@ object TaskQueryRepository {
 
       case e: TaskCreatedEvent => {
         log.debug("Task created")
-        repo.createTask(Task(e.userId, e.taskId, e.title, e.description, Pomodoro(e.initialEstimate), false))
+        repo.createTask(Task(e.userId, e.taskId, e.title, Pomodoro(e.initialEstimate), isDone = false))
       }
 
       case e: PomodoroStartedEvent => {

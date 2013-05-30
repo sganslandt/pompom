@@ -22,12 +22,12 @@ class EventStore extends Actor with ActorLogging {
     PomodoroStartedEvent("abc@123", "3", 1),
     PomodoroEndedEvent("abc@123", "3", 0),
     PomodoroStartedEvent("abc@123", "3", 0),
-    TaskCreatedEvent("abc@123", "3", "title3", "description", 3),
+    TaskCreatedEvent("abc@123", "3", "title3", 3),
     PomodoroEndedEvent("abc@123", "2", 1),
     PomodoroStartedEvent("abc@123", "2", 1),
-    TaskCreatedEvent("abc@123", "2", "title2", "description", 3),
+    TaskCreatedEvent("abc@123", "2", "title2", 3),
     PomodoroStartedEvent("abc@123", "1", 0),
-    TaskCreatedEvent("abc@123", "1", "title1", "description", 3),
+    TaskCreatedEvent("abc@123", "1", "title1", 3),
     UserRegisteredEvent("abc@123")
   )
 

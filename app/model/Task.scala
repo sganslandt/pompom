@@ -6,7 +6,7 @@ import model.api.PomodoroEndedEvent
 import model.api.PomodoroBrokenEvent
 import model.api.PomodoroStartedEvent
 
-class Task(val userId: String, val id: String, val title: String, val description: String, val initialEstimate: Int) {
+class Task(val userId: String, val id: String, val title: String, val initialEstimate: Int) {
 
   var estimate = initialEstimate
   var pomodoros: List[Pomodoro] = List()

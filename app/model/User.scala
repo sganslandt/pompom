@@ -17,7 +17,7 @@ class User(userId: String) extends Actor with ActorLogging {
 
   def receive = {
     case _: LoginUserCommand => eventStore ! UserLoggedInEvent(userId)
-    case c: CreateTaskCommand => eventStore ! TaskCreatedEvent(c.userId, c.taskId, c.title, c.description, c.initialEstimate)
+    case c: CreateTaskCommand => eventStore ! TaskCreatedEvent(c.userId, c.taskId, c.title, c.initialEstimate)
     case c: StartPomodoroCommand => {
       log.debug("Received StartPomodoroCommand")
       eventStore ! prioritizedTaskList.head.startPomodoro()
@@ -36,7 +36,7 @@ class User(userId: String) extends Actor with ActorLogging {
     }
 
     case e: TaskCreatedEvent => {
-      prioritizedTaskList = new Task(userId, e.taskId, e.title, e.description, e.initialEstimate) :: prioritizedTaskList
+      prioritizedTaskList = new Task(userId, e.taskId, e.title, e.initialEstimate) :: prioritizedTaskList
     }
     case e: PomodoroStartedEvent => for (t <- prioritizedTaskList.find(_.id == e.taskId)) t.apply(e)
     case e: PomodoroEndedEvent => for (t <- prioritizedTaskList.find(_.id == e.taskId)) t.apply(e)

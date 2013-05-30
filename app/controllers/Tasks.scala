@@ -31,7 +31,7 @@ object Tasks extends Controller with Secured {
         createTaskForm.bindFromRequest.fold(
         form => Forbidden(""), {
           case (title, initialEstimate) =>
-            taskCommandHandler ! CreateTaskCommand(userId, UUID.randomUUID().toString, title, "", initialEstimate)
+            taskCommandHandler ! CreateTaskCommand(userId, UUID.randomUUID().toString, title, initialEstimate)
             Ok("")
         })
     }
