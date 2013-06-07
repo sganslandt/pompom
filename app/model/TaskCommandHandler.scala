@@ -7,9 +7,8 @@ import play.api.Play.current
 import model.api._
 import model.api.LoginUserCommand
 
-class TaskCommandHandler extends Actor {
+class TaskCommandHandler(eventStore: ActorRef) extends Actor {
 
-  val eventStore = Akka.system.actorFor("/user/eventStore")
   eventStore ! Replay
 
   def receive = {
@@ -36,7 +35,7 @@ class TaskCommandHandler extends Actor {
      */
 
     case e: UserRegisteredEvent => {
-      users = users + (e.userId -> context.actorOf(Props(new User(e.userId)), name = e.userId))
+      users = users + (e.userId -> context.actorOf(Props(new User(e.userId, eventStore)), name = e.userId))
     }
 
     case _ => {}

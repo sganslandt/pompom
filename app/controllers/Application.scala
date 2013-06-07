@@ -6,16 +6,16 @@ import controllers.Authentication.Secured
 import views.{TaskQueryRepository}
 import play.api.libs.concurrent.Akka
 import play.api.Play.current
-import akka.actor.Props
+import akka.actor.{ActorRef, Props}
 import model.{EventStore, TaskCommandHandler}
 
 object Application extends Controller with Secured {
 
-  Akka.system.actorOf(Props[EventStore], name = "eventStore")
-  Akka.system.actorOf(Props[TaskCommandHandler], name = "taskCommandHandler")
+  val eventStore: ActorRef = Akka.system.actorOf(Props[EventStore], name = "eventStore")
+  Akka.system.actorOf(Props(new TaskCommandHandler(eventStore)), name = "taskCommandHandler")
 
   val taskQueryRepository = new TaskQueryRepository
-  Akka.system.actorOf(Props(new TaskQueryRepository.Updater(taskQueryRepository)), "taskQueryUpdater") ! "init"
+  Akka.system.actorOf(Props(new TaskQueryRepository.Updater(eventStore, taskQueryRepository)), "taskQueryUpdater") ! "init"
 
   def index = AsAuthenticatedUser(userId => {
     request =>

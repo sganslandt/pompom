@@ -7,12 +7,11 @@ import model.api.LoginUserCommand
 import play.api.libs.concurrent.Akka
 import play.api.Play.current
 
-class User(userId: String) extends Actor with ActorLogging {
+class User(userId: String, eventStore: ActorRef) extends Actor with ActorLogging {
 
   private var prioritizedTaskList: List[Task] = List()
   private val settings: Settings = new Settings()
 
-  val eventStore = Akka.system.actorFor("/user/eventStore")
   eventStore ! Replay(Some(userId))
 
   def receive = {
