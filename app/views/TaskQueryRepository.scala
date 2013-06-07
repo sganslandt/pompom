@@ -1,7 +1,7 @@
 package views
 
 import model.api._
-import akka.actor.{ActorLogging, Actor}
+import akka.actor.{ActorRef, ActorLogging, Actor}
 import akka.event.Logging
 import play.api.libs.concurrent.Akka
 import play.api.Play.current
@@ -23,13 +23,13 @@ case class Task(userId: String,
                 pomodoros: Seq[Pomodoro],
                 priority: Int,
                 isDone: Boolean) {
-  def setPriority(newPriority: Int) = Task(userId, taskId, title, pomodoros, newPriority, isDone = false)
-  def increasePriority() = Task(userId, taskId, title, pomodoros, priority + 1, isDone = false)
-  def decreasePriority() = Task(userId, taskId, title, pomodoros, priority - 1, isDone = false)
-  def startPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Active(now()), pomodoros(nr).interruptions)), priority, isDone = false)
-  def endPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Ended(pomodoros(nr).state.asInstanceOf[Active].startTime, now()), pomodoros(nr).interruptions)), priority, isDone = false)
-  def breakPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[Active].startTime, now(), reason), pomodoros(nr).interruptions)), priority, isDone = false)
-  def interruptPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(pomodoros(nr).state, Interruption(now(), reason) :: pomodoros(nr).interruptions)), priority, isDone = false)
+  def setPriority(newPriority: Int) = Task(userId, taskId, title, pomodoros, newPriority, isDone)
+  def increasePriority() = Task(userId, taskId, title, pomodoros, priority + 1, isDone)
+  def decreasePriority() = Task(userId, taskId, title, pomodoros, priority - 1, isDone)
+  def startPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Active(now()), pomodoros(nr).interruptions)), priority, isDone)
+  def endPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Ended(pomodoros(nr).state.asInstanceOf[Active].startTime, now()), pomodoros(nr).interruptions)), priority, isDone)
+  def breakPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[Active].startTime, now(), reason), pomodoros(nr).interruptions)), priority, isDone)
+  def interruptPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(pomodoros(nr).state, Interruption(now(), reason) :: pomodoros(nr).interruptions)), priority, isDone)
 }
 
 case class Pomodoro(state: PomodoroState, interruptions: List[Interruption])
@@ -66,7 +66,7 @@ class TaskQueryRepository {
   }
 
   def listForUser(userId: String): Iterable[Task] = {
-    tasks.filter(_.userId == userId).reverse
+    tasks.filter(_.userId == userId).sortBy(_.priority)
   }
 
   protected def clear() {
@@ -88,7 +88,7 @@ class TaskQueryRepository {
 
 object TaskQueryRepository {
 
-  class Updater(repo: TaskQueryRepository) extends Actor with ActorLogging {
+  class Updater(eventStore: ActorRef, repo: TaskQueryRepository) extends Actor with ActorLogging {
 
     Akka.system.eventStream.subscribe(self, classOf[BeforeReplay])
     Akka.system.eventStream.subscribe(self, classOf[AfterReplay])
@@ -96,6 +96,7 @@ object TaskQueryRepository {
     Akka.system.eventStream.subscribe(self, classOf[UserLoggedInEvent])
     Akka.system.eventStream.subscribe(self, classOf[TaskCreatedEvent])
     Akka.system.eventStream.subscribe(self, classOf[PomodoroStartedEvent])
+    Akka.system.eventStream.subscribe(self, classOf[TaskReprioritzedEvent])
 
     override def preStart() {
       log.debug("Starting")
@@ -110,7 +111,7 @@ object TaskQueryRepository {
 
       case "init" => {
         log.debug("Received init message")
-        Akka.system.actorFor("/user/eventStore") ! Replay
+        eventStore ! Replay
       }
 
       case e: BeforeReplay => {
@@ -130,7 +131,7 @@ object TaskQueryRepository {
       case e: TaskCreatedEvent => {
         log.debug("Task created")
         val currentTaskCount = repo.listForUser(e.userId).size
-        repo.createTask(Task(e.userId, e.taskId, e.title, Pomodoro(e.initialEstimate), currentTaskCount + 1, isDone = false))
+        repo.createTask(Task(e.userId, e.taskId, e.title, Pomodoro(e.initialEstimate), currentTaskCount, isDone = false))
       }
 
       case e: TaskReprioritzedEvent => {
@@ -138,10 +139,13 @@ object TaskQueryRepository {
         val task = repo.getTask(e.taskId)
         val oldPriority = task.priority
         val newPriority = e.newPriority
+
         userTasks.foreach(t =>
-          if (newPriority < oldPriority && t.priority <= oldPriority && t.priority > newPriority) repo.replaceTask(t.increasePriority)
-          else if (newPriority > oldPriority && t.priority >= oldPriority && t.priority < newPriority) repo.replaceTask(t.decreasePriority)
+          if (newPriority < oldPriority && t.priority < oldPriority && t.priority >= newPriority) repo.replaceTask(t.increasePriority)
+          else if (newPriority > oldPriority && t.priority > oldPriority && t.priority <= newPriority) repo.replaceTask(t.decreasePriority)
         )
+
+        repo.replaceTask(task.setPriority(e.newPriority))
       }
 
       case e: PomodoroStartedEvent => {
