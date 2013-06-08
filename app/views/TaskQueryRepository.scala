@@ -24,14 +24,15 @@ case class Task(userId: String,
                 title: String,
                 pomodoros: Seq[Pomodoro],
                 priority: Int,
-                isDone: Boolean) extends Prioritizable[Task] {
-  override def setPriority(newPriority: Int) = Task(userId, taskId, title, pomodoros, newPriority, isDone)
-  override def increasePriority() = Task(userId, taskId, title, pomodoros, priority + 1, isDone)
-  override def decreasePriority() = Task(userId, taskId, title, pomodoros, priority - 1, isDone)
-  def startPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Active(now()), pomodoros(nr).interruptions)), priority, isDone)
-  def endPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Ended(pomodoros(nr).state.asInstanceOf[Active].startTime, now()), pomodoros(nr).interruptions)), priority, isDone)
-  def breakPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[Active].startTime, now(), reason), pomodoros(nr).interruptions)), priority, isDone)
-  def interruptPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(pomodoros(nr).state, Interruption(now(), reason) :: pomodoros(nr).interruptions)), priority, isDone)
+                isDone: Boolean,
+                list: ListType) extends Prioritizable[Task] {
+  override def setPriority(newPriority: Int) = Task(userId, taskId, title, pomodoros, newPriority, isDone, list)
+  override def increasePriority() = Task(userId, taskId, title, pomodoros, priority + 1, isDone, list)
+  override def decreasePriority() = Task(userId, taskId, title, pomodoros, priority - 1, isDone, list)
+  def startPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Active(now()), pomodoros(nr).interruptions)), priority, isDone, list)
+  def endPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Ended(pomodoros(nr).state.asInstanceOf[Active].startTime, now()), pomodoros(nr).interruptions)), priority, isDone, list)
+  def breakPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[Active].startTime, now(), reason), pomodoros(nr).interruptions)), priority, isDone, list)
+  def interruptPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(pomodoros(nr).state, Interruption(now(), reason) :: pomodoros(nr).interruptions)), priority, isDone, list)
 }
 
 case class Pomodoro(state: PomodoroState, interruptions: List[Interruption])
@@ -67,8 +68,12 @@ class TaskQueryRepository {
     }
   }
 
-  def listForUser(userId: String): Iterable[Task] = {
-    tasks.filter(_.userId == userId).sortBy(_.priority)
+  def listTodoToday(userId: String): Iterable[Task] = {
+    tasks.filter(_.userId == userId).filter(_.list == TodoToday).sortBy(_.priority)
+  }
+
+  def listActivityInventory(userId: String): Iterable[Task] = {
+    tasks.filter(_.userId == userId).filter(_.list == ActivityInventory).sortBy(_.priority)
   }
 
   protected def clear() {
@@ -124,21 +129,20 @@ object TaskQueryRepository {
         log.debug("Replay done")
       }
 
-      case e: UserRegisteredEvent => {
-        log.debug("User registered")
-      }
+      case e: UserRegisteredEvent => {}
 
       case e: UserLoggedInEvent => {}
 
       case e: TaskCreatedEvent => {
-        log.debug("Task created")
-        val currentTaskCount = repo.listForUser(e.userId).size
-        repo.createTask(Task(e.userId, e.taskId, e.title, Pomodoro(e.initialEstimate), currentTaskCount, isDone = false))
+        repo.createTask(Task(e.userId, e.taskId, e.title, Pomodoro(e.initialEstimate), e.priority, isDone = false, e.list))
       }
 
       case e: TaskReprioritzedEvent => {
-        val userTasks = repo.listForUser(e.userId)
         val task = repo.getTask(e.taskId)
+        val userTasks = task.list match {
+          case TodoToday => repo.listTodoToday(e.userId)
+          case ActivityInventory => repo.listActivityInventory(e.userId)
+        }
         val newPriority = e.newPriority
 
         val reprioritizedTasks: Iterable[Prioritizable[Task]] = rePrioritize(task, userTasks, newPriority)

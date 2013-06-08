@@ -21,7 +21,8 @@ object Application extends Controller with Secured {
     request =>
       Ok(views.html.index(
         userId,
-        taskQueryRepository.listForUser(userId)
+        taskQueryRepository.listTodoToday(userId),
+        taskQueryRepository.listActivityInventory(userId)
       ))
   })
 

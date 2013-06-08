@@ -1,4 +1,4 @@
-@(userId: String, taskList: Iterable[views.Task])
+@(userId: String, todoToday: Iterable[views.Task], activityInventory: Iterable[views.Task])
 
 @main {
 <section id="taskCreator">
@@ -10,11 +10,11 @@
 <section id="tasks">
 	<section id="today" class="active">
 		<h2>Today</h2>
-	    @tasks.list(taskList)
+	    @tasks.list(todoToday)
 	</section>
 	<section id="inventory">
 		<h2>Inventory</h2>
-	    @tasks.list(taskList)
+	    @tasks.list(activityInventory)
 	</section>
 </section>
 }

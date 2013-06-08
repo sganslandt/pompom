@@ -4,17 +4,17 @@ import akka.actor.{ActorLogging, Actor}
 import play.api.libs.concurrent.Akka
 import play.api.Play.current
 import model.api._
-import model.AfterReplay
 import model.api.TaskCreatedEvent
 import model.api.UserRegisteredEvent
 import model.api.PomodoroStartedEvent
 import scala.Some
-import model.BeforeReplay
-import model.Replay
 
 class EventStore extends Actor with ActorLogging {
 
   var events: List[DomainEvent] = List(
+    TaskCreatedEvent("abc@123", "6", "postponed stuff 1", 6, 0, ActivityInventory),
+    TaskCreatedEvent("abc@123", "5", "postponed stuff 2", 7, 1, ActivityInventory),
+    TaskCreatedEvent("abc@123", "4", "postponed stuff 3", 8, 2, ActivityInventory),
     PomodoroBrokenEvent("abc@123", "3", 2, "why this happened?"),
     PomodoroStartedEvent("abc@123", "3", 2),
     PomodoroEndedEvent("abc@123", "3", 1),
@@ -22,12 +22,12 @@ class EventStore extends Actor with ActorLogging {
     PomodoroStartedEvent("abc@123", "3", 1),
     PomodoroEndedEvent("abc@123", "3", 0),
     PomodoroStartedEvent("abc@123", "3", 0),
-    TaskCreatedEvent("abc@123", "3", "title3", 3),
+    TaskCreatedEvent("abc@123", "3", "title3", 3, 2, TodoToday),
     PomodoroEndedEvent("abc@123", "2", 1),
     PomodoroStartedEvent("abc@123", "2", 1),
-    TaskCreatedEvent("abc@123", "2", "title2", 3),
+    TaskCreatedEvent("abc@123", "2", "title2", 3, 1, TodoToday),
     PomodoroStartedEvent("abc@123", "1", 0),
-    TaskCreatedEvent("abc@123", "1", "title1", 3),
+    TaskCreatedEvent("abc@123", "1", "title1", 3, 0, TodoToday),
     UserRegisteredEvent("abc@123")
   )
 
