@@ -14,54 +14,42 @@ class User(userId: String, eventStore: ActorRef) extends Actor with ActorLogging
   eventStore ! Replay(Some(userId))
 
   def receive = {
+
+    /**
+     * Commands
+     */
+
     case _: LoginUserCommand => eventStore ! UserLoggedInEvent(userId)
     case c: CreateTaskCommand => eventStore ! TaskCreatedEvent(c.userId, c.taskId, c.title, c.initialEstimate)
-    case c: StartPomodoroCommand => {
-      log.debug("Received StartPomodoroCommand")
-      eventStore ! prioritizedTaskList.head.startPomodoro()
-    }
-    case c: EndPomodoroCommand => {
-      log.debug("Received EndPomodoroCommand")
-      eventStore ! prioritizedTaskList.head.endPomodoro()
-    }
-    case c: InterruptPomodoroCommand => {
-      log.debug("Received InterruptPomodoroCommand")
-      eventStore ! prioritizedTaskList.head.interrupt(c.note)
-    }
-    case c: BreakPomodoroCommand => {
-      log.debug("Received BreakPomodoroCommand")
-      eventStore ! prioritizedTaskList.head.break()
-    }
-    case c: ReprioritizeTaskCommand => {
-      log.debug("Received {}", c)
-      eventStore ! TaskReprioritzedEvent(userId, c.taskId, c.newPriority)
-    }
+    case c: StartPomodoroCommand => eventStore ! prioritizedTaskList.head.startPomodoro()
+    case c: EndPomodoroCommand => eventStore ! prioritizedTaskList.head.endPomodoro()
+    case c: InterruptPomodoroCommand => eventStore ! prioritizedTaskList.head.interrupt(c.note)
+    case c: BreakPomodoroCommand => eventStore ! prioritizedTaskList.head.break()
+    case c: ReprioritizeTaskCommand => eventStore ! TaskReprioritzedEvent(userId, c.taskId, c.newPriority)
 
+    /**
+     * Events
+     */
 
     case e: TaskCreatedEvent => {
       prioritizedTaskList = prioritizedTaskList :+ new Task(userId, e.taskId, e.title, prioritizedTaskList.length, e.initialEstimate)
     }
 
     case e: TaskReprioritzedEvent => {
-      val task = prioritizedTaskList.find(_.taskId == e.taskId)
-      task match {
-        case
-          Some(taskToUpdate) => {
-          val oldPriority = taskToUpdate.priority
-          val newPriority = e.newPriority
-
-          prioritizedTaskList = rePrioritize(taskToUpdate, prioritizedTaskList, newPriority).toList
-        }
-        case None =>
-      }
+      for (t <- prioritizedTaskList.find(_.taskId == e.taskId))
+        prioritizedTaskList = rePrioritize(t, prioritizedTaskList, e.newPriority).toList
     }
 
-    case e: PomodoroStartedEvent => for (t <- prioritizedTaskList.find(_.taskId == e.taskId)) t.apply(e)
-    case e: PomodoroEndedEvent => for (t <- prioritizedTaskList.find(_.taskId == e.taskId)) t.apply(e)
-    case e: PomodoroInterruptedEvent => for (t <- prioritizedTaskList.find(_.taskId == e.taskId)) t.apply(e)
-    case e: PomodoroBrokenEvent => for (t <- prioritizedTaskList.find(_.taskId == e.taskId)) t.apply(e)
+    case e: PomodoroStartedEvent => withTask(e.taskId, _.apply(e))
+    case e: PomodoroEndedEvent => withTask(e.taskId, _.apply(e))
+    case e: PomodoroInterruptedEvent => withTask(e.taskId, _.apply(e))
+    case e: PomodoroBrokenEvent => withTask(e.taskId, _.apply(e))
 
     case _ => {}
+  }
+
+  private def withTask(taskId: String, f: Task => Unit) {
+    for (t <- prioritizedTaskList.find(_.taskId == taskId)) f(t)
   }
 }
 
