@@ -13,9 +13,9 @@ class Task(val userId: String, val taskId: String, val title: String, var priori
   var pomodoros: List[Pomodoro] = List()
   var isDone = false
 
-  def setPriority(newPriority: Int) { this.priority = priority; this }
-  def increasePriority { this.priority += 1; this }
-  def decreasePriority { this.priority -= 1; this }
+  def setPriority(newPriority: Int) = { this.priority = priority; this }
+  def increasePriority = { this.priority += 1; this }
+  def decreasePriority = { this.priority -= 1; this }
 
   private def inPomodoro = {
     pomodoros.nonEmpty && pomodoros.head.isActive
