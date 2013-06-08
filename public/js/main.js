@@ -12,18 +12,14 @@ requirejs.config({
 
 require(['jquery', 'timer', 'taskList', 'taskCreator', 'desktopAlert', 'responsive'], function ($, timer, taskList, taskCreator, notify, responsive) {
     $("form").submit(function (eventData) {
-        $.post(eventData.currentTarget.action, $(eventData.currentTarget).serialize());
+            $.post(eventData.currentTarget.action, $(eventData.currentTarget).serialize());
 
-        if ($(eventData.currentTarget).attr("name") == "createTask") {
-            taskCreator.createTask(eventData);
-        }
+            return false;
+        });
 
-        return false;
-    });
-
-    $("button").click(function (eventData) {
-        $.post(eventData.currentTarget.formAction);
-        return false;
+        $("button").click(function (eventData) {
+            $.post(eventData.currentTarget.formAction);
+            return false;
     });
 
 });

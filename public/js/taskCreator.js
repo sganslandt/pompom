@@ -6,6 +6,22 @@ define('taskCreator', ['jquery', 'taskList'], function ($, taskList) {
         focusForm();
     });
 
+    $(".createTaskForm").submit(function (eventData) {
+        createTask(eventData);
+    });
+    function createTask(eventData) {
+        var targetList;
+        if ($(eventData.currentTarget).find(':checkbox').prop('checked')) targetList = $('#inventory').find('.taskList');
+        else targetList = $('#tasks').find('section.active .taskList');
+        taskList.addTaskToList(
+            targetList,
+            $(eventData.currentTarget).serializeArray()[0].value,
+            $(eventData.currentTarget).serializeArray()[1].value
+        );
+        resetForm();
+        focusForm();
+    }
+
     function resetForm() {
         $('form#createTask').find("input[type=text], textarea, input[type=number]").val("");
     }
@@ -40,20 +56,7 @@ define('taskCreator', ['jquery', 'taskList'], function ($, taskList) {
         $('.popup').remove();
     }
 
-
-    return{
-        createTask: function (eventData) {
-            var targetList;
-            if ($(eventData.currentTarget).find(':checkbox').prop('checked')) targetList = $('#inventory').find('.taskList');
-            else targetList = $('#tasks').find('section.active .taskList');
-            taskList.addTaskToList(
-                targetList,
-                $(eventData.currentTarget).serializeArray()[0].value,
-                $(eventData.currentTarget).serializeArray()[1].value
-            );
-            resetForm();
-            focusForm();
-        },
+    return {
         closeCreateFormPopup: function () {
             closePopup();
         }
