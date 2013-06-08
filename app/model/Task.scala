@@ -5,16 +5,17 @@ import model.api.PomodoroInterruptedEvent
 import model.api.PomodoroEndedEvent
 import model.api.PomodoroBrokenEvent
 import model.api.PomodoroStartedEvent
+import util.Prioritizable
 
-class Task(val userId: String, val taskId: String, val title: String, var priority: Int, val initialEstimate: Int) {
+class Task(val userId: String, val taskId: String, val title: String, var priority: Int, val initialEstimate: Int) extends Prioritizable[Task] {
 
   var estimate = initialEstimate
   var pomodoros: List[Pomodoro] = List()
   var isDone = false
 
-  def setPriority(newPriority: Int) { this.priority = priority }
-  def increasePriority { this.priority += 1 }
-  def decreasePriority { this.priority -= 1 }
+  def setPriority(newPriority: Int) { this.priority = priority; this }
+  def increasePriority { this.priority += 1; this }
+  def decreasePriority { this.priority -= 1; this }
 
   private def inPomodoro = {
     pomodoros.nonEmpty && pomodoros.head.isActive

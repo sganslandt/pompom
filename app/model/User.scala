@@ -1,11 +1,10 @@
 package model
 
-import akka.actor.{Props, ActorLogging, ActorRef, Actor}
+import akka.actor.{ActorLogging, ActorRef, Actor}
 import model.api._
 import model.api.UserLoggedInEvent
 import model.api.LoginUserCommand
-import play.api.libs.concurrent.Akka
-import play.api.Play.current
+import util.Prioritizable.rePrioritize
 
 class User(userId: String, eventStore: ActorRef) extends Actor with ActorLogging {
 
@@ -42,6 +41,7 @@ class User(userId: String, eventStore: ActorRef) extends Actor with ActorLogging
     case e: TaskCreatedEvent => {
       prioritizedTaskList = prioritizedTaskList :+ new Task(userId, e.taskId, e.title, prioritizedTaskList.length, e.initialEstimate)
     }
+
     case e: TaskReprioritzedEvent => {
       val task = prioritizedTaskList.find(_.taskId == e.taskId)
       task match {
@@ -49,12 +49,8 @@ class User(userId: String, eventStore: ActorRef) extends Actor with ActorLogging
           Some(taskToUpdate) => {
           val oldPriority = taskToUpdate.priority
           val newPriority = e.newPriority
-          taskToUpdate.setPriority(e.newPriority)
-          prioritizedTaskList.foreach(
-            t =>
-              if (newPriority < oldPriority && t.priority <= oldPriority && t.priority > newPriority) t.increasePriority
-              else if (newPriority > oldPriority && t.priority >= oldPriority && t.priority < newPriority) t.decreasePriority
-          )
+
+          prioritizedTaskList = rePrioritize(taskToUpdate, prioritizedTaskList, newPriority).toList
         }
         case None =>
       }

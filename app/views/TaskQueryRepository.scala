@@ -16,16 +16,18 @@ import scala.Some
 import model.BeforeReplay
 import model.AfterReplay
 import model.api.TaskCreatedEvent
+import util.Prioritizable
+import util.Prioritizable.rePrioritize
 
 case class Task(userId: String,
                 taskId: String,
                 title: String,
                 pomodoros: Seq[Pomodoro],
                 priority: Int,
-                isDone: Boolean) {
-  def setPriority(newPriority: Int) = Task(userId, taskId, title, pomodoros, newPriority, isDone)
-  def increasePriority() = Task(userId, taskId, title, pomodoros, priority + 1, isDone)
-  def decreasePriority() = Task(userId, taskId, title, pomodoros, priority - 1, isDone)
+                isDone: Boolean) extends Prioritizable[Task] {
+  override def setPriority(newPriority: Int) = Task(userId, taskId, title, pomodoros, newPriority, isDone)
+  override def increasePriority() = Task(userId, taskId, title, pomodoros, priority + 1, isDone)
+  override def decreasePriority() = Task(userId, taskId, title, pomodoros, priority - 1, isDone)
   def startPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Active(now()), pomodoros(nr).interruptions)), priority, isDone)
   def endPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Ended(pomodoros(nr).state.asInstanceOf[Active].startTime, now()), pomodoros(nr).interruptions)), priority, isDone)
   def breakPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[Active].startTime, now(), reason), pomodoros(nr).interruptions)), priority, isDone)
@@ -137,15 +139,10 @@ object TaskQueryRepository {
       case e: TaskReprioritzedEvent => {
         val userTasks = repo.listForUser(e.userId)
         val task = repo.getTask(e.taskId)
-        val oldPriority = task.priority
         val newPriority = e.newPriority
 
-        userTasks.foreach(t =>
-          if (newPriority < oldPriority && t.priority < oldPriority && t.priority >= newPriority) repo.replaceTask(t.increasePriority)
-          else if (newPriority > oldPriority && t.priority > oldPriority && t.priority <= newPriority) repo.replaceTask(t.decreasePriority)
-        )
-
-        repo.replaceTask(task.setPriority(e.newPriority))
+        val reprioritizedTasks: Iterable[Prioritizable[Task]] = rePrioritize(task, userTasks, newPriority)
+        for (t <- reprioritizedTasks) repo.replaceTask(t.asInstanceOf[Task])
       }
 
       case e: PomodoroStartedEvent => {
