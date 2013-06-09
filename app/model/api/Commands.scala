@@ -3,7 +3,7 @@ package model.api
 case class RegisterUserCommand()
 case class LoginUserCommand(userId: String)
 
-case class CreateTaskCommand(userId: String, taskId: String, title: String, initialEstimate: Int)
+case class CreateTaskCommand(userId: String, taskId: String, title: String, initialEstimate: Int, list: ListType)
 case class ReprioritizeTaskCommand(userId: String, taskId: String, newPriority: Int)
 
 case class StartPomodoroCommand(userId: String)
