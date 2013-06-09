@@ -1,5 +1,13 @@
-@(tasks: Iterable[views.Task])
+@(listName: String, header: String, tasks: Iterable[views.Task])
 
+<form class="createTaskForm" name="createTask" method="post" action="/tasks/">
+    <input class="title required" name="title" type="text" pattern=".+" required placeholder="Title"/>
+    <input class="initialEstimate required" name="initialEstimate" type="number" min="1" max="8" required placeholder="1"/>
+    <input name="listName" type="hidden" value="@listName"/>
+    <input name="createTask" type="submit" id="taskcreatorbutton" value="Do"/>
+</form>
+
+<h2>@header</h2>
 <ol class="taskList sortable connected">
     @for(t <- tasks) {
     <li draggable="true">

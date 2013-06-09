@@ -21,7 +21,8 @@ object Tasks extends Controller with Secured {
   val createTaskForm = Form(
     tuple(
       "title" -> text(1),
-      "initialEstimate" -> number(1, 8)
+      "initialEstimate" -> number(1, 8),
+      "listName" -> text()
     )
   )
 
@@ -30,8 +31,13 @@ object Tasks extends Controller with Secured {
       implicit request =>
         createTaskForm.bindFromRequest.fold(
         form => Forbidden(""), {
-          case (title, initialEstimate) =>
-            taskCommandHandler ! CreateTaskCommand(userId, UUID.randomUUID().toString, title, initialEstimate, ActivityInventory)
+          case (title, initialEstimate, listName) =>
+            val list = listName match {
+              case "todoToday" => TodoToday
+              case "activityInventory" => ActivityInventory
+            }
+
+            taskCommandHandler ! CreateTaskCommand(userId, UUID.randomUUID().toString, title, initialEstimate, list)
             Ok("")
         })
     }

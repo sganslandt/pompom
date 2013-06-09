@@ -1,20 +1,15 @@
 @(userId: String, todoToday: Iterable[views.Task], activityInventory: Iterable[views.Task])
 
 @main {
-<section id="taskCreator">
-    @tasks.createTask()
-</section>
 <section id="timer">
     @timer()
 </section>
 <section id="tasks">
 	<section id="today" class="active">
-		<h2>Today</h2>
-	    @tasks.list(todoToday)
+	    @tasks.list("todoToday", "Today", todoToday)
 	</section>
 	<section id="inventory">
-		<h2>Inventory</h2>
-	    @tasks.list(activityInventory)
+	    @tasks.list("activityInventory", "Inventory", activityInventory)
 	</section>
 </section>
 }
