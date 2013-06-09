@@ -33,6 +33,7 @@ case class Task(userId: String,
   def endPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Ended(pomodoros(nr).state.asInstanceOf[Active].startTime, now()), pomodoros(nr).interruptions)), priority, isDone, list)
   def breakPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[Active].startTime, now(), reason), pomodoros(nr).interruptions)), priority, isDone, list)
   def interruptPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(pomodoros(nr).state, Interruption(now(), reason) :: pomodoros(nr).interruptions)), priority, isDone, list)
+  def movedToList(newList: ListType) = Task(userId, taskId, title, pomodoros, priority, isDone, newList)
 }
 
 case class Pomodoro(state: PomodoroState, interruptions: List[Interruption])
@@ -104,6 +105,7 @@ object TaskQueryRepository {
     Akka.system.eventStream.subscribe(self, classOf[TaskCreatedEvent])
     Akka.system.eventStream.subscribe(self, classOf[PomodoroStartedEvent])
     Akka.system.eventStream.subscribe(self, classOf[TaskReprioritzedEvent])
+    Akka.system.eventStream.subscribe(self, classOf[TaskMovedToListEvent])
 
     override def preStart() {
       log.debug("Starting")
@@ -147,6 +149,11 @@ object TaskQueryRepository {
 
         val reprioritizedTasks: Iterable[Prioritizable[Task]] = rePrioritize(task, userTasks, newPriority)
         for (t <- reprioritizedTasks) repo.replaceTask(t.asInstanceOf[Task])
+      }
+
+      case e: TaskMovedToListEvent => {
+        val currentTask: Task = repo.getTask(e.taskId)
+        repo.replaceTask(currentTask.movedToList(e.newList))
       }
 
       case e: PomodoroStartedEvent => {

@@ -7,7 +7,7 @@ import model.api.PomodoroBrokenEvent
 import model.api.PomodoroStartedEvent
 import util.Prioritizable
 
-class Task(val userId: String, val taskId: String, val title: String, var priority: Int, val initialEstimate: Int) extends Prioritizable[Task] {
+class Task(val userId: String, val taskId: String, val title: String, var priority: Int, val initialEstimate: Int, var list: ListType) extends Prioritizable[Task] {
 
   var estimate = initialEstimate
   var pomodoros: List[Pomodoro] = List()

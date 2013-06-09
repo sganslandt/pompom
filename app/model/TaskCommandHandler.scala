@@ -25,6 +25,7 @@ class TaskCommandHandler(eventStore: ActorRef) extends Actor {
 
     case c: CreateTaskCommand => users(c.userId) ! c
     case c: ReprioritizeTaskCommand => users(c.userId) ! c
+    case c: MoveTaskToListCommand => users(c.userId) ! c
     case c: StartPomodoroCommand => users(c.userId) ! c
     case c: EndPomodoroCommand => users(c.userId) ! c
     case c: InterruptPomodoroCommand => users(c.userId) ! c
