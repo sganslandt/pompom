@@ -26,7 +26,7 @@ object Authentication extends Controller {
         errors => BadRequest(views.html.auth.login()),
         email => {
           taskCommandHandler ! LoginUserCommand(email)
-          Redirect(routes.Application.index()).withSession(session + ("email" -> email))
+          Redirect(routes.Application.index(section = "")).withSession(session + ("email" -> email))
         }
       )
   }

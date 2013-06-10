@@ -17,7 +17,7 @@ object Application extends Controller with Secured {
   val taskQueryRepository = new TaskQueryRepository
   Akka.system.actorOf(Props(new TaskQueryRepository.Updater(eventStore, taskQueryRepository)), "taskQueryUpdater") ! "init"
 
-  def index = AsAuthenticatedUser(userId => {
+  def index(section: String) = AsAuthenticatedUser(userId => {
     request =>
       Ok(views.html.index(
         userId,
