@@ -35,11 +35,14 @@ class TaskCommandHandler(eventStore: ActorRef) extends Actor {
      * Events
      */
 
-    case e: UserRegisteredEvent => {
-      users = users + (e.userId -> context.actorOf(Props(new User(e.userId, eventStore)), name = e.userId))
+    case e: DomainEventMessage => e.payload match {
+      case e: UserRegisteredEvent => {
+        users = users + (e.userId -> context.actorOf(Props(new User(e.userId, eventStore)), name = e.userId))
+      }
+
+      case _ => {}
     }
 
-    case _ => {}
 
   }
 

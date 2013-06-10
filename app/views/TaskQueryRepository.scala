@@ -9,12 +9,10 @@ import play.api.Play.current
 import org.joda.time.DateTime
 import org.joda.time.DateTime.now
 import model.api.UserRegisteredEvent
-import model.Replay
+import model.{DomainEventMessage, Replay, BeforeReplay, AfterReplay}
 import model.api.UserLoggedInEvent
 import model.api.PomodoroStartedEvent
 import scala.Some
-import model.BeforeReplay
-import model.AfterReplay
 import model.api.TaskCreatedEvent
 import util.Prioritizable
 import util.Prioritizable.rePrioritize
@@ -107,12 +105,7 @@ object TaskQueryRepository {
 
     Akka.system.eventStream.subscribe(self, classOf[BeforeReplay])
     Akka.system.eventStream.subscribe(self, classOf[AfterReplay])
-    Akka.system.eventStream.subscribe(self, classOf[UserRegisteredEvent])
-    Akka.system.eventStream.subscribe(self, classOf[UserLoggedInEvent])
-    Akka.system.eventStream.subscribe(self, classOf[TaskCreatedEvent])
-    Akka.system.eventStream.subscribe(self, classOf[PomodoroStartedEvent])
-    Akka.system.eventStream.subscribe(self, classOf[TaskReprioritzedEvent])
-    Akka.system.eventStream.subscribe(self, classOf[TaskMovedToListEvent])
+    Akka.system.eventStream.subscribe(self, classOf[DomainEventMessage])
 
     override def preStart() {
       log.debug("Starting")
@@ -138,46 +131,49 @@ object TaskQueryRepository {
         log.debug("Replay done")
       }
 
-      case e: UserRegisteredEvent => {}
+      case e: DomainEventMessage => e.payload match {
 
-      case e: UserLoggedInEvent => {}
+        case e: UserRegisteredEvent => {}
 
-      case e: TaskCreatedEvent => {
-        repo.createTask(Task(e.userId, e.taskId, e.title, Pomodoro(e.initialEstimate), e.priority, isDone = false, e.list))
-      }
+        case e: UserLoggedInEvent => {}
 
-      case e: TaskReprioritzedEvent => {
-        val task = repo.getTask(e.taskId)
-        val userTasks = task.list match {
-          case TodoToday => repo.listTodoToday(e.userId)
-          case ActivityInventory => repo.listActivityInventory(e.userId)
+        case e: TaskCreatedEvent => {
+          repo.createTask(Task(e.userId, e.taskId, e.title, Pomodoro(e.initialEstimate), e.priority, isDone = false, e.list))
         }
-        val newPriority = e.newPriority
 
-        val reprioritizedTasks: Iterable[Prioritizable[Task]] = rePrioritize(task, userTasks, newPriority)
-        for (t <- reprioritizedTasks) repo.replaceTask(t.asInstanceOf[Task])
-      }
+        case e: TaskReprioritzedEvent => {
+          val task = repo.getTask(e.taskId)
+          val userTasks = task.list match {
+            case TodoToday => repo.listTodoToday(e.userId)
+            case ActivityInventory => repo.listActivityInventory(e.userId)
+          }
+          val newPriority = e.newPriority
 
-      case e: TaskMovedToListEvent => {
-        val currentTask: Task = repo.getTask(e.taskId)
-        repo.replaceTask(currentTask.movedToList(e.newList))
-      }
+          val reprioritizedTasks: Iterable[Prioritizable[Task]] = rePrioritize(task, userTasks, newPriority)
+          for (t <- reprioritizedTasks) repo.replaceTask(t.asInstanceOf[Task])
+        }
 
-      case e: PomodoroStartedEvent => {
-        repo.replaceTask(repo.getTask(e.taskId).startPomodoro(e.pomodoro))
-      }
-      case e: PomodoroEndedEvent => {
-        repo.replaceTask(repo.getTask(e.taskId).endPomodoro(e.pomodoro))
-      }
-      case e: PomodoroInterruptedEvent => {
-        repo.replaceTask(repo.getTask(e.taskId).interruptPomodoro(e.pomodoro, e.note))
-      }
-      case e: PomodoroBrokenEvent => {
-        repo.replaceTask(repo.getTask(e.taskId).breakPomodoro(e.pomodoro, e.note))
-      }
+        case e: TaskMovedToListEvent => {
+          val currentTask: Task = repo.getTask(e.taskId)
+          repo.replaceTask(currentTask.movedToList(e.newList))
+        }
 
-      case _ => {}
+        case e: PomodoroStartedEvent => {
+          repo.replaceTask(repo.getTask(e.taskId).startPomodoro(e.pomodoro))
+        }
+        case e: PomodoroEndedEvent => {
+          repo.replaceTask(repo.getTask(e.taskId).endPomodoro(e.pomodoro))
+        }
+        case e: PomodoroInterruptedEvent => {
+          repo.replaceTask(repo.getTask(e.taskId).interruptPomodoro(e.pomodoro, e.note))
+        }
+        case e: PomodoroBrokenEvent => {
+          repo.replaceTask(repo.getTask(e.taskId).breakPomodoro(e.pomodoro, e.note))
+        }
 
+        case _ => {}
+
+      }
     }
   }
 

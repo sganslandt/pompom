@@ -35,32 +35,33 @@ class User(userId: String, eventStore: ActorRef) extends Actor with ActorLogging
     /**
      * Events
      */
+    case e: DomainEventMessage => e.payload match {
+      case e: TaskCreatedEvent =>
+        lists = lists + (e.list -> (lists(e.list) :+ new Task(userId, e.taskId, e.title, lists(e.list).length, e.initialEstimate, e.list)))
 
-    case e: TaskCreatedEvent =>
-      lists = lists + (e.list -> (lists(e.list) :+ new Task(userId, e.taskId, e.title, lists(e.list).length, e.initialEstimate, e.list)))
-
-    case e: TaskReprioritzedEvent => {
-      for (t <- getTask(e.taskId))
-        if (lists(TodoToday).contains(t)) // no need to keep activityInventory sorted here
-          lists = lists + (TodoToday -> rePrioritize(t, lists(TodoToday), e.newPriority).toList)
-    }
-
-    case e: TaskMovedToListEvent => {
-      for (t <- getTask(e.taskId)) {
-        val oldList = e.oldList
-        val newList: ListType = e.newList
-        lists = lists + (oldList -> lists(oldList).filterNot(_.taskId == t.taskId))
-        lists = lists + (e.newList -> (t :: lists(newList)))
-        t.list = newList
+      case e: TaskReprioritzedEvent => {
+        for (t <- getTask(e.taskId))
+          if (lists(TodoToday).contains(t)) // no need to keep activityInventory sorted here
+            lists = lists + (TodoToday -> rePrioritize(t, lists(TodoToday), e.newPriority).toList)
       }
+
+      case e: TaskMovedToListEvent => {
+        for (t <- getTask(e.taskId)) {
+          val oldList = e.oldList
+          val newList: ListType = e.newList
+          lists = lists + (oldList -> lists(oldList).filterNot(_.taskId == t.taskId))
+          lists = lists + (e.newList -> (t :: lists(newList)))
+          t.list = newList
+        }
+      }
+
+      case e: PomodoroStartedEvent => withTask(e.taskId, _.apply(e))
+      case e: PomodoroEndedEvent => withTask(e.taskId, _.apply(e))
+      case e: PomodoroInterruptedEvent => withTask(e.taskId, _.apply(e))
+      case e: PomodoroBrokenEvent => withTask(e.taskId, _.apply(e))
+
+      case _ => {}
     }
-
-    case e: PomodoroStartedEvent => withTask(e.taskId, _.apply(e))
-    case e: PomodoroEndedEvent => withTask(e.taskId, _.apply(e))
-    case e: PomodoroInterruptedEvent => withTask(e.taskId, _.apply(e))
-    case e: PomodoroBrokenEvent => withTask(e.taskId, _.apply(e))
-
-    case _ => {}
   }
 
   private def getTask(taskId: String): Option[Task] = {
