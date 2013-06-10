@@ -1,11 +1,13 @@
 @(task: views.Task)
 
+@import views._
+
 <div class="task" data-taskId="@task.taskId">
     <h3>@task.title</h3>
 
     <ol class="pomodoros">
         @for(p <- task.pomodoros) {
-            <li class="@p.state.getClass().getSimpleName().toString().toLowerCase() @if(!p.interruptions.isEmpty) {interrupted}">&nbsp;</li>
+            <li class="@p.state.getClass().getSimpleName().toLowerCase() @if(!p.interruptions.isEmpty) {interrupted}" data-starttime="@if(p.state.isInstanceOf[Started]){@p.state.asInstanceOf[Started].startTime}" data-endtime="@if(p.state.isInstanceOf[Ended]){@p.state.asInstanceOf[Ended].endTime}">&nbsp;</li>
         }
     </ol>
 </div>

@@ -30,7 +30,7 @@ case class Task(userId: String,
   override def increasePriority() = Task(userId, taskId, title, pomodoros, priority + 1, isDone, list)
   override def decreasePriority() = Task(userId, taskId, title, pomodoros, priority - 1, isDone, list)
   def startPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Active(now()), pomodoros(nr).interruptions)), priority, isDone, list)
-  def endPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Ended(pomodoros(nr).state.asInstanceOf[Active].startTime, now()), pomodoros(nr).interruptions)), priority, isDone, list)
+  def endPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Finished(pomodoros(nr).state.asInstanceOf[Active].startTime, now()), pomodoros(nr).interruptions)), priority, isDone, list)
   def breakPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[Active].startTime, now(), reason), pomodoros(nr).interruptions)), priority, isDone, list)
   def interruptPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(pomodoros(nr).state, Interruption(now(), reason) :: pomodoros(nr).interruptions)), priority, isDone, list)
   def movedToList(newList: ListType) = Task(userId, taskId, title, pomodoros, priority, isDone, newList)
@@ -40,7 +40,7 @@ case class Pomodoro(state: PomodoroState, interruptions: List[Interruption])
 
 case object Pomodoro {
   def apply(): Pomodoro = {
-    new Pomodoro(Fresh, List())
+    new Pomodoro(Fresh(), List())
   }
 
   def apply(nrOfPomodoros: Int): List[Pomodoro] = nrOfPomodoros match {
@@ -52,10 +52,17 @@ case object Pomodoro {
 case class Interruption(when: DateTime, what: String) {}
 
 trait PomodoroState
-case object Fresh extends PomodoroState
-case class Active(startTime: DateTime) extends PomodoroState
-case class Ended(startTime: DateTime, endTime: DateTime) extends PomodoroState
-case class Broken(startTime: DateTime, endTime: DateTime, reason: String) extends PomodoroState
+trait Started {
+  def startTime: DateTime
+}
+trait Ended extends Started {
+  def endTime: DateTime
+}
+
+case class Fresh() extends PomodoroState
+case class Active(override val startTime: DateTime) extends PomodoroState with Started
+case class Finished(override val startTime: DateTime, override val endTime: DateTime) extends PomodoroState with Ended
+case class Broken(override val startTime: DateTime, override val endTime: DateTime, reason: String) extends PomodoroState with Ended
 
 class TaskQueryRepository {
 
