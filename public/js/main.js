@@ -10,7 +10,7 @@ requirejs.config({
     }
 });
 
-require(['jquery', 'timer', 'taskList', 'taskCreator', 'desktopAlert', 'responsive'], function ($, timer, taskList, taskCreator, notify, responsive) {
+require(['jquery', 'navigation', 'timer', 'taskList', 'taskCreator', 'desktopAlert', 'responsive'], function ($, navigation, timer, taskList, taskCreator, notify, responsive) {
     $("form").submit(function (eventData) {
             $.post(eventData.currentTarget.action, $(eventData.currentTarget).serialize());
 

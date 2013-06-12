@@ -1,15 +1,19 @@
 @(userId: String, todoToday: Iterable[views.Task], activityInventory: Iterable[views.Task])
 
 @main {
-<section id="timer">
-    @timer()
-</section>
-<section id="tasks">
-	<section id="today" class="active">
-	    @tasks.list("todoToday", "Today", todoToday)
+<nav id="mainNav">
+	<a href="/today" class="todayLink">Today</a>
+	<a href="/inventory" class="inventoryLink">Inventory</a>
+</nav>
+<main id="main">
+	<section id="today">
+		<aside id="timer">
+			@timer()
+		</aside>
+		@tasks.list("todoToday", "Today", todoToday)
 	</section>
 	<section id="inventory">
-	    @tasks.list("activityInventory", "Inventory", activityInventory)
+		@tasks.list("activityInventory", "Inventory", activityInventory)
 	</section>
-</section>
+</main>
 }

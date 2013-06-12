@@ -1,46 +1,46 @@
 define(['jquery', 'sortable'], function ($) {
 
-    $(document).ready(function ($) {
+    $(document).ready(function($) {
         sortablize();
         var $tasks = $("#tasks");
-        $tasks.find("h2").click(function (e) {
-            $("#tasks").find("section").removeClass('active');
-            $(this).closest('section').addClass('active');
-        });
-        $tasks.find("#inventory li").click(function (e) {
-            //moveTaskToList($(this), $('#today ol.taskList'));
-        });
+
+    $tasks.find("#inventory li").click(function(e)
+        {
+      //moveTaskToList($(this), $('#today ol.taskList'));
+    });
     });
 
-    function sortablize(list) {
-        if (!list) {
-            list = $('.sortable');
-        }
-        $(list).sortable({
-            placeholder: "sortable-placeholder",
-            revert: "100",
-            update: function (event, ui) {
-                var taskId = ui.item.find(".task").data("taskid");
-                var newPriority = ui.item.index();
-                $.post("/tasks/reprioritizeTask", "taskId=" + taskId + "&newPriority=" + newPriority);
-            }
-        });
-        $(list).find('.pomodoros li').each(function (index) {
-            if ($(this).hasClass('broken')) {
-                $(this).html('<img src="assets/img/icon_broken.svg" />');
-            }
-            else if ($(this).hasClass('interrupted')) {
-                $(this).html('<img src="assets/img/icon_interrupted.svg" />');
-            }
-            else if ($(this).hasClass('inprogress')) {
-                $(this).html('<img src="assets/img/icon_inprogress.svg" />');
-            }
-        });
-    }
+    
 
-    function moveTaskToList(task, list) {
-        $(list).append($(task));
-    }
+  function sortablize(list) {
+      if (!list) {
+          list = $('.sortable');
+      }
+      $(list).sortable({
+          placeholder: "sortable-placeholder",
+          revert: "100",
+          update: function (event, ui) {
+                        var taskId = ui.item.data("taskid");
+                        var newPriority = ui.item.index();
+                        $.post("/tasks/reprioritizeTask", "taskId=" + taskId + "&newPriority=" + newPriority);
+          }
+      });
+      $(list).find('.pomodoros li').each(function (index) {
+          if ($(this).hasClass('broken')) {
+              $(this).html('<img src="assets/img/icon_broken.svg" />');
+          }
+          else if ($(this).hasClass('interrupted')) {
+              $(this).html('<img src="assets/img/icon_interrupted.svg" />');
+          }
+          else if ($(this).hasClass('inprogress')) {
+              $(this).html('<img src="assets/img/icon_inprogress.svg" />');
+          }
+      });
+  }
+
+  function moveTaskToList(task, list) {
+      $(list).append($(task));
+  }
 
     return {
         markAsInProgress: function (pomodoro) {
@@ -49,36 +49,33 @@ define(['jquery', 'sortable'], function ($) {
             }
             $(pomodoro).addClass('inprogress').html('<img src="assets/img/icon_inprogress.svg" />');
         },
-        markAsBroken: function (pomodoro) {
-            if (!pomodoro) {
+        markAsBroken: function(pomodoro) {
+            if (! pomodoro) {
                 pomodoro = $('#today').find('.task .pomodoros .inprogress');
-            }
-            if (!$(pomodoro).hasClass('broken')) {
+            };
+            if (! $(pomodoro).hasClass('broken')) {
                 $(pomodoro).removeClass('active inprogress').addClass('broken').html('<img src="assets/img/icon_broken.svg" />');
-            }
+            };
         },
-        markAsInterrupted: function (pomodoro) {
-            if (!pomodoro) {
+        markAsInterrupted: function(pomodoro) {
+            if (! pomodoro) {
                 pomodoro = $('#today').find('.task .pomodoros .inprogress');
-            }
-            if (!$(pomodoro).hasClass('interrupted')) {
+            };
+            if (! $(pomodoro).hasClass('interrupted')) {
                 $(pomodoro).addClass('interrupted').html('<img src="assets/img/icon_interrupted.svg" />');
-            }
+            };
         },
         addTaskToList: function (targetList, title, numberOfPoms) {
-            var $newLi = $('<li draggable="true" />');
-            $newLi.append('<div class="task" data-taskId="temp100">');
-            $newLi.find('.task').append('<h3>' + title + '</h3>');
-            $newLi.find('.task').append('<ol class="pomodoros">');
+            var $newLi = $('<li draggable="true" class="task new-task" data-taskId="TODO"/>');
+            $newLi.append('<h3>'+title+'</h3>');
+            $newLi.append('<ol class="pomodoros">');
             for (var i = numberOfPoms - 1; i >= 0; i--) {
                 $newLi.find('.pomodoros').append('<li class="active">&nbsp;</li>');
-            }
-            $newLi.css("opacity", 0);
+            };
             $(targetList).append($newLi);
-            //wait a bit with opacity or else the animation don't occur
-            setTimeout(function () {
-                $(targetList).find(">li").css("opacity", 1);
-            }, 30);
+            setTimeout(function(){
+                $(targetList).find(".new-task").removeClass('new-task');
+            }, 250);
             $(targetList).sortable('refresh')
         }
     }

@@ -1,5 +1,6 @@
+// Fonts
 @import url("http://fnt.webink.com/wfs/webink.css/?project=3AC395CE-F178-4C47-8528-73CA3386ED53&fonts=12FD0F01-C741-2AB4-78FE-CECD1BE87FB9:f=Calluna-BoldIt,5DD1A08F-E08C-456F-FB29-61CA507CEAB4:f=AktivGrotesk-Light,3A13BFCA-7DC7-D1EE-757E-40EF7086214E:f=Calluna-Regular,4CFB49CB-EBCD-45D1-8C1A-D9B64EAC409C:f=Calluna-It,49084C4C-16B8-3BE4-468D-A83E50D809C7:f=AktivGrotesk-Medium");
-
+// Compass Extensions
 @import "h5bp";
 @import "compass/reset";
 @import "compass/utilities";
@@ -8,6 +9,8 @@
 @include h5bp-normalize;
 @include h5bp-base-styles;
 @include h5bp-chromeframe;
+// Homemade Extensions
+@import "animation";
 
 // Breakpoints for responsive design
 $phones: only screen 480px;
