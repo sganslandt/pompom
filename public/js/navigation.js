@@ -17,8 +17,22 @@ define(['jquery'], function ($) {
 		}
 		$('#mainNav a').click(function (event){
 			event.preventDefault();
-			navigateToPage($(this).attr('href'));
+			if ($(this).attr('href') != window.location.pathname) {
+				navigateToPage($(this).attr('href'));
+			};
 		});
+	});
+	
+	// Listen to History Popstate Event
+	window.addEventListener('popstate', function(event) {
+		if(!Routes[window.location.pathname])
+		{
+			navigateToPage('/');
+		}
+		else
+		{
+			setActivePage(window.location.pathname);
+		}
 	});
 
 	function navigateToPage (targetStateURL) {
@@ -30,14 +44,7 @@ define(['jquery'], function ($) {
 		$main = $('main');
 		$mainNav = $('#mainNav');
 		var route = Routes[targetStateURL]
-		/*if (!Routes[targetStateURL])
-		{
-			var route = Routes['/'];
-		}
-		else
-		{
-			var route = Routes[targetStateURL];
-		};*/
+
 
 		$main.find('section.active').addClass('slide-back');
 		setTimeout(function()
