@@ -7,7 +7,6 @@ import play.api.libs.concurrent.Akka
 import play.api.Play.current
 
 import org.joda.time.DateTime
-import org.joda.time.DateTime.now
 import model.api.UserRegisteredEvent
 import model.{DomainEventMessage, Replay, BeforeReplay, AfterReplay}
 import model.api.UserLoggedInEvent
@@ -22,16 +21,17 @@ case class Task(userId: String,
                 title: String,
                 pomodoros: Seq[Pomodoro],
                 priority: Int,
-                isDone: Boolean,
+                createdTime: DateTime,
+                doneTime: Option[DateTime],
                 list: ListType) extends Prioritizable[Task] {
-  override def setPriority(newPriority: Int) = Task(userId, taskId, title, pomodoros, newPriority, isDone, list)
-  override def increasePriority() = Task(userId, taskId, title, pomodoros, priority + 1, isDone, list)
-  override def decreasePriority() = Task(userId, taskId, title, pomodoros, priority - 1, isDone, list)
-  def startPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Active(now()), pomodoros(nr).interruptions)), priority, isDone, list)
-  def endPomodoro(nr: Int) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Finished(pomodoros(nr).state.asInstanceOf[Active].startTime, now()), pomodoros(nr).interruptions)), priority, isDone, list)
-  def breakPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[Active].startTime, now(), reason), pomodoros(nr).interruptions)), priority, isDone, list)
-  def interruptPomodoro(nr: Int, reason: String) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(pomodoros(nr).state, Interruption(now(), reason) :: pomodoros(nr).interruptions)), priority, isDone, list)
-  def movedToList(newList: ListType) = Task(userId, taskId, title, pomodoros, priority, isDone, newList)
+  override def setPriority(newPriority: Int) = Task(userId, taskId, title, pomodoros, newPriority, createdTime, doneTime, list)
+  override def increasePriority() = Task(userId, taskId, title, pomodoros, priority + 1, createdTime, doneTime, list)
+  override def decreasePriority() = Task(userId, taskId, title, pomodoros, priority - 1, createdTime, doneTime, list)
+  def startPomodoro(nr: Int, timestamp: DateTime) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Active(timestamp), pomodoros(nr).interruptions)), priority, createdTime, doneTime, list)
+  def endPomodoro(nr: Int, timestamp: DateTime) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Finished(pomodoros(nr).state.asInstanceOf[Active].startTime, timestamp), pomodoros(nr).interruptions)), priority, createdTime, doneTime, list)
+  def breakPomodoro(nr: Int, reason: String, timestamp: DateTime) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[Active].startTime, timestamp, reason), pomodoros(nr).interruptions)), priority, createdTime, doneTime, list)
+  def interruptPomodoro(nr: Int, reason: String, timestamp: DateTime) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(pomodoros(nr).state, Interruption(timestamp, reason) :: pomodoros(nr).interruptions)), priority, createdTime, doneTime, list)
+  def movedToList(newList: ListType) = Task(userId, taskId, title, pomodoros, priority,  createdTime, doneTime, newList)
 }
 
 case class Pomodoro(state: PomodoroState, interruptions: List[Interruption])
@@ -131,14 +131,14 @@ object TaskQueryRepository {
         log.debug("Replay done")
       }
 
-      case e: DomainEventMessage => e.payload match {
+      case em: DomainEventMessage => em.payload match {
 
         case e: UserRegisteredEvent => {}
 
         case e: UserLoggedInEvent => {}
 
         case e: TaskCreatedEvent => {
-          repo.createTask(Task(e.userId, e.taskId, e.title, Pomodoro(e.initialEstimate), e.priority, isDone = false, e.list))
+          repo.createTask(Task(e.userId, e.taskId, e.title, Pomodoro(e.initialEstimate), e.priority, em.timestamp, None, e.list))
         }
 
         case e: TaskReprioritzedEvent => {
@@ -159,16 +159,16 @@ object TaskQueryRepository {
         }
 
         case e: PomodoroStartedEvent => {
-          repo.replaceTask(repo.getTask(e.taskId).startPomodoro(e.pomodoro))
+          repo.replaceTask(repo.getTask(e.taskId).startPomodoro(e.pomodoro, em.timestamp))
         }
         case e: PomodoroEndedEvent => {
-          repo.replaceTask(repo.getTask(e.taskId).endPomodoro(e.pomodoro))
+          repo.replaceTask(repo.getTask(e.taskId).endPomodoro(e.pomodoro, em.timestamp))
         }
         case e: PomodoroInterruptedEvent => {
-          repo.replaceTask(repo.getTask(e.taskId).interruptPomodoro(e.pomodoro, e.note))
+          repo.replaceTask(repo.getTask(e.taskId).interruptPomodoro(e.pomodoro, e.note, em.timestamp))
         }
         case e: PomodoroBrokenEvent => {
-          repo.replaceTask(repo.getTask(e.taskId).breakPomodoro(e.pomodoro, e.note))
+          repo.replaceTask(repo.getTask(e.taskId).breakPomodoro(e.pomodoro, e.note, em.timestamp))
         }
 
         case _ => {}
