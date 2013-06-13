@@ -39,19 +39,22 @@ a{
 }
 #login{
 	main{
-		width: 34rem;
+		width: 48rem;
+		max-width: 100%;
 		margin: 0 auto 6rem;
 		text-align: center;
 
 		img.logo{
-			width: 80%;
+			width: 50%;
 			height: auto;
 		}
 		h1{
 			margin: 0;
+			font-size: $font-x-large;
 		}
 		h3{
 			margin: 0;
+			font-size: $font-medium;
 		}
 		.loginOptions{
 			margin: 3rem 0;
@@ -63,9 +66,8 @@ a{
 			}
 			.google{
 				@include button(#df4a32);
-				width: 49%;
-				margin-right: 2%;
-				float: left;
+				width: 60%;
+				margin: 0 20%;
 				display: block;
 			}
 			.facebook{
@@ -108,6 +110,12 @@ a{
 			}
 		}
 	}
+}
+#logout
+{
+	position: absolute;
+	top: 0.8rem;
+	right: 1rem;
 }
 #mainNav
 {

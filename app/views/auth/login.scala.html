@@ -3,6 +3,17 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Welocome to Pompom</title>
+		<meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	    <title>Pompom</title>
+	    <meta name="description" content="">
+	    <meta name="viewport" content="width=device-width">
+	    <link rel="shortcut icon" type="image/png" href="assets/img/favicon.ico">
+	    <link rel="icon" href="assets/img/icon-16.png" sizes="16x16" />
+	    <link rel="icon" href="assets/img/icon-24.png" sizes="24x24" />
+	    <link rel="icon" href="assets/img/icon-32.png" sizes="32x32" />
+	    <link rel="icon" href="assets/img/icon-48.png" sizes="48x48" />
+	    <link rel="icon" href="assets/img/icon-64.png" sizes="64x64" />
 		<link rel="stylesheet" href="../assets/css/main.css">
 	</head>
 	<body id="login">
@@ -11,20 +22,12 @@
 			<h1>Welocome to Pompom</h1>
 			<h3>The best pomodoro app in the world</h3>
 			<div class="loginOptions">
-				<h3>How would you like to login?</h3>
+				<h3>Login with your Google account</h3>
                 <form action="/auth" method="GET">
-				<input type="submit" class="google" value="Google"/>
+					<input type="submit" class="google" value="Login"/>
                 </form>
 			</div>
 			<p>What is Pompom and the Pomodoro technique?</p>
 		</main>
-		<section class="extras">
-			<h3>Temporary login form:</h3>
-			<form class="loginForm" method="post">
-				<label for="email"> Email:</label>
-                <input id="email" type="email" placeholder="email" name="email">
-				<input type="submit" id="submit" value="Login" class="button">
-			</form>
-		</section>
 	</body>
 </html>
