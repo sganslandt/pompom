@@ -113,7 +113,7 @@ a{
 {
 	@include clearfix;
 	padding: 0 0 1rem;
-	margin: 0 5.8rem 0 1rem;
+	margin: 0 1rem;
 
 	a
 	{
@@ -123,14 +123,19 @@ a{
 		padding: 0 .4rem;
 		@include boxed();
 		@include box-shadow(inset 0 0.1rem 0 0 $color-highlight, 0 0.2rem 0 0 $color-shadow);
-		background-image: url("../img/icon_check.svg");
 		background-position: center;
 		background-repeat: no-repeat;
 		color: transparent;
 		font-size: 0;
-		width: 3.2rem;
-		height: 3.2rem;
+		width: 4.8rem;
+		height: 4.8rem;
 
+		&.timerLink{
+			background-image: url("../img/icon_clock.svg");
+		}
+		&.todayLink{
+			background-image: url("../img/icon_check.svg");
+		}
 		&.inventoryLink{
 			background-image: url("../img/icon_list.svg");
 		}
@@ -151,6 +156,7 @@ a{
 	position: relative;
 	margin: 0;
 	display: none;
+	margin: 0 1rem;
 
 	&.active
 	{
@@ -167,7 +173,6 @@ a{
 		@include clearfix;
 		padding: 0;
 		padding-bottom: 1rem;
-		margin: 0 5.8rem 0 1rem;
 
 		input[type="text"]
 		{
@@ -192,7 +197,6 @@ a{
 	}
 	ol.taskList
 	{
-		margin: 0 5.8rem 0 1rem;
 		padding: 0;
 		list-style: none;
 
@@ -225,74 +229,81 @@ a{
 			}
 		}
 	}
-
-	#timer
-	{
-		float: right;
-
-		button
-		{
-			@include button;
-			width: 4.8rem;
-			background-image: url("../img/icon_clock.svg");
-			color: transparent;
-		}
-		button#interruptPomodoro
-		{
-			display: none;
-			opacity: 0;
-			background-image: url("../img/icon_interrupted.svg");
-		}
-		button#breakPomodoro
-		{
-			display: none;
-			opacity: 0;
-			background-image: url("../img/icon_broken.svg");
-		}
-
-	}
-	& .active{
-		h2
-		{
-			color: $color-main-lighter;
-			@include boxed(darken($color-main, 10));
-			@include box-shadow(inset 0 0.2rem 0 0 $color-shadow, 0 0.1rem 0 0 $color-highlight);
-		}
-		ol.taskList
-		{
-		}
-		#timer
-		{
-			display: block;
-		}
-		#timer 
-		{
-		}
-	}
 }
-#standalone-timer {
+#timer {
 	@include clearfix;
-	@include boxed;
 	overflow: hidden;
+	display: none;
+	margin: 0 1rem;
 
-	button {
-		@include button;
-		width: 4.8rem;
+	&.active
+	{
+		display: block;
 	}
-
-	.top {
+	.top
+	{
 		position: relative;
-		height: 50%;
+		height: 20rem;
 		border-bottom: 0.2rem solid $color-main-darker;
 
-		#currentTaskTitle{
+		#currentTaskTitle
+		{
 			margin: 0;
 			padding-top: 3rem;
 			text-align: center;
 			color: $color-complement;
 			font-weight: normal;
 		}
-		.timegradeholder{
+		#currentTaskPomodoros
+		{
+			padding: 0;
+			margin: 0;
+			text-align: center;
+
+			li
+			{
+				position: relative;
+				@include circle (1.6rem, $color-main-darker);
+				overflow: hidden;
+				display: inline-block;
+				margin: 0 0.3rem;
+				padding: 0;
+				background-color: darken($color-main, 10);
+				@include box-shadow((inset 0 0.1rem 0 0 $color-shadow, 0 0.1rem 0 0 $color-highlight));
+
+				img{
+					height: 100%;
+					width: auto;
+					position: absolute;
+					top: 0;
+					left: 0;
+				}
+				&.fresh{
+
+				}
+				&.ended{
+					background-color: $color-main;
+					@include box-shadow((inset 0 0.1rem 0 0 $color-highlight, 0 0.1rem 0 0 $color-highlight));
+				}
+				&.interrupted{
+					border-color: darken($color-warning, 30);
+					background-color: $color-warning;
+					@include box-shadow((inset 0 0.1rem 0 0 $color-highlight, 0 0.1rem 0 0 $color-highlight));
+				}
+				&.broken{
+					background-color: #C11717;
+					border-color: #770600;
+					@include box-shadow((inset 0 0.1rem 0 0 $color-highlight, 0 0.1rem 0 0 $color-highlight));
+				}
+				&.active{
+					background-color: #619E9E;
+					border-color: #3B5B5A;
+					@include gradient($color-action);
+				}
+			}
+		}
+		.timegradeholder
+		{
 			position: absolute;
 			bottom: .2rem;
 			left: 50%;
@@ -322,8 +333,8 @@ a{
 	}
 	.bottom {
 		position: relative;
-		height: 50%;
-		border-top: 1px solid $color-main-highlight;
+		height: 20rem;
+		border-top: 1px solid $color-highlight;
 
 		.arrowholder{
 			padding: .1rem 0 0;
@@ -331,37 +342,38 @@ a{
 			text-align: center;
 		}
 		#controls{
-			padding: 1rem 20%;
-			button {
+			padding: 0 0 1rem;
+			margin: 2rem auto 0;
+			width: 10.6rem;
+			text-align: center;
+			button
+			{
 				@include button;
-				margin-top: 1rem;
+				width: 4.8rem;
+				margin: 0 auto;
+				color: transparent;
+				background-image: url("../img/icon_clock.svg");
 			}
-			button#interruptPomodoro{
-				@include button($color-warning, darken($color-warning, 30), darken($color-warning, 30));
+			button#interruptPomodoro
+			{
 				display: none;
+				@include button($color-warning, darken($color-warning, 30), transparent);
+				width: 4.8rem;
+				background-image: url("../img/icon_interrupted.svg");
+				margin: 0 1rem 0 0;
 				float: left;
-				width: 48%;
-				margin-right: 4%;
-
-				img{
-					height: 3.8rem;
-					width: auto;
-				}
 			}
-			button#breakPomodoro{
-				@include button($color-error, darken($color-error, 30), darken($color-error, 30));
+			button#breakPomodoro
+			{
 				display: none;
+				@include button($color-error, darken($color-error, 30), transparent);
+				width: 4.8rem;
+				background-image: url("../img/icon_broken.svg");
 				float: left;
-				width: 48%;
-
-				img{
-					height: 3.8rem;
-					width: auto;
-				}
 			}
 		}
 	}
-	&.active{
+	&.running{
 		.bottom {
 			#controls{
 				button#startPomodoro{
@@ -419,19 +431,12 @@ body.active #timer button#breakPomodoro{
 /************ Responsive Layout *************/
 @include breakpoint($large-phones)
 {
-	#mainNav
-	{
-		margin:0 5.8rem;
-	}
+	#mainNav,
+	#timer,
 	#today,
 	#inventory
 	{
-		form.createTaskForm{
-			margin:0 5.8rem;
-		}
-		ol.taskList{
-			margin: 0 5.8rem;
-		}
+		margin:0 5.8rem;
 	}
 	
 

@@ -32,7 +32,7 @@ define(['jquery', 'sortable'], function ($) {
           else if ($(this).hasClass('interrupted')) {
               $(this).html('<img src="assets/img/icon_interrupted.svg" />');
           }
-          else if ($(this).hasClass('inprogress')) {
+          else if ($(this).hasClass('active')) {
               $(this).html('<img src="assets/img/icon_inprogress.svg" />');
           }
       });
@@ -43,23 +43,31 @@ define(['jquery', 'sortable'], function ($) {
   }
 
     return {
-        markAsInProgress: function (pomodoro) {
+        markAsActive: function (pomodoro) {
             if (!pomodoro) {
                 pomodoro = $('#today').find('.task .pomodoros li.fresh').first();
             }
-            $(pomodoro).addClass('inprogress').html('<img src="assets/img/icon_inprogress.svg" />');
+            $(pomodoro).addClass('inproactivegress').html('<img src="assets/img/icon_inprogress.svg" />');
         },
         markAsBroken: function(pomodoro) {
             if (! pomodoro) {
-                pomodoro = $('#today').find('.task .pomodoros .inprogress');
+                pomodoro = $('#today').find('.task .pomodoros .active');
             };
             if (! $(pomodoro).hasClass('broken')) {
-                $(pomodoro).removeClass('active inprogress').addClass('broken').html('<img src="assets/img/icon_broken.svg" />');
+                $(pomodoro).removeClass('active active').addClass('broken').html('<img src="assets/img/icon_broken.svg" />');
             };
         },
         markAsInterrupted: function(pomodoro) {
             if (! pomodoro) {
-                pomodoro = $('#today').find('.task .pomodoros .inprogress');
+                pomodoro = $('#today').find('.task .pomodoros .active');
+            };
+            if (! $(pomodoro).hasClass('interrupted')) {
+                $(pomodoro).addClass('interrupted').html('<img src="assets/img/icon_interrupted.svg" />');
+            };
+        },
+        markAsEnded: function(pomodoro) {
+            if (! pomodoro) {
+                pomodoro = $('#today').find('.task .pomodoros .active');
             };
             if (! $(pomodoro).hasClass('interrupted')) {
                 $(pomodoro).addClass('interrupted').html('<img src="assets/img/icon_interrupted.svg" />');

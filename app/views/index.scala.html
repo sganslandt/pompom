@@ -3,14 +3,13 @@
 @main {
 <a id="logout" href="/logout">logout</a>
 <nav id="mainNav">
-	<a href="/today" class="todayLink">Today</a>
-	<a href="/inventory" class="inventoryLink">Inventory</a>
+	@navigation()
 </nav>
 <main id="main">
+	<section id="timer">
+		@timer()
+	</section>
 	<section id="today">
-		<aside id="timer">
-			@timer()
-		</aside>
 		@tasks.list("todoToday", "Today", todoToday)
 	</section>
 	<section id="inventory">

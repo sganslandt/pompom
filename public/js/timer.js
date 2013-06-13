@@ -5,6 +5,7 @@ define('timer', ['jquery', 'taskList'], function ($, taskList) {
     var defaultDuration = 25;
 
     $(document).ready(function ($) {
+        setupTimer();
         $('button#startPomodoro').click(function () {
             startTimer(defaultDuration);
         });
@@ -19,19 +20,31 @@ define('timer', ['jquery', 'taskList'], function ($, taskList) {
         });
     });
 
-
+    function setupTimer () {
+        var $currentTask = $('#today').find('.taskList li').first();
+        var $timer = $('#timer');
+        $timer.find('#currentTaskTitle').html($currentTask.find('h3').html());
+        $timer.find('#currentTaskPomodoros').html($currentTask.find('.pomodoros').html());
+        var $activePomodoro = $timer.find('li.active').first();
+        if ($activePomodoro.length >= 1)
+        {
+            startTime = $activePomodoro.data('starttime');
+            duration = defaultDuration * 60;
+            checkAndRestartPomodoroTimer();
+        }
+        // body...
+    }
     function startTimer(durationInMinutes) {
         startTime = $.now();
         duration = durationInMinutes * 60;
         updateTimeGrade(duration, 0);
         pomodoroTimer = setTimeout(checkAndRestartPomodoroTimer, 1000);
-        $('body').addClass('active');
         var $today = $('#today');
         if ($today.find('.taskList li').length < 1) {
             taskList.addTaskToList($today.find('.taskList'), 'Check out http://www.pomodorotechnique.com/', 1);
         }
         $today.find('.taskList li').first().append('<div class="timeStripe" />');
-        taskList.markAsInProgress();
+        taskList.markAsActive();
     }
 
     function checkAndRestartPomodoroTimer() {
@@ -47,14 +60,17 @@ define('timer', ['jquery', 'taskList'], function ($, taskList) {
     }
 
     function updateTimeGrade(duration, elapsedTime) {
-        //var margin = ((duration-elapsedTime)*0.01666666666666667)+0.1;
-        //$('.timegradeholder').css('margin-left', '-'+margin+'rem');
-        var percentage = (elapsedTime / duration) * 100;
-        $('.timeStripe').width(percentage + '%')
+        var margin = ((duration-elapsedTime)*0.01666666666666667)+0.1;
+        $('.timegradeholder').css('margin-left', '-'+margin+'rem');
+        //var percentage = (elapsedTime / duration) * 100;
+        //$('.timeStripe').width(percentage + '%')
     }
 
     function stopTimer() {
-        $('#timer').removeClass('active');
+        var $activePomodoro = $('#timer').find('li.active').first();
+        $activePomodoro.removeClass('active').addClass('ended');
+        var now = new Date();
+        $activePomodoro.data('endtime', now);
         clearTimeout(pomodoroTimer);
         updateTimeGrade(1, 1);
         document.getElementById('alarm').play();

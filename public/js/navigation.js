@@ -1,6 +1,7 @@
 define(['jquery'], function ($) {
 	var Routes = {
-		'/' : '#today',
+		'/' : '#timer',
+		'/timer' : '#timer',
 		'/today' : '#today', 
 		'/inventory': '#inventory'
 	};
@@ -22,7 +23,7 @@ define(['jquery'], function ($) {
 			};
 		});
 	});
-	
+
 	// Listen to History Popstate Event
 	window.addEventListener('popstate', function(event) {
 		if(!Routes[window.location.pathname])

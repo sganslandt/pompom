@@ -84,7 +84,7 @@ object Tasks extends Controller with Secured {
     )
   )
 
-  def interrupt() = AsAuthenticatedUser {
+  def interruptPomodoro() = AsAuthenticatedUser {
     userId => {
       implicit request =>
         interruptForm.bindFromRequest.fold(
@@ -103,7 +103,7 @@ object Tasks extends Controller with Secured {
     )
   )
 
-  def break() = AsAuthenticatedUser {
+  def breakPomodoro() = AsAuthenticatedUser {
     userId => {
       implicit request =>
         breakForm.bindFromRequest.fold(
@@ -135,7 +135,7 @@ object Tasks extends Controller with Secured {
     }
   }
 
-  def complete() = AsAuthenticatedUser {
+  def completeTask() = AsAuthenticatedUser {
     userId => {
       _ =>
         taskCommandHandler ! CompleteTaskCommand(userId)

@@ -14,9 +14,9 @@ POST    /tasks/                        controllers.Tasks.createTask()
 POST    /tasks/reprioritizeTask        controllers.Tasks.reprioritizeTask()
 POST    /tasks/startPomodoro           controllers.Tasks.startPomodoro()
 POST    /tasks/endPomodoro             controllers.Tasks.endPomodoro()
-POST    /tasks/interruptPomodoro       controllers.Tasks.interrupt()
-POST    /tasks/breakPomodoro           controllers.Tasks.break()
-POST    /tasks/completeTask            controllers.Tasks.complete()
+POST    /tasks/interruptPomodoro       controllers.Tasks.interruptPomodoro()
+POST    /tasks/breakPomodoro           controllers.Tasks.breakPomodoro()
+POST    /tasks/completeTask            controllers.Tasks.completeTask()
 POST    /tasks/:id/extendEstimate      controllers.Tasks.extendEstimate(id)
 
 # Map static resources from the /public folder to the /assets URL path
