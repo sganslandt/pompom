@@ -12,16 +12,17 @@
 			<h3>The best pomodoro app in the world</h3>
 			<div class="loginOptions">
 				<h3>How would you like to login?</h3>
-				<button class="google">google</button>
-				<button class="facebook">facebook</button>
+                <form action="/auth" method="GET">
+				<input type="submit" class="google" value="Google"/>
+                </form>
 			</div>
 			<p>What is Pompom and the Pomodoro technique?</p>
 		</main>
 		<section class="extras">
 			<h3>Temporary login form:</h3>
 			<form class="loginForm" method="post">
-				<label> Email:</label>
-				<input type="email" placeholder="email" name="email">
+				<label for="email"> Email:</label>
+                <input id="email" type="email" placeholder="email" name="email">
 				<input type="submit" id="submit" value="Login" class="button">
 			</form>
 		</section>

@@ -9,7 +9,7 @@ abstract class UserEvent extends DomainEvent {
   override def aggregateIdentifier = userId
 }
 
-case class UserRegisteredEvent(override val userId: String) extends UserEvent
+case class UserRegisteredEvent(override val userId: String, idProvider: String, id: String, email: String, firstname: String, lastname: String) extends UserEvent
 case class UserLoggedInEvent(override val userId: String) extends UserEvent
 
 case class TaskCreatedEvent(override val userId: String, taskId: String, title: String, initialEstimate: Int, priority: Int, list: ListType) extends UserEvent

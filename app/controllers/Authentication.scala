@@ -1,12 +1,13 @@
 package controllers
 
 import play.api.mvc._
-import play.api.data.Form
-import play.api.data.Forms.nonEmptyText
 import play.api.libs.concurrent.Akka
 import play.api.Play.current
 import akka.actor.ActorRef
-import model.api.LoginUserCommand
+import model.api.{RegisterUserCommand, LoginUserCommand}
+import scala.concurrent.ExecutionContext
+import play.api.libs.openid.OpenID
+import ExecutionContext.Implicits.global
 
 object Authentication extends Controller {
 
@@ -16,23 +17,46 @@ object Authentication extends Controller {
     Ok(views.html.auth.login())
   }
 
-  val loginForm = Form(
-    "email" -> nonEmptyText
-  )
+  def doLogout() = Action {
+    Redirect(routes.Authentication.login()).withNewSession
+  }
 
-  def doLogin() = Action {
+  def auth = Action {
+    implicit request => {
+      val attributes = List(
+        "email" -> "http://schema.openid.net/contact/email",
+        "firstname" -> "http://schema.openid.net/namePerson/first",
+        "lastname" -> "http://schema.openid.net/namePerson/last"
+      )
+
+      AsyncResult(
+        OpenID.redirectURL(
+          "https://www.google.com/accounts/o8/id",
+          routes.Authentication.verify.absoluteURL(),
+          attributes
+        ).map(url =>
+          Redirect(url)
+        )
+      )
+    }
+  }
+
+  def verify = Action {
     implicit request =>
-      loginForm.bindFromRequest.fold(
-        errors => BadRequest(views.html.auth.login()),
-        email => {
+      AsyncResult(
+        OpenID.verifiedId.map(userInfo => {
+          val provider = userInfo.id.split('?')(0)
+          val id = userInfo.id.split('?')(1)
+          val email = userInfo.attributes("email")
+          val firstname = userInfo.attributes("firstname")
+          val lastname = userInfo.attributes("lastname")
+
+          taskCommandHandler ! RegisterUserCommand(provider, id, email, firstname, lastname)
           taskCommandHandler ! LoginUserCommand(email)
           Redirect(routes.Application.index(section = "")).withSession(session + ("email" -> email))
         }
+        )
       )
-  }
-
-  def doLogout() = Action {
-    Results.Redirect(routes.Authentication.login()).withNewSession
   }
 
   /**

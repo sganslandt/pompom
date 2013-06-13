@@ -10,6 +10,7 @@ import model.api.PomodoroStartedEvent
 import scala.Some
 import org.joda.time.DateTime
 import org.joda.time.DateTime.now
+import java.util.UUID
 
 class EventStore extends Actor with ActorLogging {
 
@@ -30,7 +31,7 @@ class EventStore extends Actor with ActorLogging {
     DomainEventMessage("abc@123", 0, now, TaskCreatedEvent("abc@123", "2", "title2", 3, 1, TodoToday)),
     DomainEventMessage("abc@123", 0, now, PomodoroStartedEvent("abc@123", "1", 0)),
     DomainEventMessage("abc@123", 0, now, TaskCreatedEvent("abc@123", "1", "title1", 3, 0, TodoToday)),
-    DomainEventMessage("abc@123", 0, now, UserRegisteredEvent("abc@123"))
+    DomainEventMessage("abc@123", 0, now, UserRegisteredEvent(UUID.randomUUID().toString, "local", UUID.randomUUID().toString, "abc@123", "firstname", "lastname"))
   )
 
   def receive = {

@@ -3,10 +3,11 @@
 # ~~~~
 
 # Login
-GET		/auth/login 	               controllers.Authentication.login
-POST    /auth/login                    controllers.Authentication.doLogin
-POST    /auth/logout                   controllers.Authentication.doLogout
-GET     /auth/currentUser controllers.Application.currentAuthenticatedUser
+GET		/login 	                       controllers.Authentication.login
+GET    /logout                        controllers.Authentication.doLogout
+GET     /currentUser                   controllers.Application.currentAuthenticatedUser
+GET     /auth                   controllers.Authentication.auth
+GET     /verify                   controllers.Authentication.verify
 
 # Tasks
 POST    /tasks/                        controllers.Tasks.createTask()
