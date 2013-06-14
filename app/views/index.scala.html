@@ -1,10 +1,6 @@
 @(userId: String, todoToday: Iterable[views.Task], activityInventory: Iterable[views.Task])
 
 @main {
-<a id="logout" href="/logout">logout</a>
-<nav id="mainNav">
-	@navigation()
-</nav>
 <main id="main">
 	<section id="timer">
 		@timer()
