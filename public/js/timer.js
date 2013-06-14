@@ -32,7 +32,6 @@ define('timer', ['jquery', 'taskList'], function ($, taskList) {
             duration = defaultDuration * 60;
             checkAndRestartPomodoroTimer();
         }
-        // body...
     }
     function startTimer(durationInMinutes) {
         startTime = $.now();
