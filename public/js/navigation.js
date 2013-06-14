@@ -16,7 +16,7 @@ define(['jquery'], function ($) {
 		{
 			setActivePage(window.location.pathname);
 		}
-		$('#mainNav a').click(function (event){
+		$('#mainNav a.menu').click(function (event){
 			event.preventDefault();
 			if ($(this).attr('href') != window.location.pathname) {
 				navigateToPage($(this).attr('href'));
