@@ -24,6 +24,12 @@ case class PomodoroBrokenEvent(override val userId: String, taskId: String, pomo
 case class PomodoroInterruptedEvent(override val userId: String, taskId: String, pomodoro: Int, note: String) extends UserEvent
 
 trait ListType
+object ListType {
+  def fromString(value: String): Option[ListType] = {
+    Vector(TodoToday, ActivityInventory).find(_.toString == value)
+  }
+}
+
 case object TodoToday extends ListType
 case object ActivityInventory extends ListType
 
