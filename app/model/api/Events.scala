@@ -23,7 +23,7 @@ case class PomodoroEndedEvent(override val userId: String, taskId: String, pomod
 case class PomodoroBrokenEvent(override val userId: String, taskId: String, pomodoro: Int, note: String) extends UserEvent
 case class PomodoroInterruptedEvent(override val userId: String, taskId: String, pomodoro: Int, note: String) extends UserEvent
 
-trait ListType
+sealed trait ListType
 object ListType {
   def fromString(value: String): Option[ListType] = {
     Vector(TodoToday, ActivityInventory).find(_.toString == value)
