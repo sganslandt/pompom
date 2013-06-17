@@ -36,6 +36,7 @@ case class Task(userId: String,
   def breakPomodoro(nr: Int, reason: String, timestamp: DateTime) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[Active].startTime, timestamp, reason), pomodoros(nr).interruptions)), priority, createdTime, doneTime, list)
   def interruptPomodoro(nr: Int, reason: String, timestamp: DateTime) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(pomodoros(nr).state, Interruption(timestamp, reason) :: pomodoros(nr).interruptions)), priority, createdTime, doneTime, list)
   def movedToList(newList: ListType) = Task(userId, taskId, title, pomodoros, priority,  createdTime, doneTime, newList)
+  def done(timestamp: DateTime) = Task(userId, taskId, title, pomodoros, priority,  createdTime, Some(timestamp), list)
 }
 
 case class Pomodoro(state: PomodoroState, interruptions: List[Interruption])
@@ -181,6 +182,9 @@ object TaskQueryRepository {
         }
         case e: PomodoroBrokenEvent => {
           repo.replaceTask(repo.getTask(e.taskId).breakPomodoro(e.pomodoro, e.note, new DateTime(m.timestamp)))
+        }
+        case e: TaskCompletedEvent => {
+          repo.replaceTask(repo.getTask(e.taskId).done(new DateTime(m.timestamp)))
         }
 
         case _ => {}

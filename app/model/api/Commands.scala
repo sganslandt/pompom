@@ -13,4 +13,4 @@ case class InterruptPomodoroCommand(userId: String, note: String)
 case class BreakPomodoroCommand(userId: String, note: String)
 
 case class ExtendEstimateCommand(userId: String, taskId: String, extension: Int)
-case class CompleteTaskCommand(userId: String)
+case class CompleteTaskCommand(userId: String, taskId: String)

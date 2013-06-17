@@ -67,6 +67,7 @@ class Task(val userId: String, val taskId: String, val title: String, var priori
       }
       case e: PomodoroEndedEvent => pomodoros.head.apply(e)
       case e: PomodoroBrokenEvent => pomodoros.head.apply(e)
+      case e: TaskCompletedEvent => isDone = true
       case _ => {}
     }
   }

@@ -161,7 +161,7 @@ object Tasks extends Controller with Secured {
   def completeTask() = AsAuthenticatedUser {
     userId => {
       _ =>
-        taskCommandHandler ! CompleteTaskCommand(userId)
+        taskCommandHandler ! CompleteTaskCommand(userId, "")
         Ok("")
     }
   }

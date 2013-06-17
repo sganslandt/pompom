@@ -29,6 +29,7 @@ class User(userId: String) extends Actor with ActorLogging {
     case c: MoveTaskToListCommand => {
       for (t <- getTask(c.taskId)) sender ! Message(TaskMovedToListEvent(c.userId, c.taskId, t.list, c.newList))
     }
+    case c: CompleteTaskCommand => sender ! Message(TaskCompletedEvent(userId, c.taskId))
 
     case c: StartPomodoroCommand => sender ! Message(lists(TodoToday).head.startPomodoro())
     case c: EndPomodoroCommand => sender ! Message(lists(TodoToday).head.endPomodoro())
@@ -62,6 +63,8 @@ class User(userId: String) extends Actor with ActorLogging {
       case e: PomodoroEndedEvent => withTask(e.taskId, _.apply(e))
       case e: PomodoroInterruptedEvent => withTask(e.taskId, _.apply(e))
       case e: PomodoroBrokenEvent => withTask(e.taskId, _.apply(e))
+
+      case e: TaskCompletedEvent => withTask(e.taskId, _.apply(e))
 
       case _ => {}
     }

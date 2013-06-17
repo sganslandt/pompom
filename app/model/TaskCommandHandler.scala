@@ -38,6 +38,7 @@ class TaskCommandHandler(var usersRef: Ref[Map[String, ActorRef]], queryReposito
     case c: EndPomodoroCommand => users(c.userId) ! c
     case c: InterruptPomodoroCommand => users(c.userId) ! c
     case c: BreakPomodoroCommand => users(c.userId) ! c
+    case c: CompleteTaskCommand => users(c.userId) ! c
 
     /**
      * Events
