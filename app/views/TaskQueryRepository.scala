@@ -75,6 +75,8 @@ class TaskQueryRepository {
     else Some(users.filter( _.email == email)(0))
   }
 
+  def isUserRegistered(userId: String) = users.filter( _.userId == userId).size != 0
+
   def getTask(taskId: String): Task = {
     val found = tasks.find(_.taskId == taskId)
     found match {

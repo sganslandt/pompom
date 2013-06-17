@@ -73,7 +73,7 @@ object Authentication extends Controller {
                 }
               }
             }
-            case None => ServiceUnavailable("Application not ready")
+            case None => ServiceUnavailable("")
           }
         }
         )
@@ -101,8 +101,17 @@ object Authentication extends Controller {
      * Action for authenticated users.
      */
     def AsAuthenticatedUser(f: => String => Request[AnyContent] => Result) = Security.Authenticated(userId, onUnauthorized) {
-      user =>
-        Action(request => f(user)(request))
+      user => {
+        taskQueryRepository match {
+          case None => Action(ServiceUnavailable(""))
+          case Some(repo) => {
+            if (repo.isUserRegistered(user))
+              Action(request => f(user)(request))
+            else
+              Action(Results.Redirect(routes.Authentication.login()))
+          }
+        }
+      }
     }
 
   }

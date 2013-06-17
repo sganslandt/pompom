@@ -21,7 +21,7 @@ object Application extends Controller with Secured {
             repository.listTodoToday(userId),
             repository.listActivityInventory(userId)
           ))
-        case None => ServiceUnavailable("Not ready")
+        case None => ServiceUnavailable("")
       }
   })
 
