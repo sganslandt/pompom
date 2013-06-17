@@ -15,6 +15,10 @@ import scala.Some
 import model.api.TaskCreatedEvent
 import util.Prioritizable
 import util.Prioritizable.rePrioritize
+import org.eligosource.eventsourced.core.Message
+
+case class User(userId: String,
+                 email: String)
 
 case class Task(userId: String,
                 taskId: String,
@@ -66,6 +70,11 @@ class TaskQueryRepository {
 
   val log = Logging(Akka.system.eventStream, getClass.getName)
 
+  def getUserByEmail(email: String): Option[User] = {
+    if (users.filter( _.email == email).size == 0) None
+    else Some(users.filter( _.email == email)(0))
+  }
+
   def getTask(taskId: String): Task = {
     val found = tasks.find(_.taskId == taskId)
     found match {
@@ -83,7 +92,12 @@ class TaskQueryRepository {
   }
 
   protected def clear() {
+    users = List()
     tasks = List()
+  }
+
+  protected def addUser(u: User) {
+    users = u :: users
   }
 
   protected def createTask(t: Task) {
@@ -95,17 +109,16 @@ class TaskQueryRepository {
     tasks = tasks.updated(index, newVersion)
   }
 
+  private var users: List[User] = List()
   private var tasks: List[Task] = List()
 
 }
 
 object TaskQueryRepository {
 
-  class Updater(eventStore: ActorRef, repo: TaskQueryRepository) extends Actor with ActorLogging {
+  class Updater(repo: TaskQueryRepository) extends Actor with ActorLogging {
 
-    Akka.system.eventStream.subscribe(self, classOf[BeforeReplay])
-    Akka.system.eventStream.subscribe(self, classOf[AfterReplay])
-    Akka.system.eventStream.subscribe(self, classOf[DomainEventMessage])
+    Akka.system.eventStream.subscribe(self, classOf[Message])
 
     override def preStart() {
       log.debug("Starting")
@@ -120,25 +133,22 @@ object TaskQueryRepository {
 
       case "init" => {
         log.debug("Received init message")
-        eventStore ! Replay
       }
 
-      case e: BeforeReplay => {
-        log.debug("Starting replay")
-        repo.clear()
-      }
-      case e: AfterReplay => {
-        log.debug("Replay done")
-      }
+      case m: Message => {
 
-      case em: DomainEventMessage => em.payload match {
+        log.info("Received {}", m)
 
-        case e: UserRegisteredEvent => {}
+        m.event match {
+
+        case e: UserRegisteredEvent => {
+          repo.addUser(User(e.userId, e.email))
+        }
 
         case e: UserLoggedInEvent => {}
 
         case e: TaskCreatedEvent => {
-          repo.createTask(Task(e.userId, e.taskId, e.title, Pomodoro(e.initialEstimate), e.priority, em.timestamp, None, e.list))
+          repo.createTask(Task(e.userId, e.taskId, e.title, Pomodoro(e.initialEstimate), e.priority, new DateTime(m.timestamp), None, e.list))
         }
 
         case e: TaskReprioritzedEvent => {
@@ -159,21 +169,21 @@ object TaskQueryRepository {
         }
 
         case e: PomodoroStartedEvent => {
-          repo.replaceTask(repo.getTask(e.taskId).startPomodoro(e.pomodoro, em.timestamp))
+          repo.replaceTask(repo.getTask(e.taskId).startPomodoro(e.pomodoro, new DateTime(m.timestamp)))
         }
         case e: PomodoroEndedEvent => {
-          repo.replaceTask(repo.getTask(e.taskId).endPomodoro(e.pomodoro, em.timestamp))
+          repo.replaceTask(repo.getTask(e.taskId).endPomodoro(e.pomodoro, new DateTime(m.timestamp)))
         }
         case e: PomodoroInterruptedEvent => {
-          repo.replaceTask(repo.getTask(e.taskId).interruptPomodoro(e.pomodoro, e.note, em.timestamp))
+          repo.replaceTask(repo.getTask(e.taskId).interruptPomodoro(e.pomodoro, e.note, new DateTime(m.timestamp)))
         }
         case e: PomodoroBrokenEvent => {
-          repo.replaceTask(repo.getTask(e.taskId).breakPomodoro(e.pomodoro, e.note, em.timestamp))
+          repo.replaceTask(repo.getTask(e.taskId).breakPomodoro(e.pomodoro, e.note, new DateTime(m.timestamp)))
         }
 
         case _ => {}
 
-      }
+      }                 }
     }
   }
 

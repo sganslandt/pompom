@@ -8,10 +8,17 @@ import model.api.{RegisterUserCommand, LoginUserCommand}
 import scala.concurrent.ExecutionContext
 import play.api.libs.openid.OpenID
 import ExecutionContext.Implicits.global
+import views.{User, TaskQueryRepository}
+import java.util.UUID
 
 object Authentication extends Controller {
 
   val taskCommandHandler: ActorRef = Akka.system.actorFor("/user/taskCommandHandler")
+
+  var taskQueryRepository: Option[TaskQueryRepository] = None
+  def setTaskQueryRepository(repository: TaskQueryRepository) {
+    Authentication.taskQueryRepository = Some(repository)
+  }
 
   def login = Action {
     Ok(views.html.auth.login())
@@ -51,9 +58,23 @@ object Authentication extends Controller {
           val firstname = userInfo.attributes("firstname")
           val lastname = userInfo.attributes("lastname")
 
-          taskCommandHandler ! RegisterUserCommand(provider, id, email, firstname, lastname)
-          taskCommandHandler ! LoginUserCommand(email)
-          Redirect(routes.Application.index(section = "")).withSession(session + ("email" -> email))
+          taskQueryRepository match {
+            case Some(repo) => {
+              val user: Option[User] = repo.getUserByEmail(email)
+              user match {
+                case None => {
+                  val userId = UUID.randomUUID().toString()
+                  taskCommandHandler ! RegisterUserCommand(userId, provider, id, email, firstname, lastname)
+                  Redirect(routes.Application.index(section = "")).withSession(session + ("userId" -> userId))
+                }
+                case Some(user) => {
+                  taskCommandHandler ! LoginUserCommand(user.userId)
+                  Redirect(routes.Application.index(section = "")).withSession(session + ("userId" -> user.userId))
+                }
+              }
+            }
+            case None => ServiceUnavailable("Application not ready")
+          }
         }
         )
       )
@@ -65,9 +86,9 @@ object Authentication extends Controller {
   trait Secured {
 
     /**
-     * Retrieve the connected user email.
+     * Retrieve the connected users id.
      */
-    private def username(request: RequestHeader) = request.session.get("email")
+    private def userId(request: RequestHeader) = request.session.get("userId")
 
     /**
      * Redirect to login if the user in not authorized.
@@ -79,7 +100,7 @@ object Authentication extends Controller {
     /**
      * Action for authenticated users.
      */
-    def AsAuthenticatedUser(f: => String => Request[AnyContent] => Result) = Security.Authenticated(username, onUnauthorized) {
+    def AsAuthenticatedUser(f: => String => Request[AnyContent] => Result) = Security.Authenticated(userId, onUnauthorized) {
       user =>
         Action(request => f(user)(request))
     }

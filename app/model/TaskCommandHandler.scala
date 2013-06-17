@@ -1,16 +1,20 @@
 package model
 
-import akka.actor.{Actor, Props, ActorRef}
+import akka.actor.{ActorLogging, Actor, Props, ActorRef}
 import play.api.libs.concurrent.Akka
 
 import play.api.Play.current
 import model.api._
 import model.api.LoginUserCommand
 import java.util.UUID
+import org.eligosource.eventsourced.core.Message
+import play.Logger
+import scala.concurrent.stm.Ref
+import views.TaskQueryRepository
 
-class TaskCommandHandler(eventStore: ActorRef) extends Actor {
+class TaskCommandHandler(var usersRef: Ref[Map[String, ActorRef]], queryRepository: TaskQueryRepository) extends Actor {
 
-  eventStore ! Replay
+  def users = usersRef.single.get
 
   def receive = {
 
@@ -19,15 +23,12 @@ class TaskCommandHandler(eventStore: ActorRef) extends Actor {
      */
 
     case c: RegisterUserCommand => {
-      if (!users.contains(c.email)) {
-        val userId: String = UUID.randomUUID().toString
-        eventStore ! UserRegisteredEvent(userId, c.idProvider, c.id, c.email, c.firstname, c.lastname)
-      }
+      self ! Message(UserRegisteredEvent(c.userId, c.idProvider, c.id, c.email, c.firstname, c.lastname))
+      self ! Message(UserLoggedInEvent(c.userId))
     }
 
     case c: LoginUserCommand => {
-      val email = c.email
-      users(email) ! c
+      users(c.userId) ! c
     }
 
     case c: CreateTaskCommand => users(c.userId) ! c
@@ -42,15 +43,18 @@ class TaskCommandHandler(eventStore: ActorRef) extends Actor {
      * Events
      */
 
-    case e: DomainEventMessage => e.payload match {
+    case m: Message => m.event match {
       case e: UserRegisteredEvent => {
-        users = users + (e.email -> context.actorOf(Props(new User(e.userId, eventStore)), name = e.email))
+        usersRef.single.transform(users => users + (e.userId -> context.actorOf(Props(new User(e.userId)), e.email)))
       }
 
-      case _ => {}
-    }
-  }
+      case e: UserEvent => users(e.userId) ! e
 
-  var users: Map[String, ActorRef] = Map()
+      case _ => {}
+
+    }
+
+    Akka.system.eventStream.publish(m) // TODO Use channel instead
+  }
 
 }

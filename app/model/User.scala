@@ -1,18 +1,21 @@
 package model
 
-import akka.actor.{ActorLogging, ActorRef, Actor}
+import akka.actor.{ActorLogging, Actor}
 import model.api._
 import model.api.UserLoggedInEvent
 import model.api.LoginUserCommand
 import util.Prioritizable.rePrioritize
+import org.eligosource.eventsourced.core.Message
 
-class User(userId: String, eventStore: ActorRef) extends Actor with ActorLogging {
+class User(userId: String) extends Actor with ActorLogging {
 
   private var lists: Map[ListType, List[Task]] = Map(TodoToday -> List(), ActivityInventory -> List())
 
   private val settings: Settings = new Settings()
 
-  eventStore ! Replay(Some(userId))
+  override def preStart() {
+    log.debug("Starting")
+  }
 
   def receive = {
 
@@ -20,22 +23,22 @@ class User(userId: String, eventStore: ActorRef) extends Actor with ActorLogging
      * Commands
      */
 
-    case _: LoginUserCommand => eventStore ! UserLoggedInEvent(userId)
-    case c: CreateTaskCommand => eventStore ! TaskCreatedEvent(c.userId, c.taskId, c.title, c.initialEstimate, lists(c.list).size, c.list)
-    case c: ReprioritizeTaskCommand => eventStore ! TaskReprioritzedEvent(userId, c.taskId, c.newPriority)
+    case _: LoginUserCommand => sender ! Message(UserLoggedInEvent(userId))
+    case c: CreateTaskCommand => sender ! Message(TaskCreatedEvent(c.userId, c.taskId, c.title, c.initialEstimate, lists(c.list).size, c.list))
+    case c: ReprioritizeTaskCommand => sender ! Message(TaskReprioritzedEvent(userId, c.taskId, c.newPriority))
     case c: MoveTaskToListCommand => {
-      for (t <- getTask(c.taskId)) eventStore ! TaskMovedToListEvent(c.userId, c.taskId, t.list, c.newList)
+      for (t <- getTask(c.taskId)) sender ! Message(TaskMovedToListEvent(c.userId, c.taskId, t.list, c.newList))
     }
 
-    case c: StartPomodoroCommand => eventStore ! lists(TodoToday).head.startPomodoro()
-    case c: EndPomodoroCommand => eventStore ! lists(TodoToday).head.endPomodoro()
-    case c: InterruptPomodoroCommand => eventStore ! lists(TodoToday).head.interrupt(c.note)
-    case c: BreakPomodoroCommand => eventStore ! lists(TodoToday).head.break()
+    case c: StartPomodoroCommand => sender ! Message(lists(TodoToday).head.startPomodoro())
+    case c: EndPomodoroCommand => sender ! Message(lists(TodoToday).head.endPomodoro())
+    case c: InterruptPomodoroCommand => sender ! Message(lists(TodoToday).head.interrupt(c.note))
+    case c: BreakPomodoroCommand => sender ! Message(lists(TodoToday).head.break())
 
     /**
      * Events
      */
-    case e: DomainEventMessage => e.payload match {
+    case m: Message => m.event match {
       case e: TaskCreatedEvent =>
         lists = lists + (e.list -> (lists(e.list) :+ new Task(userId, e.taskId, e.title, lists(e.list).length, e.initialEstimate, e.list)))
 

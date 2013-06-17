@@ -1,7 +1,7 @@
 package model.api
 
-case class RegisterUserCommand(idProvider: String, id: String, email: String, firstname: String, lastname: String)
-case class LoginUserCommand(email: String)
+case class RegisterUserCommand(userId: String, idProvider: String, id: String, email: String, firstname: String, lastname: String)
+case class LoginUserCommand(userId: String)
 
 case class CreateTaskCommand(userId: String, taskId: String, title: String, initialEstimate: Int, list: ListType)
 case class ReprioritizeTaskCommand(userId: String, taskId: String, newPriority: Int)

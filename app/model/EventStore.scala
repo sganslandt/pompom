@@ -14,6 +14,10 @@ import java.util.UUID
 
 class EventStore extends Actor with ActorLogging {
 
+  override def preStart() {
+    log.debug("Starting")
+  }
+
   var events: List[DomainEventMessage] = List(
     DomainEventMessage("abc@123", 0, now, TaskCreatedEvent("abc@123", "6", "postponed stuff 1", 6, 0, ActivityInventory)),
     DomainEventMessage("abc@123", 0, now, TaskCreatedEvent("abc@123", "5", "postponed stuff 2", 7, 1, ActivityInventory)),

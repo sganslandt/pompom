@@ -3,27 +3,26 @@ package controllers
 import play.api._
 import mvc._
 import controllers.Authentication.Secured
-import views.{TaskQueryRepository}
-import play.api.libs.concurrent.Akka
-import play.api.Play.current
-import akka.actor.{ActorRef, Props}
-import model.{EventStore, TaskCommandHandler}
+import views.TaskQueryRepository
 
 object Application extends Controller with Secured {
 
-  val eventStore: ActorRef = Akka.system.actorOf(Props[EventStore], name = "eventStore")
-  Akka.system.actorOf(Props(new TaskCommandHandler(eventStore)), name = "taskCommandHandler")
-
-  val taskQueryRepository = new TaskQueryRepository
-  Akka.system.actorOf(Props(new TaskQueryRepository.Updater(eventStore, taskQueryRepository)), "taskQueryUpdater") ! "init"
+  var taskQueryRepository: Option[TaskQueryRepository] = None
+  def setTaskQueryRepository(repository: TaskQueryRepository) {
+    Application.taskQueryRepository = Some(repository)
+  }
 
   def index(section: String) = AsAuthenticatedUser(userId => {
     request =>
-      Ok(views.html.index(
-        userId,
-        taskQueryRepository.listTodoToday(userId),
-        taskQueryRepository.listActivityInventory(userId)
-      ))
+      taskQueryRepository match {
+        case Some(repository) =>
+          Ok(views.html.index(
+            userId,
+            repository.listTodoToday(userId),
+            repository.listActivityInventory(userId)
+          ))
+        case None => ServiceUnavailable("Not ready")
+      }
   })
 
   def currentAuthenticatedUser = AsAuthenticatedUser {
