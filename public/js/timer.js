@@ -18,6 +18,12 @@ define('timer', ['jquery', 'taskList'], function ($, taskList) {
             interruptPomodoro();
             showNotification();
         });
+        $(document).on("taskList.Reprioritize", function(event) {
+            if ($(event.list).closest('section').attr('id') == 'today')
+            {
+                setupTimer()
+            };
+        });
     });
 
     function setupTimer () {

@@ -36,6 +36,11 @@ define(['jquery', 'sortable', 'touch-punch'], function ($) {
             var taskId = ui.item.data("taskid");
             var newPriority = ui.item.index();
             $.post("/tasks/reprioritizeTask", "taskId=" + taskId + "&newPriority=" + newPriority);
+            $.event.trigger({
+              type: "taskList.Reprioritize",
+              list: ui.item.closest('ol'),
+              time: new Date()
+            });
           },
           start: function (event, ui) {
             ui.item.closest('section').addClass('dragging');
