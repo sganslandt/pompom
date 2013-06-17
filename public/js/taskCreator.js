@@ -1,4 +1,4 @@
-define('taskCreator', ['jquery', 'taskList'], function ($, taskList) {
+define('taskCreator', ['jquery', 'taskList', 'task'], function ($, taskList, task) {
     var ListTypes = {
         'today' : 'TodoToday',
         'inventory': 'ActivityInventory'
@@ -30,6 +30,7 @@ define('taskCreator', ['jquery', 'taskList'], function ($, taskList) {
             {
                 $(".new-task").replaceWith($newTask.find('li.task'));
                 taskList.refreshList(targetList);
+                task.bindRefresh();
             }, 250);
         });
         // Reset and focus on the form

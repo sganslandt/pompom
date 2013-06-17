@@ -74,7 +74,7 @@ define(['jquery', 'sortable', 'touch-punch'], function ($) {
     if (! targetList) {
         targetList = $('ol.sortable');
     };
-    $(targetList).sortable('refresh')
+    $(targetList).sortable('refresh');
   }
     return {
         markAsActive: function (pomodoro) {
