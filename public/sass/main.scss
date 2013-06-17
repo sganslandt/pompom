@@ -1,33 +1,36 @@
 @import "base";
 
-html {
+html
+{
 	font-size: 62.5%;
-	height: 100%;
-	//min-height: 100%;
 	background-color: $color-main;
 }
-body{
+body
+{
 	font-size: $font-text;
 	height: 100%;
 	margin: 0;
 	padding: 0;
 	position: relative;
 	font-family: AktivGrotesk-Light;
-	//padding-top: 4.2rem;
 }
-a{
+a
+{
 	color: $color-complement;
 	text-decoration: none;
 }
-.ielt9info{
+.ielt9info
+{
 	display: none;
 }
-.lt-ie9 .ielt9info{
+.lt-ie9 .ielt9info
+{
 	display: block;
 
 }
 
-#pageheader{
+#pageheader
+{
 	text-align: center;
 	width: 100%;
 	margin: 0 0 4rem;
@@ -155,7 +158,36 @@ a{
 	{
 		display: block;
 	}
+	&.dragging
+	{
+		form.createTaskForm
+		{
+			border: 0.2rem dashed $color-main-darker;
+			@include border-radius(1rem);
+			height: 4.8rem;
+			margin: 0 0 2.6rem;
+			@include box-shadow(inset 0 0.1rem 0 0 $color-shadow, 0 0.1rem 0 0 $color-highlight);
 
+			input[type="text"],
+			input[type="number"],
+			input[type="submit"]{
+				opacity: 0;
+			}
+
+		}
+		form.createTaskForm:after
+		{
+   			content:  "Drop to move task to the other list";
+   			position: absolute;
+  			left: 0; 
+			top: 30%;
+   			width: 100%;
+   			text-align: center;
+   			font-family: $font-main;
+			color: $color-complement;
+			font-size: $font-text;
+		}
+	}
 	h2
 	{
 		display: none;
@@ -213,6 +245,7 @@ a{
 				font-size: $font-large;
 				margin-top: 0;
 				line-height: 1.5em;
+				padding-right: 8.2rem;
 			}
 			&.sortable-placeholder
 			{
@@ -261,7 +294,7 @@ a{
 				margin: 0 0.3rem;
 				padding: 0;
 				background-color: darken($color-main, 10);
-				@include box-shadow((inset 0 0.1rem 0 0 $color-shadow, 0 0.1rem 0 0 $color-highlight));
+				@include box-shadow(inset 0 0.1rem 0 0 $color-shadow, 0 0.1rem 0 0 $color-highlight);
 
 				img{
 					height: 100%;
@@ -270,14 +303,16 @@ a{
 					top: 0;
 					left: 0;
 				}
-				&.fresh{
+				&.fresh
+				{
 
 				}
 				&.ended{
 					background-color: $color-main;
 					@include box-shadow((inset 0 0.1rem 0 0 $color-highlight, 0 0.1rem 0 0 $color-highlight));
 				}
-				&.interrupted{
+				&.interrupted
+				{
 					border-color: darken($color-warning, 30);
 					background-color: $color-warning;
 					@include box-shadow((inset 0 0.1rem 0 0 $color-highlight, 0 0.1rem 0 0 $color-highlight));
@@ -287,7 +322,8 @@ a{
 					border-color: #770600;
 					@include box-shadow((inset 0 0.1rem 0 0 $color-highlight, 0 0.1rem 0 0 $color-highlight));
 				}
-				&.active{
+				&.active
+				{
 					background-color: #619E9E;
 					border-color: #3B5B5A;
 					@include gradient($color-action);
@@ -379,28 +415,52 @@ a{
 		}
 	}
 }
-.popup
+.modal-background
 {
 	position: absolute;
-	z-index: 20;
+	z-index: 100;
 	background-color: $color-shadow;
-	width: 100%;
-	height: 100%;
-	padding: 10%;
+	width: 100vw;
+	height: 100vh;
+	padding: 5.6rem 0 0;
 	top: 0;
 	left: 0;
 
-	.content
+	.modal
 	{
 		@include boxed;
 		@include border-radius($border-radius);
 		max-width: 40rem;
 		margin: 0 auto;
-		height: 100%;
+		padding: 0;
 
-		form
+		header
 		{
-			@include standardform;
+			border-bottom: .1rem solid $color-main-darker;
+			@include box-shadow(inset 0 0.1rem 0 0 $color-highlight, 0 0.1rem 0 0 $color-highlight);
+			width: 100%;
+			height: 4.8rem;
+			padding: .8rem 1rem;
+			button{
+				float: right;
+				padding: 0.4rem;
+				@include button($color-main, $color-main-darker, transparent);
+				width: 4.8rem;
+				height: 3.2rem;
+				background-image: url("../img/icon_close.svg");
+			}
+			h3{
+				margin: 0;
+			}
+		}
+		.content
+		{
+			margin: 0.4rem;
+			background-color: $color-complement;
+			border: .1rem solid $color-main-darker;
+			@include box-shadow(inset 0 0.1rem 0 0 $color-shadow, 0 0.1rem 0 0 $color-highlight);
+			padding: 1rem;
+			min-height: 10rem;
 		}
 	}
 }

@@ -13,6 +13,8 @@ import model.api.StartPomodoroCommand
 import model.api.CreateTaskCommand
 import model.api.EndPomodoroCommand
 import model.api.BreakPomodoroCommand
+import views.{Pomodoro, Task}
+import org.joda.time.DateTime
 
 object Tasks extends Controller with Secured {
 
@@ -32,13 +34,12 @@ object Tasks extends Controller with Secured {
         createTaskForm.bindFromRequest.fold(
         form => Forbidden(""), {
           case (title, initialEstimate, listName) =>
-            val list = listName match {
-              case "todoToday" => TodoToday
-              case "activityInventory" => ActivityInventory
+            val listType = ListType.fromString(listName)
+            var newTaskId = UUID.randomUUID().toString
+            listType match {
+              case Some(listType) => taskCommandHandler ! CreateTaskCommand(userId, newTaskId, title, initialEstimate, listType); Created(views.html.tasks.task(Task(userId, newTaskId, title, Pomodoro(initialEstimate), -1, DateTime.now(), None, listType)))
+              case None => BadRequest("")
             }
-
-            taskCommandHandler ! CreateTaskCommand(userId, UUID.randomUUID().toString, title, initialEstimate, list)
-            Ok("")
         })
     }
   )
@@ -58,6 +59,28 @@ object Tasks extends Controller with Secured {
           case (taskId, newPriority) =>
             taskCommandHandler ! ReprioritizeTaskCommand(userId, taskId, newPriority)
             Ok("")
+        })
+    }
+  )
+
+  val moveTaskToListForm = Form(
+    tuple(
+      "taskId" -> text(),
+      "newList" -> text()
+    )
+  )
+
+  def moveTaskToList() = AsAuthenticatedUser(
+    userId => {
+      implicit request =>
+        moveTaskToListForm.bindFromRequest.fold(
+        form => Forbidden(""), {
+          case (taskId, newList) =>
+            val listType = ListType.fromString(newList)
+            listType match {
+              case Some(listType) => taskCommandHandler ! MoveTaskToListCommand(userId, taskId, listType); Ok("")
+              case None => BadRequest("")
+            }
         })
     }
   )
@@ -144,3 +167,4 @@ object Tasks extends Controller with Secured {
   }
 
 }
+

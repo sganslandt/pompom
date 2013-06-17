@@ -4,14 +4,15 @@
 
 # Login
 GET		/login 	                       controllers.Authentication.login
-GET    /logout                        controllers.Authentication.doLogout
+GET    /logout                         controllers.Authentication.doLogout
 GET     /currentUser                   controllers.Application.currentAuthenticatedUser
-GET     /auth                   controllers.Authentication.auth
-GET     /verify                   controllers.Authentication.verify
+GET     /auth                   	   controllers.Authentication.auth
+GET     /verify                        controllers.Authentication.verify
 
 # Tasks
 POST    /tasks/                        controllers.Tasks.createTask()
 POST    /tasks/reprioritizeTask        controllers.Tasks.reprioritizeTask()
+POST    /tasks/moveTaskToList          controllers.Tasks.moveTaskToList()
 POST    /tasks/startPomodoro           controllers.Tasks.startPomodoro()
 POST    /tasks/endPomodoro             controllers.Tasks.endPomodoro()
 POST    /tasks/interruptPomodoro       controllers.Tasks.interruptPomodoro()
@@ -20,9 +21,9 @@ POST    /tasks/completeTask            controllers.Tasks.completeTask()
 POST    /tasks/:id/extendEstimate      controllers.Tasks.extendEstimate(id)
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file                controllers.Assets.at(path="/public", file)
-GET     /$file<crossdomain.xml>                 controllers.Assets.at(path="/public", file)
+GET     /assets/*file                  controllers.Assets.at(path="/public", file)
+GET     /$file<crossdomain.xml>        controllers.Assets.at(path="/public", file)
 
 # Home page
-GET     /                        controllers.Application.index(section = "")
-GET     /*section               controllers.Application.index(section)
+GET     /                              controllers.Application.index(section = "")
+GET     /*section                      controllers.Application.index(section)

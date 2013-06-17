@@ -1,64 +1,51 @@
 define('taskCreator', ['jquery', 'taskList'], function ($, taskList) {
+    var ListTypes = {
+        'today' : 'TodoToday',
+        'inventory': 'ActivityInventory'
+    };
+
     $(document).ready(function ($) {
-        $('#taskCreator').find('button.expand').click(function () {
-            openPopup();
-        });
         focusForm();
     });
 
     $(".createTaskForm").submit(function (eventData) {
+
         createTask(eventData);
+        return false;
     });
+
     function createTask(eventData) {
-        var targetList;
-        if ($(eventData.currentTarget).find(':checkbox').prop('checked')) targetList = $('#inventory').find('.taskList');
-        else targetList = $('#tasks').find('section.active .taskList');
+        var targetList = $(eventData.currentTarget).closest('section').find('ol.taskList');
+        // Add a temporary task in list with JS
         taskList.addTaskToList(
             targetList,
             $(eventData.currentTarget).serializeArray()[0].value,
             $(eventData.currentTarget).serializeArray()[1].value
         );
+        // Add task in list on server and then remove the the temporary task
+        $.post(eventData.currentTarget.action, $(eventData.currentTarget).serialize(), function(data){
+            $newTask = $('<div class="newone" />');
+            $newTask.html(data);
+            setTimeout(function()
+            {
+                $(".new-task").replaceWith($newTask.find('li.task'));
+                taskList.refreshList(targetList);
+            }, 250);
+        });
+        // Reset and focus on the form
         resetForm();
         focusForm();
     }
 
     function resetForm() {
-        $('form#createTask').find("input[type=text], textarea, input[type=number]").val("");
+        $('.active form.createTaskForm').find("input[type=text], textarea, input[type=number]").val("");
     }
 
     function focusForm() {
-        $('form#createTask').find('#createTaskTitle').focus();
+        $('.active form.createTaskForm').find('.title').focus();
     }
 
     function blurForm() {
-        $('#createTask input, #createTask textarea').blur();
-    }
-
-    function openPopup() {
-        var $newPop = $('<div class="popup"><div class="content"></div></div>');
-        $newPop.find('.content').append('<h2>Create new pomodoros<h2/>');
-        $newPop.find('.content').append('<button title="close popup" class="closeButton">x</button>');
-        $('body').append($newPop);
-
-        $('.popup, .popup .closeButton').click(function () {
-            closePopup();
-        });
-        $(".popup .content").click(function (e) {
-            e.stopPropagation();
-        });
-        $('.popup .content').append($('#createTask'));
-        focusForm();
-    }
-
-    function closePopup() {
-        $('#taskCreator').append($('#createTask'));
-        blurForm();
-        $('.popup').remove();
-    }
-
-    return {
-        closeCreateFormPopup: function () {
-            closePopup();
-        }
+        $('.active .createTaskForm input, .active .createTaskForm textarea').blur();
     }
 });

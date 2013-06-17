@@ -27,6 +27,7 @@ $font-x-large: 3.2rem;
 $font-large: 2.8rem;
 $font-medium: 2.1rem;
 $font-text: 1.6rem;
+$font-small: 1.2rem;
 
 $font-main: AktivGrotesk-Light;
 $font-alternative: AktivGrotesk-Medium;
@@ -155,6 +156,7 @@ h4{font-size: $font-text}
 		margin: 1rem 0 0;
 		line-height: 1em;
 		color: $color-complement;
+		cursor: pointer;
 	}
 	p{
 		display: none;
@@ -166,9 +168,11 @@ h4{font-size: $font-text}
 		padding: 0;
 		margin: 0;
 		width: 8.2rem;
+		height: 4.4rem;
 		position: absolute;
 		top: 0.3rem;
 		right: 0.3rem;
+		cursor: move;
 
 		li{
 			position: relative;
@@ -214,6 +218,10 @@ h4{font-size: $font-text}
 				@include gradient($color-action);
 			}
 		}
+	}
+	&.new-task
+	{
+		@extend .slide-up
 	}
 }
 @mixin standardform{
