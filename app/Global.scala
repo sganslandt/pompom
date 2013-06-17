@@ -4,6 +4,7 @@ import java.io.File
 import model.TaskCommandHandler
 import org.eligosource.eventsourced.core.{Eventsourced, EventsourcingExtension, Journal}
 import org.eligosource.eventsourced.journal.inmem.InmemJournalProps
+import org.eligosource.eventsourced.journal.journalio.JournalioJournalProps
 import org.eligosource.eventsourced.journal.leveldb.LeveldbJournalProps
 import play.api._
 import play.api.Application
@@ -18,8 +19,9 @@ object Global extends GlobalSettings {
   override def onStart(app: Application) {
     Logger.info("Application has started")
 
-    val journal: ActorRef = Journal(InmemJournalProps())(Akka.system)
-//    val journal: ActorRef = Journal(LeveldbJournalProps(new File("eventstore"), native = false))(Akka.system)
+    //    val journal: ActorRef = Journal(LeveldbJournalProps(new File("eventstore"), native = false))(Akka.system)
+    //    val journal: ActorRef = Journal(InmemJournalProps())(Akka.system)
+    val journal: ActorRef = Journal(JournalioJournalProps(new File("eventstore-journalio")))(Akka.system)
     val extension: EventsourcingExtension = EventsourcingExtension(Akka.system, journal)
 
     val users: Ref[Map[String, ActorRef]] = Ref(Map.empty[String, ActorRef])

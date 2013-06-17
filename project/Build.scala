@@ -12,7 +12,8 @@ object ApplicationBuild extends Build {
     "com.github.nscala-time" %% "nscala-time" % "0.4.0",
     "org.eligosource" %% "eventsourced-core" % "0.5.0",
     "org.eligosource" %% "eventsourced-journal-leveldb" % "0.5.0",
-    "org.eligosource" %% "eventsourced-journal-inmem" % "0.5.0"
+    "org.eligosource" %% "eventsourced-journal-inmem" % "0.5.0",
+    "org.eligosource" %% "eventsourced-journal-journalio" % "0.5.0"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(

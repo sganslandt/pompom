@@ -15,3 +15,4 @@ RUNNING_PID
 *.sublime-project
 *.sublime-workspace
 .sass-cache
+eventstore-journalio
