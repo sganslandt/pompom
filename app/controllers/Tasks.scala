@@ -35,7 +35,7 @@ object Tasks extends Controller with Secured {
         form => Forbidden(""), {
           case (title, initialEstimate, listName) =>
             val listType = ListType.fromString(listName)
-            var newTaskId = UUID.randomUUID().toString
+            val newTaskId = UUID.randomUUID().toString
             listType match {
               case Some(listType) => taskCommandHandler ! CreateTaskCommand(userId, newTaskId, title, initialEstimate, listType); Created(views.html.tasks.task(Task(userId, newTaskId, title, Pomodoro(initialEstimate), -1, DateTime.now(), None, listType)))
               case None => BadRequest("")
