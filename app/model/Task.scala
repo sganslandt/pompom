@@ -21,7 +21,7 @@ class Task(val userId: String, val taskId: String, val title: String, var priori
     pomodoros.nonEmpty && pomodoros.head.isActive
   }
 
-  def startPomodoro(): PomodoroStartedEvent = {
+  def startPomodoro() = {
     if (isDone)
       throw new IllegalStateException("Can't start a pomodoro on Task that is done.")
     if (inPomodoro)
@@ -32,15 +32,15 @@ class Task(val userId: String, val taskId: String, val title: String, var priori
     PomodoroStartedEvent(userId, taskId, pomodoros.length)
   }
 
-  def endPomodoro() {
+  def endPomodoro() = {
     pomodoros.head.end()
   }
 
-  def interrupt(note: String) {
+  def interrupt(note: String) = {
     pomodoros.head.interrupt(note)
   }
 
-  def break() {
+  def break() = {
     if (!inPomodoro)
       throw new IllegalStateException("No current pomodoro to register an interruption in.")
 
@@ -51,13 +51,13 @@ class Task(val userId: String, val taskId: String, val title: String, var priori
     estimate += additionalEstimate
   }
 
-  def done() {
+  def complete() = {
     if (inPomodoro)
       throw new IllegalStateException("Can't finnish a task while in a Pomodoro. Finnish the current pomodoro first.")
     if (isDone)
       throw new IllegalStateException("The task is already done.")
 
-    isDone = true
+    new TaskCompletedEvent(userId, taskId)
   }
 
   def apply(e: DomainEvent) {
@@ -76,19 +76,19 @@ class Task(val userId: String, val taskId: String, val title: String, var priori
 
     var isActive = true
 
-    def end() {
+    def end() = {
       if (!isActive)
         throw new IllegalStateException("The pomodoro is not activet and can't be ended.")
       PomodoroEndedEvent(userId, taskId, pomodoros.length - 1)
     }
 
-    def interrupt(note: String) {
+    def interrupt(note: String) = {
       if (!isActive)
         throw new IllegalStateException("The pomodoro is not active and can't be interrupted.")
       PomodoroInterruptedEvent(userId, taskId, pomodoros.length - 1, note)
     }
 
-    def break() {
+    def break() = {
       if (!isActive)
         throw new IllegalStateException("The pomodoro is not active and can't be broken.")
       PomodoroBrokenEvent(userId, taskId, pomodoros.length - 1, "")
