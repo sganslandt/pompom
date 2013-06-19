@@ -1,7 +1,7 @@
 import akka.actor.{Props, ActorRef}
 import controllers.{Authentication, Application}
 import java.io.File
-import model.TaskCommandHandler
+import model.{User, TaskCommandHandler}
 import org.eligosource.eventsourced.core.{Eventsourced, EventsourcingExtension, Journal}
 import org.eligosource.eventsourced.journal.inmem.InmemJournalProps
 import org.eligosource.eventsourced.journal.journalio.JournalioJournalProps
@@ -24,13 +24,12 @@ object Global extends GlobalSettings {
     val journal: ActorRef = Journal(JournalioJournalProps(new File("eventstore-journalio")))(Akka.system)
     val extension: EventsourcingExtension = EventsourcingExtension(Akka.system, journal)
 
-    val users: Ref[Map[String, ActorRef]] = Ref(Map.empty[String, ActorRef])
+    val users: Ref[Map[String, User]] = Ref(Map.empty[String, User])
 
     val taskQueryRepository = new TaskQueryRepository
     Akka.system.actorOf(Props(new TaskQueryRepository.Updater(taskQueryRepository)), "taskQueryUpdater")
 
-    extension.processorOf(Props(new TaskCommandHandler(users, taskQueryRepository) with Eventsourced { val id = 1 } ), Some("taskCommandHandler"))(Akka.system)
-
+    extension.processorOf(Props(new TaskCommandHandler(users, taskQueryRepository, extension) with Eventsourced { val id = 1 } ), Some("taskCommandHandler"))(Akka.system)
     extension.recover()
 
     Application.setTaskQueryRepository(taskQueryRepository)

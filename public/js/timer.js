@@ -49,6 +49,7 @@ define('timer', ['jquery', 'taskList'], function ($, taskList) {
             taskList.addTaskToList($today.find('.taskList'), 'Check out http://www.pomodorotechnique.com/', 1);
         }
         $today.find('.taskList li').first().append('<div class="timeStripe" />');
+        $.post("/tasks/startPomodoro");
         taskList.markAsActive();
     }
 

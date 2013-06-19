@@ -7,10 +7,10 @@ case class CreateTaskCommand(userId: String, taskId: String, title: String, init
 case class ReprioritizeTaskCommand(userId: String, taskId: String, newPriority: Int)
 case class MoveTaskToListCommand(userId: String, taskId: String, newList: ListType)
 
-case class StartPomodoroCommand(userId: String)
-case class EndPomodoroCommand(userId: String)
-case class InterruptPomodoroCommand(userId: String, note: String)
-case class BreakPomodoroCommand(userId: String, note: String)
+case class StartPomodoroCommand(userId: String, taskId: String)
+case class EndPomodoroCommand(userId: String, taskId: String)
+case class InterruptPomodoroCommand(userId: String, taskId: String, note: String)
+case class BreakPomodoroCommand(userId: String, taskId: String, note: String)
 
 case class ExtendEstimateCommand(userId: String, taskId: String, extension: Int)
 case class CompleteTaskCommand(userId: String, taskId: String)

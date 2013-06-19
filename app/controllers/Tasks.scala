@@ -85,18 +85,18 @@ object Tasks extends Controller with Secured {
     }
   )
 
-  def startPomodoro() = AsAuthenticatedUser {
+  def startPomodoro(taskId: String) = AsAuthenticatedUser {
     userId => {
       _ =>
-        taskCommandHandler ! new StartPomodoroCommand(userId)
+        taskCommandHandler ! new StartPomodoroCommand(userId, taskId)
         Ok("")
     }
   }
 
-  def endPomodoro() = AsAuthenticatedUser {
+  def endPomodoro(taskId: String) = AsAuthenticatedUser {
     userId => {
       _ =>
-        taskCommandHandler ! EndPomodoroCommand(userId)
+        taskCommandHandler ! EndPomodoroCommand(userId, taskId)
         Ok("")
     }
   }
@@ -107,13 +107,13 @@ object Tasks extends Controller with Secured {
     )
   )
 
-  def interruptPomodoro() = AsAuthenticatedUser {
+  def interruptPomodoro(taskId: String) = AsAuthenticatedUser {
     userId => {
       implicit request =>
         interruptForm.bindFromRequest.fold(
           errors => Forbidden("Validation errors."),
           value => {
-            taskCommandHandler ! InterruptPomodoroCommand(userId, value)
+            taskCommandHandler ! InterruptPomodoroCommand(userId, taskId, value)
             Ok("")
           }
         )
@@ -126,13 +126,13 @@ object Tasks extends Controller with Secured {
     )
   )
 
-  def breakPomodoro() = AsAuthenticatedUser {
+  def breakPomodoro(taskId: String) = AsAuthenticatedUser {
     userId => {
       implicit request =>
         breakForm.bindFromRequest.fold(
           errors => Forbidden("Validation errors."),
           value => {
-            taskCommandHandler ! BreakPomodoroCommand(userId, value)
+            taskCommandHandler ! BreakPomodoroCommand(userId, taskId, value)
             Ok("")
           }
         )

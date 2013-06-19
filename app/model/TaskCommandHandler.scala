@@ -7,12 +7,12 @@ import play.api.Play.current
 import model.api._
 import model.api.LoginUserCommand
 import java.util.UUID
-import org.eligosource.eventsourced.core.Message
+import org.eligosource.eventsourced.core.{ReplayParams, Eventsourced, EventsourcingExtension, Message}
 import play.Logger
 import scala.concurrent.stm.Ref
 import views.TaskQueryRepository
 
-class TaskCommandHandler(var usersRef: Ref[Map[String, ActorRef]], queryRepository: TaskQueryRepository) extends Actor {
+class TaskCommandHandler(var usersRef: Ref[Map[String, User]], queryRepository: TaskQueryRepository, esExtension: EventsourcingExtension) extends Actor {
 
   def users = usersRef.single.get
 
@@ -28,17 +28,20 @@ class TaskCommandHandler(var usersRef: Ref[Map[String, ActorRef]], queryReposito
     }
 
     case c: LoginUserCommand => {
-      users(c.userId) ! c
+      self ! Message(users(c.userId).login())
     }
 
-    case c: CreateTaskCommand => users(c.userId) ! c
-    case c: ReprioritizeTaskCommand => users(c.userId) ! c
-    case c: MoveTaskToListCommand => users(c.userId) ! c
-    case c: StartPomodoroCommand => users(c.userId) ! c
-    case c: EndPomodoroCommand => users(c.userId) ! c
-    case c: InterruptPomodoroCommand => users(c.userId) ! c
-    case c: BreakPomodoroCommand => users(c.userId) ! c
-    case c: CompleteTaskCommand => users(c.userId) ! c
+    case c: CreateTaskCommand => self ! Message(users(c.userId).createTask(c.taskId, c.title, c.initialEstimate, c.list))
+    case c: ReprioritizeTaskCommand => self ! Message(users(c.userId).reprioritizeTask(c.taskId, c.newPriority))
+    case c: MoveTaskToListCommand => {
+      val events: Seq[DomainEvent] = users(c.userId).moveTaskToList(c.taskId, c.newList)
+      events.foreach(e => self ! Message(e))
+    }
+    case c: StartPomodoroCommand => self ! Message(users(c.userId).startPomodoro(c.taskId))
+    case c: EndPomodoroCommand => self ! Message(users(c.userId).endPomodoro(c.taskId))
+    case c: InterruptPomodoroCommand => self ! Message(users(c.userId).interruptPomodoro(c.taskId, c.note))
+    case c: BreakPomodoroCommand => self ! Message(users(c.userId).breakPomodoro(c.taskId, c.note))
+    case c: CompleteTaskCommand => self ! Message(users(c.userId).completeTask(c.taskId))
 
     /**
      * Events
@@ -46,10 +49,14 @@ class TaskCommandHandler(var usersRef: Ref[Map[String, ActorRef]], queryReposito
 
     case m: Message => m.event match {
       case e: UserRegisteredEvent => {
-        usersRef.single.transform(users => users + (e.userId -> context.actorOf(Props(new User(e.userId)), e.email)))
+        usersRef.single.transform(users => {
+          users + (e.userId -> new User(e.userId, e.idProvider, e.id, e.email, e.firstname, e.lastname))
+        })
       }
 
-      case e: UserEvent => users(e.userId) ! e
+      case e: UserEvent => {
+        users(e.userId).apply(m)
+      }
 
       case _ => {}
 
