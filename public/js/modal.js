@@ -11,7 +11,7 @@ define(['jquery'], function ($) {
 			$newMod.find('.content').html(content);
 			blurForm();
 	        $('body').append($newMod);
-	        if (focusObject) {focusFormInModal(focusObject)};
+	        focusFormInModal(focusObject);
 			$('.modal-background, .modal-background .close-button').click(function () { closeModal() });
 	        $('.modal-background .modal').click(function (e) { e.stopPropagation(); });
 	        modalOpen = true;
