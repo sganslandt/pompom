@@ -307,7 +307,7 @@ a
 				{
 
 				}
-				&.ended{
+				&.finished{
 					background-color: $color-main;
 					@include box-shadow((inset 0 0.1rem 0 0 $color-highlight, 0 0.1rem 0 0 $color-highlight));
 				}
