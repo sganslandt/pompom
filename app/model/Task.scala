@@ -37,12 +37,15 @@ class Task(val userId: String, val taskId: String, val title: String, val initia
   }
 
   def interrupt(note: String) = {
+    if (!inPomodoro)
+      throw new IllegalStateException("No current pomodoro to register an interruption in.")
+
     pomodoros.head.interrupt(note)
   }
 
   def break(note: String) = {
     if (!inPomodoro)
-      throw new IllegalStateException("No current pomodoro to register an interruption in.")
+      throw new IllegalStateException("No current pomodoro to register an break in.")
 
     pomodoros.head.break(note)
   }

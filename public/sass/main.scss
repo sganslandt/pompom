@@ -254,6 +254,10 @@ a
 				@include box-shadow(0 0.1rem 0 0 $color-highlight);
 			}
 		}
+		&.ui-sortable-disabled
+		{
+			opacity: 0.5;
+		}
 	}
 }
 #timer {
