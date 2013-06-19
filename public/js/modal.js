@@ -19,7 +19,6 @@ define(['jquery'], function ($) {
 	}
     function closeModal() {
     	if (modalOpen) {
-	    	console.log('close');
 	        $('.modal-background').remove();
 	        modalOpen = false;
 	    }
@@ -52,5 +51,4 @@ define(['jquery'], function ($) {
     		closeModal()
         }
     }
-
 });

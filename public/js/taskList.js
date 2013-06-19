@@ -122,6 +122,10 @@ define(['jquery', 'sortable', 'touch-punch'], function ($) {
             $(targetList).append($newLi);
             privateRefreshList(targetList);
         },
+        removeTask: function (task) {
+            $(task).detach();
+            privateRefreshList();
+        },
         refreshList: function (targetList) {
             privateRefreshList(targetList);
         }
