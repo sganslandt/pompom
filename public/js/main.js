@@ -12,6 +12,6 @@ requirejs.config({
     }
 });
 
-require(['jquery', 'navigation', 'timer', 'taskList', 'taskCreator', 'task','desktopAlert', 'responsive'], function ($, navigation, timer, taskList, taskCreator, task, notify, responsive) {
+require(['jquery', 'navigation', 'timer', 'taskList', 'taskCreator', 'task', 'notify', 'responsive'], function ($, navigation, timer, taskList, taskCreator, task, notify, responsive) {
 
 });

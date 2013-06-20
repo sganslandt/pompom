@@ -1,4 +1,4 @@
-define(['jquery', 'taskList', 'modal'], function ($, taskList, modal) {
+define(['jquery', 'taskList', 'modal', 'notify'], function ($, taskList, modal, notify) {
     $(document).ready(function($) {
         bindAllTasksToModal();
     });
@@ -28,6 +28,7 @@ define(['jquery', 'taskList', 'modal'], function ($, taskList, modal) {
                 if (eventData.currentTarget == completeTaskForm)
                 {
                     taskList.removeTask($(task));
+                    notify.bar(title + ' was completed');
                 };
                 console.log(data);
                 modal.destroy();

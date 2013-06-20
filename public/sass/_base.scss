@@ -71,6 +71,13 @@ h2{font-size: $font-large}
 h3{font-size: $font-medium}
 h4{font-size: $font-text}
 
+hr{
+	height: 1px;
+	border: 0;
+	border-top: 1px solid $color-main;
+	margin: 1rem 0;
+	padding: 0;
+}
 @mixin gradient ($color-bottom: $color-main, $color-top: lighten($color-bottom, 10) ) {
 	background: $color-top;
 	@include background-image(linear-gradient($color-top, $color-bottom));
@@ -101,7 +108,7 @@ h4{font-size: $font-text}
 	background-repeat: no-repeat;
 	padding: 0.4rem;
 	width: 100%;
-	font-size: $font-large;
+	font-size: $font-medium;
 	height: 4.8rem;
 	color: $btnTextColor;
 	border: 0.1rem solid $btnBorderColor;
@@ -246,7 +253,7 @@ h4{font-size: $font-text}
 	}
 	textarea{
 		height: 6.4rem;
-		font-size: $font-text;
+		font-size: $font-medium;
 	}
 	input[type="number"]{
 		float: right;
@@ -320,7 +327,5 @@ h4{font-size: $font-text}
 		background-image: url("../img/icon_check.svg");
 		background-position: center;
 		background-repeat: no-repeat;
-		color: transparent;
-		text-indent: 12rem
 	}
 }

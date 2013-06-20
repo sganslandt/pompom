@@ -117,9 +117,7 @@ define('timer', ['jquery', 'taskList', 'modal'], function ($, taskList, modal) {
                                                 </form>";
                                 break;
         };
-
         modal.new(title, content);
-
         $(".modal form").submit(function (eventData) {
             $.post(eventData.currentTarget.action, $(eventData.currentTarget).serialize(), function(data)
             {

@@ -1,4 +1,4 @@
-define(['jquery'], function ($) {
+define(['jquery', 'modal', 'notify'], function ($, modal, notify) {
 	var Routes = {
 		'/' : '#timer',
 		'/timer' : '#timer',
@@ -21,6 +21,10 @@ define(['jquery'], function ($) {
 			if ($(this).attr('href') != window.location.pathname) {
 				navigateToPage($(this).attr('href'));
 			};
+		});
+		$('#mainNav a.settingsLink').click(function (event){
+			event.preventDefault();
+			openSettings ();
 		});
 	});
 
@@ -56,6 +60,17 @@ define(['jquery'], function ($) {
 		// Set Current in menu
 		$('#mainNav a').removeClass('current');
 		$('#mainNav a.' + route.substring(1) + 'Link').addClass('current');
+	}
+
+	function openSettings () {
+		var title = 'Settings';
+        var content =  "<a id='logout' href='/logout'>Logout of Pompom</a> \
+                        <hr> \
+                        <button class='authorizeNotification'>Enable Desktop Notifications</button>";
+ 		modal.new(title, content);
+ 		$(".modal button.authorizeNotification").click(function () {
+            notify.authorize();
+        });
 	}
 
 });
