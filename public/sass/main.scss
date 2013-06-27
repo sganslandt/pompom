@@ -28,7 +28,23 @@ a
 	display: block;
 
 }
+#loader
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	padding-top: 30vh;
+	background-color: $color-main;
+	text-align: center;
 
+	img
+	{
+		height: 30vh;
+		width: auto;
+	}
+}
 #pageheader
 {
 	text-align: center;
