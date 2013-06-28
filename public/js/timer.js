@@ -1,4 +1,4 @@
-define('timer', ['jquery', 'taskList', 'modal'], function ($, taskList, modal) {
+define('timer', ['jquery', 'taskList', 'modal', 'favicon'], function ($, taskList, modal, favicon) {
     var startTime = 0;
     var duration = 0;
     var pomodoroTimer = 0;
@@ -42,6 +42,7 @@ define('timer', ['jquery', 'taskList', 'modal'], function ($, taskList, modal) {
         startTime = $.now();
         duration = durationInMinutes * 60;
         updateTimeGrade(duration, 0);
+        updateFavicon (durationInMinutes)
         pomodoroTimer = setTimeout(checkAndRestartPomodoroTimer, 1000);
         var $today = $('#today');
         if ($today.find('.taskList li').length < 1) {
@@ -65,8 +66,10 @@ define('timer', ['jquery', 'taskList', 'modal'], function ($, taskList, modal) {
     function checkAndRestartPomodoroTimer() {
         var now = $.now();
         var elapsedSeconds = (now - startTime) / 1000;
+        var minutesRemaining = Math.floor(duration / 60) - Math.floor(elapsedSeconds / 60);
         if (elapsedSeconds < duration) {
             updateTimeGrade(duration, elapsedSeconds);
+            updateFavicon (minutesRemaining);
             pomodoroTimer = setTimeout(checkAndRestartPomodoroTimer, 200);
         }
         else {
@@ -86,6 +89,7 @@ define('timer', ['jquery', 'taskList', 'modal'], function ($, taskList, modal) {
         $activePomodoro.data('endtime', $.now());
         clearTimeout(pomodoroTimer);
         updateTimeGrade(1, 1);
+        resetFavicon();
         document.getElementById('alarm').play();
         $timer.removeClass('running')
         $(".sortable").sortable( "enable" );
@@ -98,6 +102,17 @@ define('timer', ['jquery', 'taskList', 'modal'], function ($, taskList, modal) {
 
     function interruptPomodoro() {
         taskList.markAsInterrupted();
+    }
+    function updateFavicon (minutes) {
+        var xOffset = 2 + Math.floor(minutes / 10);
+        $.favicon('assets/img/icon/16-badge.png', function (ctx) {
+            ctx.font = 'bold 8px "helvetica", "arial", sans-serif';
+            ctx.fillStyle = '#6a2b1a';
+            ctx.fillText(minutes, xOffset, 8);
+        });
+    }
+    function resetFavicon () {
+        $.favicon('assets/img/icon/favicon.ico');
     }
     function openNoteModal(type)
     {
