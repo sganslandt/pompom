@@ -1,3 +1,10 @@
+
+@mixin animate($property){
+	   -moz-transform: $property;
+		 -o-transform: $property;
+			transform: $property;
+}
+
 @-webkit-keyframes slide-in /* Safari and Chrome */
 {
 	0% {
@@ -75,28 +82,124 @@
 		-webkit-transform: translateY(-64px);
 	}
 }
+@keyframes slide-in /* Safari and Chrome */
+{
+	0% {
+		opacity: 0;
+		display: block;
+		@include animate(translate3d(-64px,0,0));
+	}
+	100% {
+		opacity: 1;
+		@include animate(translate3d(0,0,0));
+	}
+}
+@keyframes slide-up /* Safari and Chrome */
+{
+	0% {
+		opacity: 0;
+		display: block;
+		@include animate(translateY(64px));
+	}
+	100% {
+		opacity: 1;
+	}
+}
+@keyframes slide-out /* Safari and Chrome */
+{
+	0% {
+		opacity: 1;
+	}
+	100% {
+		@include animate(translateX(64px));
+		display: none;
+	}
+}
+@keyframes fade-out /* Safari and Chrome */
+{
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+		display: none;
+	}
+}
+@keyframes slide-back /* Safari and Chrome */
+{
+	0% {
+		opacity: 1;
+		@include animate(translate3d(0,0,0));
+	}
+	100% {
+		transform: translate3d(-64px,0,0);
+		@include animate(translate3d(-64px,0,0));
+		opacity: 0;
+		display: none;
+	}
+}
+@keyframes slide-down /* Safari and Chrome */
+{
+	0% {
+		opacity: 0;
+		display: block;
+		transform: translateY(-64px);
+		@include animate(translateY(-64px));
+	}
+	100% {
+		opacity: 1;
+	}
+}
+@keyframes slide-back-up /* Safari and Chrome */
+{
+	0% {
+		opacity: 1;
+		display: block;
+	}
+	100% {
+		opacity: 0;
+		@include animate(translateY(-64px));
+	}
+}
 .slide-in
 {
-	animation: slide-in 0.25s ease-out;
 	-webkit-animation: slide-in 0.25s ease-out;
+	   -moz-animation: slide-in 0.25s ease-out;
+		 -o-animation: slide-in 0.25s ease-out;
+			animation: slide-in 0.25s ease-out;
 }
 .slide-out
 {
 	-webkit-animation: slide-out 0.25s ease-out;
+	   -moz-animation: slide-out 0.25s ease-out;
+		 -o-animation: slide-out 0.25s ease-out;
+		    animation: slide-out 0.25s ease-out;
 }
 .slide-up
 {
 	-webkit-animation: slide-up 0.25s ease-out;
+	   -moz-animation: slide-up 0.25s ease-out;
+		 -o-animation: slide-up 0.25s ease-out;
+			animation: slide-up 0.25s ease-out;
 }
 .slide-back
 {
 	-webkit-animation: slide-back 0.25s ease-out;
+	   -moz-animation: slide-back 0.25s ease-out;
+		 -o-animation: slide-back 0.25s ease-out;
+			animation: slide-back 0.25s ease-out;
 }
 .slide-down
 {
 	-webkit-animation: slide-down 0.25s ease-out;
+	   -moz-animation: slide-down 0.25s ease-out;
+		 -o-animation: slide-down 0.25s ease-out;
+			animation: slide-down 0.25s ease-out;
 }
 .slide-back-up
 {
 	-webkit-animation: slide-back-up 0.25s ease-out;
+	   -moz-animation: slide-back-up 0.25s ease-out;
+		 -o-animation: slide-back-up 0.25s ease-out;
+			animation: slide-back-up 0.25s ease-out;
 }
