@@ -66,6 +66,8 @@ a
 			@include clearfix;
 			padding: 0 0 1rem;
 			margin: 0 1rem;
+			overflow: visible;
+			
 			a
 			{
 				display: block;
@@ -80,6 +82,7 @@ a
 				font-size: 0;
 				width: 4.8rem;
 				height: 3.2rem;
+				outline:none;
 
 				&.timerLink
 				{
