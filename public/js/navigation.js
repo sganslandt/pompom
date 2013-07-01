@@ -1,9 +1,10 @@
-define(['jquery', 'modal', 'notify'], function ($, modal, notify) {
+define(['jquery', 'modal'], function ($, modal) {
 	var Routes = {
 		'/' : '#timer',
 		'/timer' : '#timer',
 		'/today' : '#today', 
-		'/inventory': '#inventory'
+		'/inventory': '#inventory', 
+		'/settings': '#settings'
 	};
 	var AnimationTime = 250;
 	var popped = false;
@@ -24,11 +25,6 @@ define(['jquery', 'modal', 'notify'], function ($, modal, notify) {
 				navigateToPage($(this).attr('href'));
 			};
 		});
-		$('#mainNav a.settingsLink').click(function (event){
-			event.preventDefault();
-			openSettings ();
-		});
-
 	});
 
 	// Listen to History Popstate Event
@@ -78,16 +74,5 @@ define(['jquery', 'modal', 'notify'], function ($, modal, notify) {
 		// Set Current in menu
 		$('#mainNav a').removeClass('current');
 		$('#mainNav a.' + route.substring(1) + 'Link').addClass('current');
-	}
-
-	function openSettings () {
-		var title = 'Settings';
-        var content =  "<a id='logout' href='/logout'>Logout of Pompom</a> \
-                        <hr> \
-                        <button class='authorizeNotification'>Enable Desktop Notifications</button>";
- 		modal.new(title, content);
- 		$(".modal button.authorizeNotification").click(function () {
-            notify.authorize();
-        });
 	}
 });

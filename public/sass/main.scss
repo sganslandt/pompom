@@ -67,7 +67,7 @@ a
 			padding: 0 0 1rem;
 			margin: 0 1rem;
 			overflow: visible;
-			
+
 			a
 			{
 				display: block;
@@ -168,10 +168,9 @@ a
 #today,
 #inventory
 {
-	clear: left;
+	@include app-section;
 	position: relative;
 	margin: 0;
-	display: none;
 	margin: 0 1rem;
 
 	&.active
@@ -282,15 +281,10 @@ a
 	}
 }
 #timer {
-	@include clearfix;
+	@include app-section;
 	overflow: hidden;
-	display: none;
 	margin: 0 1rem;
 
-	&.active
-	{
-		display: block;
-	}
 	.top
 	{
 		position: relative;
@@ -409,8 +403,8 @@ a
 			}
 			button#interruptPomodoro
 			{
-				display: none;
 				@include button($color-warning, darken($color-warning, 30), transparent);
+				display: none;
 				width: 4.8rem;
 				background-image: url("../img/icon_interrupted.svg");
 				margin: 0 1rem 0 0;
@@ -418,8 +412,8 @@ a
 			}
 			button#breakPomodoro
 			{
-				display: none;
 				@include button($color-error, darken($color-error, 30), transparent);
+				display: none;
 				width: 4.8rem;
 				background-image: url("../img/icon_broken.svg");
 				float: left;
@@ -438,6 +432,21 @@ a
 				}
 			}
 		}
+	}
+}
+#settings
+{
+	@include app-section;
+
+	a{
+		@include button;
+	}
+	hr{
+		border-top: 1px solid $color-main-darker;
+	}
+	button,
+	input[type=submit]{
+		@include button;
 	}
 }
 .modal-background
@@ -575,9 +584,6 @@ body.active #timer button#breakPomodoro{
 @include breakpoint($large-phones)
 {
 	#pageheader #navbar #mainNav,
-	#timer,
-	#today,
-	#inventory,
 	#notification-bar .notification
 	{
 		margin:0 5.8rem;
@@ -586,29 +592,22 @@ body.active #timer button#breakPomodoro{
 @include breakpoint($tablet)
 {
 	#pageheader #navbar #mainNav,
-	#timer,
-	#today,
-	#inventory,
 	#notification-bar .notification
 	{
 		max-width: 52.4rem;
 		margin:0 auto;
 	}
-	#today,
-	#inventory
-	{
-		form.createTaskForm{
-			display: block;
-			@include clearfix;
 
-			input[type="text"]{
-				width: 40.8rem;
-				float: left;
-			}
-		}
+	form.createTaskForm{
+		display: block;
+		@include clearfix;
 
-		ol.taskList{
-			padding: 0;
+		input[type="text"]{
+			width: 40.8rem;
+			float: left;
 		}
+	}
+	ol.taskList{
+		padding: 0;
 	}
 }
