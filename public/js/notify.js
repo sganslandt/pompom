@@ -2,9 +2,22 @@ define(['jquery'], function ($) {
     var notificationOpen = false;
     var notificationQueue = [];
     var closeBarTimer;
+    var permissions = [
+        'granted', 
+        'default',
+        'denied'
+    ];
+    isSupported = (function () {
+        var isSupported = false;
+        try {
+            isSupported = !!(Notification || webkitNotifications);
+        } catch (e) {}
+        return isSupported;
+    }()),
 
     $(document).ready(function ($) {
-        checkPermission();
+        if(isSupported && checkPermission() == 'granted')
+            disableDesktopNotificationButton ();
     });
 
     function authorizeDesktopNotification () {
@@ -16,41 +29,46 @@ define(['jquery'], function ($) {
         }
     }
     function showDesktopNotification (title, content, imageURL) {
-        try {
-            notification = new Notification(title, {
-            dir: "auto",
-            lang: "en",
-            body: content,
-            tag: "pompom",
-            type: "basic",
-            replaceId: "pompomNotification",
-            iconUrl: "../assets/img/icon/64.png"
-            });
-            checkPermission(notification);
-        }
-        catch (error) {
-            authorizeDesktopNotification ();
-        }
-    }
-    function checkPermission(notification){
-        // Does not seem to be implemented yet
-        if (notification) {
-            console.log(notification.permission);
-            if(notification.permission == 'default'){
-                queueNotificationBar("You can enabled desktop notification under settings");
+        console.log(checkPermission());
+        if (checkPermission() == 'granted')
+        {
+            try {
+                notification = new Notification(title, {
+                dir: "auto",
+                lang: "en",
+                body: content,
+                tag: "pompom",
+                type: "basic",
+                replaceId: "pompomNotification",
+                iconUrl: "../assets/img/icon/64.png"
+                });
             }
-            else if(notification.permission == 'granted'){
-                disableDesktopNotificationButton();
-            };
+            catch (error) {
+            }
+        } 
+        else{
+            queueNotificationBar (title + ': ' + content + ' | <a href="/settings">desktop notifications</a>')
         };
-        try {
-            Notification.requestPermission();
-        }
-        catch (error) {
-            disableDesktopNotificationButton();
-        }
     }
-    function disableDesktopNotificationButton (argument) {
+    function checkPermission(){
+        var permission;
+        if (!isSupported) { return; }
+        if (window.Notification && window.Notification.permissionLevel) {
+            //Safari 6
+            permission = window.Notification.permissionLevel();
+        } else if (window.webkitNotifications && window.webkitNotifications.checkPermission) {
+            //Chrome
+            permission = permissions[webkitNotifications.checkPermission()];
+        } else if (navigator.mozNotification) {
+            //Firefox Mobile
+            permission = 'granted';
+        } else if (window.Notification && window.Notification.permission) {
+            // Firefox 23+
+            permission = window.Notification.permission;
+        }
+        return permission;
+    }
+    function disableDesktopNotificationButton () {
         $('.authorizeNotification').attr('disabled', 'disabled');
     }
     function closeDesktopNotification()
@@ -93,7 +111,8 @@ define(['jquery'], function ($) {
             showDesktopNotification (title, content, imageURL);
         },
         authorize: function() {
-            authorizeDesktopNotification();
+            showDesktopNotification('title', 'body');
+            //authorizeDesktopNotification();
         },
         bar: function(message) {
             queueNotificationBar(message);
