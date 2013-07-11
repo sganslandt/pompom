@@ -170,7 +170,6 @@ a
 {
 	@include app-section;
 	position: relative;
-	margin: 0;
 	margin: 0 1rem;
 
 	&.active
@@ -437,6 +436,7 @@ a
 #settings
 {
 	@include app-section;
+	margin: 0 1rem;
 
 	a{
 		@include button;
@@ -537,7 +537,7 @@ a
 }
 #notification-bar
 {
-	position: absolute;
+	position: fixed;
 	z-index: 100;
 	background-color: $color-shadow-deep;
 	width: 100vw;
