@@ -11,10 +11,10 @@ define(['jquery', 'sortable', 'touch-punch'], function ($) {
           accept: "ol.taskList > li",
           drop: function( event, ui ) {
             if (ui.draggable.closest('section').attr('id') == 'inventory') {
-              var targetList = '#today > ol.taskList'
+                var targetList = '#today > ol.taskList'
             }
             else{
-              var targetList = '#inventory > ol.taskList'
+                var targetList = '#inventory > ol.taskList'
             };
             $(ui.draggable[0]).data('moveTo', targetList);
           }
@@ -23,38 +23,41 @@ define(['jquery', 'sortable', 'touch-punch'], function ($) {
 
     
 
-  function sortablize(list) {
-      if (!list) {
-          list = $('.sortable');
-      }
-      $(list).sortable({
-          placeholder: "sortable-placeholder",
-          axis: "y",
-          cursor: "move",
-          handle: "ol.pomodoros",
-          update: function (event, ui) {
-            var taskId = ui.item.data("taskid");
-            var newPriority = ui.item.index();
-            $.post("/tasks/reprioritizeTask", "taskId=" + taskId + "&newPriority=" + newPriority);
-            $.event.trigger({
-              type: "taskList.Reprioritize",
-              list: ui.item.closest('ol'),
-              time: new Date()
-            });
-          },
-          start: function (event, ui) {
-            ui.item.closest('section').addClass('dragging');
-          },
-          stop: function (event, ui) {
-            if (ui.item.data('moveTo'))
-            {
-              list.sortable('cancel');
-              moveTaskToList(ui.item, ui.item.data('moveTo'))
-              ui.item.data('moveTo', '')
-            };
-            list.closest('section').removeClass('dragging');
-          }
-      });
+    function sortablize(list) {
+        $('ol.pomodoros').click(function (event) {
+            event.stopPropagation();
+        });
+        if (!list) {
+            list = $('.sortable');
+        }
+        $(list).sortable({
+            placeholder: "sortable-placeholder",
+            axis: "y",
+            cursor: "move",
+            handle: "ol.pomodoros",
+            update: function (event, ui) {
+                var taskId = ui.item.data("taskid");
+                var newPriority = ui.item.index();
+                $.post("/tasks/reprioritizeTask", "taskId=" + taskId + "&newPriority=" + newPriority);
+                $.event.trigger({
+                    type: "taskList.Reprioritize",
+                    list: ui.item.closest('ol'),
+                    time: new Date()
+                });
+            },
+            start: function (event, ui) {
+                ui.item.closest('section').addClass('dragging');
+            },
+            stop: function (event, ui) {
+                if (ui.item.data('moveTo'))
+                {
+                    list.sortable('cancel');
+                    moveTaskToList(ui.item, ui.item.data('moveTo'))
+                    ui.item.data('moveTo', '')
+                };
+                list.closest('section').removeClass('dragging');
+            }
+        });
       $(list).find('.pomodoros li').each(function (index) {
           if ($(this).hasClass('broken')) {
               $(this).html('<img src="assets/img/icon_broken.svg" />');
@@ -66,21 +69,24 @@ define(['jquery', 'sortable', 'touch-punch'], function ($) {
               $(this).html('<img src="assets/img/icon_inprogress.svg" />');
           }
       });
-  }
+    }
 
-  function moveTaskToList(task, targetList) {
-    var listType = ListTypes[$(targetList).closest('section').attr('id')];
-    var taskId = $(task[0]).data("taskid");
-    $.post("/tasks/moveTaskToList", "taskId=" + taskId + "&newList=" + listType);
-    $(targetList).append($(task[0]));
-    privateRefreshList(targetList);
-  }
-  function privateRefreshList (targetList) {
-    if (! targetList) {
-        targetList = $('ol.sortable');
-    };
-    $(targetList).sortable('refresh');
-  }
+    function moveTaskToList(task, targetList) {
+        var listType = ListTypes[$(targetList).closest('section').attr('id')];
+        var taskId = $(task[0]).data("taskid");
+        $.post("/tasks/moveTaskToList", "taskId=" + taskId + "&newList=" + listType);
+        $(targetList).append($(task[0]));
+        privateRefreshList(targetList);
+    }
+    function privateRefreshList (targetList) {
+        if (! targetList) {
+            targetList = $('ol.sortable');
+        };
+        $(targetList).sortable('refresh');
+        $(targetList).find('ol.pomodoros').click(function (event) {
+            event.stopPropagation();
+        });
+    }
     return {
         markAsActive: function (pomodoro) {
             if (!pomodoro) {
