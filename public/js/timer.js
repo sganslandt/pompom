@@ -22,7 +22,7 @@ define('timer', ['jquery', 'taskList', 'modal', 'favicon'], function ($, taskLis
             if ($(event.list).closest('section').attr('id') == 'today')
             {
                 setupTimer()
-            };
+            }
         });
     });
 
@@ -33,7 +33,7 @@ define('timer', ['jquery', 'taskList', 'modal', 'favicon'], function ($, taskLis
         {
             startTime = Date.parse($activePomodoro.data('starttime'));
             duration = defaultDuration * 60;
-            $timer.addClass('running')
+            $timer.addClass('running');
             $(".sortable").sortable( "disable" );
             checkAndRestartPomodoroTimer();
         }
@@ -50,11 +50,11 @@ define('timer', ['jquery', 'taskList', 'modal', 'favicon'], function ($, taskLis
         }
         $.post("/tasks/" + $currentTask.data('taskid') + "/startPomodoro");
         taskList.markAsActive();
-        $timer.addClass('running')
+        $timer.addClass('running');
         $(".sortable").sortable( "disable" );
         populateTimer();
     }
-    function updateCurrentTask () {
+    function updateCurrentTask() {
         $currentTask = $('#today').find('.taskList li').first();
     }
     function populateTimer()
@@ -119,19 +119,19 @@ define('timer', ['jquery', 'taskList', 'modal', 'favicon'], function ($, taskLis
         switch (type) {
             case 'break':       var title = 'Break pomodoro';
                                 var content =  "<p>Why did you break this pomodoro</p> \
-                                                <form class='breakPomodoroForm' name='breakPomodoroForm' method='post' action='/tasks/" + $currentTask.attr('taskid') + "/breakPomodoro'> \
+                                                <form class='breakPomodoroForm' name='breakPomodoroForm' method='post' action='/tasks/" + $currentTask.data('taskid') + "/breakPomodoro'> \
                                                 <textarea class='note' name='note' required='' placeholder='Why did you break this pomodoro'> </textarea>\
                                                 <input name='breakPomodoroButton' type='submit' id='breakPomodoroButton' value='Submit'> \
                                                 </form>";
                                 break;
             case 'interrupt':   var title = 'Interrupt pomodoro';
                                 var content =  "<p>Why did you interrupt this pomodoro</p> \
-                                                <form class='interruptPomodoroForm' name='interruptPomodoroForm' method='post' action='/tasks/" + $currentTask.attr('taskid') + "/interruptPomodoro'> \
+                                                <form class='interruptPomodoroForm' name='interruptPomodoroForm' method='post' action='/tasks/" + $currentTask.data('taskid') + "/interruptPomodoro'> \
                                                 <textarea class='note' name='note' required='' placeholder='Why did you interrupt this pomodoro'> </textarea>\
                                                 <input name='interruptPomodoroButton' type='submit' id='interruptPomodoroButton' value='Submit'> \
                                                 </form>";
                                 break;
-        };
+        }
         modal.new(title, content);
         $(".modal form").submit(function (eventData) {
             $.post(eventData.currentTarget.action, $(eventData.currentTarget).serialize(), function(data)
@@ -140,9 +140,9 @@ define('timer', ['jquery', 'taskList', 'modal', 'favicon'], function ($, taskLis
                     case 'break':       breakPomodoro();
                                         break;
 
-                    case 'interrupt':   interruptPomodoro()
+                    case 'interrupt':   interruptPomodoro();
                                         break;
-                };
+                }
             });
             modal.destroy();
             return false;
