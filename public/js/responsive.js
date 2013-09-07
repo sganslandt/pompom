@@ -1,12 +1,12 @@
 define('responsive', ['jquery', 'taskCreator'], function ($, taskCreator) {
-    var updateTimer;
-
-    var phones = 0;
-    var largePhones = 481;
-    var tablet = 768;
-    var desktopSmall = 980;
-    var desktopMedium = 1200;
-    var desktopLarge = 1600;
+    "use strict";
+    var updateTimer,
+        phones = 0,
+        largePhones = 481,
+        tablet = 768,
+        desktopSmall = 980,
+        desktopMedium = 1200,
+        desktopLarge = 1600;
 
     $(document).ready(function () {
         $(window).resize(function () {
@@ -18,19 +18,29 @@ define('responsive', ['jquery', 'taskCreator'], function ($, taskCreator) {
     });
 
     function getSizeName(width) {
-        if (width < largePhones) return "phones"
-        if (width < tablet) return "largePhones"
-        if (width < desktopSmall) return "tablet"
-        if (width < desktopMedium) return "desktopSmall"
-        if (width < desktopLarge)return "desktopMedium"
-        else return "desktopLarge"
+        if (width < largePhones) {
+            return "phones";
+        }
+        if (width < tablet) {
+            return "largePhones";
+        }
+        if (width < desktopSmall) {
+            return "tablet";
+        }
+        if (width < desktopMedium) {
+            return "desktopSmall";
+        }
+        if (width < desktopLarge) {
+            return "desktopMedium";
+        }
+        return "desktopLarge";
     }
 
     function updateView(viewportSize) {
         //console.log($('.popup :focus').length);
         if (viewportSize >= desktopSmall) {
             if ($('.popup').length > 0) {
-                taskCreator.closeCreateFormPopup()
+                taskCreator.closeCreateFormPopup();
             }
         }
     }

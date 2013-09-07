@@ -15,9 +15,9 @@ requirejs.config({
 });
 
 require(['jquery', 'navigation', 'timer', 'taskList', 'taskCreator', 'task', 'notify', 'responsive', 'settings'],
-function ($,        navigation,   timer,   taskList,   taskCreator,   task,   notify,   responsive,   settings) {
-    $('#loader').fadeOut('slow', function()
-    {
-        $('#loader').remove();
+    function ($) {
+        "use strict";
+        $('#loader').fadeOut('slow', function () {
+            $('#loader').remove();
+        });
     });
-});

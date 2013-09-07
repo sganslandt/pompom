@@ -1,6 +1,7 @@
 define('taskCreator', ['jquery', 'taskList', 'task'], function ($, taskList, task) {
+    "use strict";
     var ListTypes = {
-        'today' : 'TodoToday',
+        'today': 'TodoToday',
         'inventory': 'ActivityInventory'
     };
 
@@ -23,11 +24,10 @@ define('taskCreator', ['jquery', 'taskList', 'task'], function ($, taskList, tas
             $(eventData.currentTarget).serializeArray()[1].value
         );
         // Add task in list on server and then remove the the temporary task
-        $.post(eventData.currentTarget.action, $(eventData.currentTarget).serialize(), function(data){
-            $newTask = $('<div class="newone" />');
+        $.post(eventData.currentTarget.action, $(eventData.currentTarget).serialize(), function (data) {
+            var $newTask = $('<div class="newone" />');
             $newTask.html(data);
-            setTimeout(function()
-            {
+            setTimeout(function () {
                 $(".new-task").replaceWith($newTask.find('li.task'));
                 taskList.refreshList(targetList);
                 task.bindRefresh();

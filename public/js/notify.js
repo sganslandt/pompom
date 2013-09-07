@@ -1,58 +1,61 @@
 define(['jquery'], function ($) {
-    var notificationOpen = false;
-    var notificationQueue = [];
-    var closeBarTimer;
-    var permissions = [
-        'granted', 
-        'default',
-        'denied'
-    ];
-    isSupported = (function () {
-        var isSupported = false;
-        try {
-            isSupported = !!(Notification || webkitNotifications);
-        } catch (e) {}
-        return isSupported;
-    }()),
+    "use strict";
+    var notificationOpen = false,
+        notificationQueue = [],
+        closeBarTimer,
+        permissions = [
+            'granted',
+            'default',
+            'denied'
+        ],
+        isSupported = (function () {
+            var isSupported = false;
+            try {
+                isSupported = !!(Notification || webkitNotifications);
+            } catch (e) {
+            }
+            return isSupported;
+        }());
 
     $(document).ready(function ($) {
-        if(isSupported && checkPermission() == 'granted')
-            disableDesktopNotificationButton ();
+        if (isSupported && checkPermission() === 'granted') {
+            disableDesktopNotificationButton();
+        }
     });
 
-    function authorizeDesktopNotification () {
+    function authorizeDesktopNotification() {
         try {
             Notification.requestPermission();
-        }
-        catch (error) {
+        } catch (error) {
             queueNotificationBar("Notifications are not supported in your browser");
         }
     }
-    function showDesktopNotification (title, content, imageURL) {
+
+    function showDesktopNotification(title, content, imageURL) {
         console.log(checkPermission());
-        if (checkPermission() == 'granted')
-        {
+        if (checkPermission() === 'granted') {
             try {
-                notification = new Notification(title, {
-                dir: "auto",
-                lang: "en",
-                body: content,
-                tag: "pompom",
-                type: "basic",
-                replaceId: "pompomNotification",
-                iconUrl: "../assets/img/icon/64.png"
+                window.notification = new Notification(title, {
+                    dir: "auto",
+                    lang: "en",
+                    body: content,
+                    tag: "pompom",
+                    type: "basic",
+                    replaceId: "pompomNotification",
+                    iconUrl: "../assets/img/icon/64.png"
                 });
+            } catch (error) {
             }
-            catch (error) {
-            }
-        } 
-        else{
-            queueNotificationBar (title + ': ' + content + ' | <a href="/settings">desktop notifications</a>')
-        };
+        } else {
+            queueNotificationBar(title + ': ' + content + ' | <a href="/settings">desktop notifications</a>');
+        }
     }
-    function checkPermission(){
+
+    function checkPermission() {
         var permission;
-        if (!isSupported) { return; }
+        if (!isSupported) {
+            return permission;
+        }
         if (window.Notification && window.Notification.permissionLevel) {
             //Safari 6
             permission = window.Notification.permissionLevel();
@@ -68,55 +71,62 @@ define(['jquery'], function ($) {
         }
         return permission;
     }
-    function disableDesktopNotificationButton () {
+
+    function disableDesktopNotificationButton() {
         $('.authorizeNotification').attr('disabled', 'disabled');
     }
-    function closeDesktopNotification()
-    {
+
+    function closeDesktopNotification() {
         // Does not seem to be implemented yet
     }
-    function queueNotificationBar (message)
-    {
+
+    function queueNotificationBar(message) {
         notificationQueue.push(message);
-        if (!notificationOpen){
+        if (!notificationOpen) {
             newNotificationBar();
         }
     }
-    function newNotificationBar ()
-    {
+
+    function newNotificationBar() {
         notificationOpen = true;
         var $newBar = $('<div id="notification-bar" class="slide-down"><div class="notification"><button title="close notification" class="close-button">x</button><p class="content"><img src="/assets/img/icon/32.png" />' + notificationQueue[0] + '</p></div></div>');
         notificationQueue.shift();
         $('body').append($newBar);
-        $('#notification-bar').click(function (e) { e.stopPropagation(); });
-        $('#notification-bar button').click(function () {
+        $('#notification-bar').click(function (e) {
+            e.stopPropagation();
+        });
+        $('#notification-bar').find('button').click(function () {
             closeNotificationBar();
         });
-        closeBarTimer = setTimeout(function(){
+        closeBarTimer = setTimeout(function () {
             closeNotificationBar();
         }, 5000);
 
     }
+
     function closeNotificationBar() {
         clearTimeout(closeBarTimer);
         $('#notification-bar').removeClass().addClass('slide-back-up');
-        setTimeout(function(){
+        setTimeout(function () {
             $('#notification-bar').remove();
             notificationOpen = false;
-            if (notificationQueue.length > 0) {newNotificationBar();};
+            if (notificationQueue.length > 0) {
+                newNotificationBar();
+            }
         }, 250);
     }
+
     return {
         desktop: function (title, content, imageURL) {
-            showDesktopNotification (title, content, imageURL);
+            showDesktopNotification(title, content, imageURL);
         },
-        authorize: function() {
+        authorize: function () {
             showDesktopNotification('title', 'body');
             //authorizeDesktopNotification();
         },
-        bar: function(message) {
+        bar: function (message) {
             queueNotificationBar(message);
         }
-    }
+    };
 
 });
