@@ -1,0 +1,12 @@
+{
+  "name": "Pompom",
+  "description": "The best pomodoro app in the world",
+  "icons": {
+    "64": "/assets/img/icon/64.png"
+  },
+  "developer": {
+    "name": "Pompom",
+    "url": "http://pompomapp.com"
+  },
+  "default_locale": "en"
+}
