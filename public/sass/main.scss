@@ -276,6 +276,10 @@ a
 		&.ui-sortable-disabled
 		{
 			opacity: 0.5;
+
+			ol.pomodoros{
+				cursor: not-allowed;
+			}
 		}
 	}
 }
