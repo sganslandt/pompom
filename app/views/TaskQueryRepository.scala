@@ -1,14 +1,12 @@
 package views
 
 import model.api._
-import akka.actor.{ActorRef, ActorLogging, Actor}
-import akka.event.Logging
+import akka.actor.{ActorLogging, Actor}
 import play.api.libs.concurrent.Akka
 import play.api.Play.current
 
 import org.joda.time.DateTime
 import model.api.UserRegisteredEvent
-import model.{DomainEventMessage, Replay, BeforeReplay, AfterReplay}
 import model.api.UserLoggedInEvent
 import model.api.PomodoroStartedEvent
 import scala.Some
@@ -18,7 +16,7 @@ import util.Prioritizable.rePrioritize
 import org.eligosource.eventsourced.core.Message
 
 case class User(userId: String,
-                 email: String)
+                email: String)
 
 case class Task(userId: String,
                 taskId: String,
@@ -35,8 +33,8 @@ case class Task(userId: String,
   def endPomodoro(nr: Int, timestamp: DateTime) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Finished(pomodoros(nr).state.asInstanceOf[Active].startTime, timestamp), pomodoros(nr).interruptions)), priority, createdTime, doneTime, list)
   def breakPomodoro(nr: Int, reason: String, timestamp: DateTime) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(Broken(pomodoros(nr).state.asInstanceOf[Active].startTime, timestamp, reason), pomodoros(nr).interruptions)), priority, createdTime, doneTime, list)
   def interruptPomodoro(nr: Int, reason: String, timestamp: DateTime) = Task(userId, taskId, title, pomodoros.updated(nr, Pomodoro(pomodoros(nr).state, Interruption(timestamp, reason) :: pomodoros(nr).interruptions)), priority, createdTime, doneTime, list)
-  def movedToList(newList: ListType) = Task(userId, taskId, title, pomodoros, priority,  createdTime, doneTime, newList)
-  def done(timestamp: DateTime) = Task(userId, taskId, title, pomodoros, priority,  createdTime, Some(timestamp), list)
+  def movedToList(newList: ListType) = Task(userId, taskId, title, pomodoros, priority, createdTime, doneTime, newList)
+  def done(timestamp: DateTime) = Task(userId, taskId, title, pomodoros, priority, createdTime, Some(timestamp), list)
 }
 
 case class Pomodoro(state: PomodoroState, interruptions: List[Interruption])
@@ -69,14 +67,12 @@ case class Broken(override val startTime: DateTime, override val endTime: DateTi
 
 class TaskQueryRepository {
 
-  val log = Logging(Akka.system.eventStream, getClass.getName)
-
   def getUserByEmail(email: String): Option[User] = {
-    if (users.filter( _.email == email).size == 0) None
-    else Some(users.filter( _.email == email)(0))
+    if (users.filter(_.email == email).size == 0) None
+    else Some(users.filter(_.email == email)(0))
   }
 
-  def isUserRegistered(userId: String) = users.filter( _.userId == userId).size != 0
+  def isUserRegistered(userId: String) = users.filter(_.userId == userId).size != 0
 
   def getTask(taskId: String): Task = {
     val found = tasks.find(_.taskId == taskId)
@@ -94,7 +90,7 @@ class TaskQueryRepository {
     tasks.filter(_.userId == userId).filter(_.list == ActivityInventory).sortBy(_.priority)
   }
 
-  protected def clear() {
+  private[views] def clear() {
     users = List()
     tasks = List()
   }
@@ -121,8 +117,6 @@ object TaskQueryRepository {
 
   class Updater(repo: TaskQueryRepository) extends Actor with ActorLogging {
 
-    Akka.system.eventStream.subscribe(self, classOf[Message])
-
     override def preStart() {
       log.debug("Starting")
     }
@@ -144,52 +138,53 @@ object TaskQueryRepository {
 
         m.event match {
 
-        case e: UserRegisteredEvent => {
-          repo.addUser(User(e.userId, e.email))
-        }
-
-        case e: UserLoggedInEvent => {}
-
-        case e: TaskCreatedEvent => {
-          repo.createTask(Task(e.userId, e.taskId, e.title, Pomodoro(e.initialEstimate), e.priority, new DateTime(m.timestamp), None, e.list))
-        }
-
-        case e: TaskReprioritzedEvent => {
-          val task = repo.getTask(e.taskId)
-          val userTasks = task.list match {
-            case TodoToday => repo.listTodoToday(e.userId)
-            case ActivityInventory => repo.listActivityInventory(e.userId)
+          case e: UserRegisteredEvent => {
+            repo.addUser(User(e.userId, e.email))
           }
-          val newPriority = e.newPriority
 
-          val reprioritizedTasks: Iterable[Prioritizable[Task]] = rePrioritize(task, userTasks, newPriority)
-          for (t <- reprioritizedTasks) repo.replaceTask(t.asInstanceOf[Task])
-        }
+          case e: UserLoggedInEvent => {}
 
-        case e: TaskMovedToListEvent => {
-          val currentTask: Task = repo.getTask(e.taskId)
-          repo.replaceTask(currentTask.movedToList(e.newList))
-        }
+          case e: TaskCreatedEvent => {
+            repo.createTask(Task(e.userId, e.taskId, e.title, Pomodoro(e.initialEstimate), e.priority, new DateTime(m.timestamp), None, e.list))
+          }
 
-        case e: PomodoroStartedEvent => {
-          repo.replaceTask(repo.getTask(e.taskId).startPomodoro(e.pomodoro, new DateTime(m.timestamp)))
-        }
-        case e: PomodoroEndedEvent => {
-          repo.replaceTask(repo.getTask(e.taskId).endPomodoro(e.pomodoro, new DateTime(m.timestamp)))
-        }
-        case e: PomodoroInterruptedEvent => {
-          repo.replaceTask(repo.getTask(e.taskId).interruptPomodoro(e.pomodoro, e.note, new DateTime(m.timestamp)))
-        }
-        case e: PomodoroBrokenEvent => {
-          repo.replaceTask(repo.getTask(e.taskId).breakPomodoro(e.pomodoro, e.note, new DateTime(m.timestamp)))
-        }
-        case e: TaskCompletedEvent => {
-          repo.replaceTask(repo.getTask(e.taskId).done(new DateTime(m.timestamp)))
-        }
+          case e: TaskReprioritzedEvent => {
+            val task = repo.getTask(e.taskId)
+            val userTasks = task.list match {
+              case TodoToday => repo.listTodoToday(e.userId)
+              case ActivityInventory => repo.listActivityInventory(e.userId)
+            }
+            val newPriority = e.newPriority
 
-        case _ => {}
+            val reprioritizedTasks: Iterable[Prioritizable[Task]] = rePrioritize(task, userTasks, newPriority)
+            for (t <- reprioritizedTasks) repo.replaceTask(t.asInstanceOf[Task])
+          }
 
-      }                 }
+          case e: TaskMovedToListEvent => {
+            val currentTask: Task = repo.getTask(e.taskId)
+            repo.replaceTask(currentTask.movedToList(e.newList))
+          }
+
+          case e: PomodoroStartedEvent => {
+            repo.replaceTask(repo.getTask(e.taskId).startPomodoro(e.pomodoro, new DateTime(m.timestamp)))
+          }
+          case e: PomodoroEndedEvent => {
+            repo.replaceTask(repo.getTask(e.taskId).endPomodoro(e.pomodoro, new DateTime(m.timestamp)))
+          }
+          case e: PomodoroInterruptedEvent => {
+            repo.replaceTask(repo.getTask(e.taskId).interruptPomodoro(e.pomodoro, e.note, new DateTime(m.timestamp)))
+          }
+          case e: PomodoroBrokenEvent => {
+            repo.replaceTask(repo.getTask(e.taskId).breakPomodoro(e.pomodoro, e.note, new DateTime(m.timestamp)))
+          }
+          case e: TaskCompletedEvent => {
+            repo.replaceTask(repo.getTask(e.taskId).done(new DateTime(m.timestamp)))
+          }
+
+          case _ => {}
+
+        }
+      }
     }
   }
 

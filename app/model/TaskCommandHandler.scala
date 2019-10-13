@@ -12,7 +12,7 @@ import play.Logger
 import scala.concurrent.stm.Ref
 import views.TaskQueryRepository
 
-class TaskCommandHandler(var usersRef: Ref[Map[String, User]], queryRepository: TaskQueryRepository, esExtension: EventsourcingExtension) extends Actor {
+class TaskCommandHandler(var usersRef: Ref[Map[String, User]], esExtension: EventsourcingExtension) extends Actor {
 
   def users = usersRef.single.get
 

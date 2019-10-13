@@ -13,7 +13,9 @@ object ApplicationBuild extends Build {
     "org.eligosource" %% "eventsourced-core" % "0.5.0",
     "org.eligosource" %% "eventsourced-journal-leveldb" % "0.5.0",
     "org.eligosource" %% "eventsourced-journal-inmem" % "0.5.0",
-    "org.eligosource" %% "eventsourced-journal-journalio" % "0.5.0"
+    "org.eligosource" %% "eventsourced-journal-journalio" % "0.5.0",
+
+    "com.typesafe.akka" %% "akka-testkit" % "2.2-SNAPSHOT"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(

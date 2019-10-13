@@ -2,7 +2,7 @@ import akka.actor.{Props, ActorRef}
 import controllers.{Authentication, Application}
 import java.io.File
 import model.{User, TaskCommandHandler}
-import org.eligosource.eventsourced.core.{Eventsourced, EventsourcingExtension, Journal}
+import org.eligosource.eventsourced.core.{Message, Eventsourced, EventsourcingExtension, Journal}
 import org.eligosource.eventsourced.journal.inmem.InmemJournalProps
 import org.eligosource.eventsourced.journal.journalio.JournalioJournalProps
 import org.eligosource.eventsourced.journal.leveldb.LeveldbJournalProps
@@ -27,13 +27,15 @@ object Global extends GlobalSettings {
     val users: Ref[Map[String, User]] = Ref(Map.empty[String, User])
 
     val taskQueryRepository = new TaskQueryRepository
-    Akka.system.actorOf(Props(new TaskQueryRepository.Updater(taskQueryRepository)), "taskQueryUpdater")
+    val taskQueryUpdater = Akka.system.actorOf(Props(new TaskQueryRepository.Updater(taskQueryRepository)), "taskQueryUpdater")
+    Akka.system.eventStream.subscribe(taskQueryUpdater, classOf[Message])
 
-    extension.processorOf(Props(new TaskCommandHandler(users, taskQueryRepository, extension) with Eventsourced { val id = 1 } ), Some("taskCommandHandler"))(Akka.system)
+    extension.processorOf(Props(new TaskCommandHandler(users, extension) with Eventsourced { val id = 1 } ), Some("taskCommandHandler"))(Akka.system)
     extension.recover()
 
     Application.setTaskQueryRepository(taskQueryRepository)
     Authentication.setTaskQueryRepository(taskQueryRepository)
+
   }
 
   override def onStop(app: Application) {
